@@ -8,7 +8,7 @@ END proj_tb;
 ARCHITECTURE behavior OF proj_tb IS
 
   --Component Declaration for the Unit Under Test (UUT)
-  COMPONENT proj
+  COMPONENT mother
   PORT(clk : IN std_logic;
        rst : IN std_logic);
   END COMPONENT;
@@ -22,7 +22,7 @@ ARCHITECTURE behavior OF proj_tb IS
 
 BEGIN
   -- Instantiate the Unit Under Test (UUT)
-  uut: proj PORT MAP (
+  uut: mother PORT MAP (
     clk => clk,
     rst => rst
   );

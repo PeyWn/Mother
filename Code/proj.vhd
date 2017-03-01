@@ -3,12 +3,12 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
 --CPU interface
-entity proj is
+entity mother is
   port(clk: in std_logic;
 	     rst: in std_logic);
-end proj ;
+end mother ;
 
-architecture Behavioral of proj is
+architecture Behavioral of mother is
 
 
   -- micro Memory component
