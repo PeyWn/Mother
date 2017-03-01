@@ -1,0 +1,95 @@
+
+			     --HARDWARE--
+ *********************************************************************
+ 
+  -- Nexys 3
+  -- Joystick 
+  -- Mono speaker
+  -- HexKey - no need
+  
+ *********************************************************************
+
+
+       OP-code
+    bits  |    for     
+ ********************** 
+ *  2x4   |  Reg
+ *   7    |  OP-kod
+ *   16   |  Operand
+ * ------ |  	    
+ * = 32   |  Bitar
+ **********************      
+
+
+		       --Computer components--
+ ********************************************************************
+
+ Register file:	    16 register  
+ ALU:	  	    See fancy ass ASCII art below for spec
+ Program memory:    32 bitars width 8kB
+ Data memory:       16 bitars width 64kB
+ Video memory: 	    300B  20 x 15 tiles x 1 byte 
+ Tile memory: 	    8kB   128 tiles x 16x16 pixels (1 pixel = 1 byte)
+
+ Joystick:	    --> Joystick decoder
+ 		    	--> 23 bits shift register
+			--> 6 "Flags" with 4 direction 2 buttons 
+
+			      --Extra--
+ --------------------------------------------------------------------
+ Mono speaker:	--> Mux
+      		--> Audio memory
+ 
+ ********************************************************************
+
+
+ __|_____|__
+ \	   / -ADD  -NOT
+  \  ALU  /  -SUB  -AND
+   \_____/   -MUL  -OR
+      |	     -LSR  -XOR 
+	     -LSL
+
+   Flags
+  -------
+  |N|Z|O|
+   . . -> OVERFLOW
+   . ---> ZERO
+   -----> NEGATIV
+
+
+		       --GAME GRAPHICS DESIGN--
+ ********************************************************************
+ 
+ Tiles		--> 16x16 pixels
+ 		--> 128 different models
+		--> Different model for when drilling
+		
+ Game surface 	--> Room based
+      		--> 300 tiles per room
+		--> Room wrapping
+
+ Shops		--> Tile(s) reprecenation
+
+ ********************************************************************
+
+
+			   --CODE DESIGN--
+ ********************************************************************
+
+ Main loop:	--> Poll input
+      		    --> Activate button
+		    --> Joystick
+		--> Take action
+		-----------------------------------------------------
+			
+
+ ********************************************************************
+
+
+			   --Misc ideas--
+ ********************************************************************
+
+ A way to reset the whole map
+
+ ********************************************************************
