@@ -42,7 +42,7 @@ architecture Behavioral of regFile is
         )
 
     signal registers : reg_data := default_reg;
-
+begin
     --Reading
     output_alpha <= registers(to_integer(read_alpha));
     output_beta <= registers(to_integer(read_beta));
@@ -53,5 +53,4 @@ architecture Behavioral of regFile is
             registers(to_integer(write_reg)) <= write_data;
         end if;
     end process;
-
 end Behavioral;
