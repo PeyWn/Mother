@@ -5,27 +5,44 @@ use IEEE.NUMERIC_STD.ALL;
 entity vMem is
     port(
         --Ports to connect to CPU
-        CPUaddrRow : in unsigned(7 downto 0);
-        CPUaddrCol : in unsigned(7 downto 0);
-        CPUoperation : in std_logic(); --1 is write, 0 is read
-        CPUin : in unsigned(7 downto 0);
-        CPUout : out unsigned(7 downto 0);
+        CPU_addr_row : in unsigned(7 downto 0);
+        CPU_addr_col : in unsigned(7 downto 0);
+        CPU_operation : in std_logic; --1 is write, 0 is read
+        CPU_in : in unsigned(7 downto 0);
+        CPU_out : out unsigned(7 downto 0);
 
         clk : in std_logic();
 
         --Ports for VGA_motor connection
-        VGAaddrRow : in std_logic_vector(7 downto 0);
-        VGAaddrCol : in std_logic_vector(7 downto 0);
-        VGAout : out std_logic_vector(7 downto 0);
+        VGA_addr_row : in std_logic_vector(7 downto 0);
+        VGA_addr_col : in std_logic_vector(7 downto 0);
+        VGA_out : out std_logic_vector(7 downto 0);
     );
 end vMem;
 
 architecture Behavioral of vMem is
-    type vMemData is array (0 to 299) of unsigned(7 downto 0);
+    type v_mem_data is array (0 to 299) of unsigned(7 downto 0);
 
-    signal memory : vMemData;
+    signal memory : v_mem_data;
+
+    signal VGA_addr : unsigned(7 downto 0);
+    signal CPU_addr : unsigned(7 downto 0);
 begin
-    --Read operations
-    VGAout <= memory(VGAaddrRow * to_unsigned(15, 8) + );
+    --Address calculations
+    VGA_addr <= VGA_addr_row * to_unsigned(15, 8) + VGA_addr_col;
+    CPU_addr <= CPU_addr_row * to_unsigned(15, 8) + CPU_addr_col;
 
+    --Read operations
+    VGA_out <= memory(to_integer(VGA_addr));
+    WITH CPU_operation select
+        CPU_out <=   memory(to_integer(CPU_addr)) when '0',
+                    x"00" when others;
+
+    --CPU writing to memory
+    process(clk):
+    begin
+        if rising_edge(clk) AND CPU_operation = '1' then
+            memory(to_integer(CPU_addr)) <= CPU_in;
+        end if;
+    end process;
 end Behavioral;
