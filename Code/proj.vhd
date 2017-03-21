@@ -10,7 +10,6 @@ end mother ;
 
 architecture Behavioral of mother is
 
-
   -- micro Memory component
   component uMem
     port(uAddr : in unsigned(5 downto 0);
@@ -22,7 +21,7 @@ architecture Behavioral of mother is
     port(pAddr : in unsigned(15 downto 0);
          pData : out unsigned(15 downto 0));
   end component;
-  
+
   -- micro memory signals
   signal uM : unsigned(15 downto 0); -- micro Memory output
   signal uPC : unsigned(5 downto 0); -- micro Program Counter
@@ -30,7 +29,7 @@ architecture Behavioral of mother is
   signal uAddr : unsigned(5 downto 0); -- micro Address
   signal TB : unsigned(2 downto 0); -- To Bus field
   signal FB : unsigned(2 downto 0); -- From Bus field
-	
+
   -- program memory signals
   signal PM : unsigned(15 downto 0); -- Program Memory output
   signal PC : unsigned(15 downto 0); -- Program Counter
@@ -38,7 +37,7 @@ architecture Behavioral of mother is
   signal ASR : unsigned(15 downto 0); -- Address Register
   signal IR : unsigned(15 downto 0); -- Instruction Register
   signal DATA_BUS : unsigned(15 downto 0); -- Data Bus
-	
+
 
 begin
 
@@ -55,7 +54,7 @@ begin
       end if;
     end if;
   end process;
-	
+
   -- PC : Program Counter
   process(clk)
   begin
@@ -69,7 +68,7 @@ begin
       end if;
     end if;
   end process;
-	
+
   -- IR : Instruction Register
   process(clk)
   begin
@@ -81,7 +80,7 @@ begin
       end if;
     end if;
   end process;
-	
+
   -- ASR : Address Register
   process(clk)
   begin
@@ -93,20 +92,20 @@ begin
       end if;
     end if;
   end process;
-	
+
   -- micro memory component connection
   U0 : uMem port map(uAddr=>uPC, uData=>uM);
 
   -- program memory component connection
   U1 : pMem port map(pAddr=>ASR, pData=>PM);
-	
+
   -- micro memory signal assignments
   uAddr <= uM(5 downto 0);
   uPCsig <= uM(6);
   PCsig <= uM(7);
   FB <= uM(10 downto 8);
   TB <= uM(13 downto 11);
-	
+
   -- data bus assignment
   DATA_BUS <= IR when (TB = "001") else
     PM when (TB = "010") else
