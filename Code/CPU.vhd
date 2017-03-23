@@ -22,6 +22,22 @@ architecture Behavioral of CPU is
         pData : out unsigned(31 downto 0));
     end component;
 
+    component regFile port(
+            clk : in std_logic();
+
+            --Reading from registers
+            read_alpha : in unsigned(3 downto 0);
+            output_alpha : out unsigned(15 downto 0);
+            read_beta : in unsigned(3 downto 0);
+            output_beta : out unsigned(15 downto 0);
+
+            --Writing to registers
+            write_reg : in unsigned(3 downto 0);
+            write_data : in unsigned(15 downto 0);
+            write_enable : in std_logic
+        );
+    end component;
+
     --Program Counter
     signal PC : unsigned(9 downto 0) := "000000000";
     signal PC2 : unsigned(9 downto 0); --Program counter 2, for jumps
@@ -80,6 +96,16 @@ architecture Behavioral of CPU is
     signal pre_vMem : unsigned(15 downto 0);
     signal post_vMem : unsigned(15 downto 0);
 
+    --Register file in signals
+    signal regFile_read1 : unsigned(3 downto 0);
+    signal regFile_output1 : unsigned(15 downto 0);
+    signal regFile_read2 : unsigned(3 downto 0);
+    signal regFile_output2 : unsigned(15 downto 0);
+
+    signal regFile_wReg : unsigned(3 downto 0);
+    signal regFile_wData : unsigned(15 downto 0);
+    signal regFile_wEnable : std_logic;
+
 begin
     --Process for PC assignement
     process(clk)
@@ -125,9 +151,19 @@ begin
                 reg0 when stall = '1' else
                 new_inst;
 
-    reg1_mux <= NOp when stall = '1' else
+    reg1_mux <= NOP when stall = '1' else
                 reg0;
 
+    --Connect register file
+    C2 : registerFile port map(clk => clk, read_alpha => regFile_read1,
+                                read_beta => regFile_read2,
+                                output_alpha => regFile_output1,
+                                output_beta => regFile_output2,
+                                write_reg => regFile_wReg,
+                                write_data => regFile_wData,
+                                write_enable => regFile_wEnable);
 
-
+    regFile_read1 <= reg0(19 downto 16);
+    regFile_read2 <= reg0(15 downto 12);
+    regFile_wReg <= reg3(23 downto 20);
 end Behavioral;
