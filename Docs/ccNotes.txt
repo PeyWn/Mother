@@ -1,52 +1,51 @@
 
 			     --HARDWARE--
  *********************************************************************
- 
+
   -- Nexys 3
-  -- Joystick 
+  -- Joystick
   -- Mono speaker
   -- HexKey - no need
-  
+
  *********************************************************************
 
-
        OP-code
-    bits  |    for     
- ********************** 
+    bits  |    for
+ **********************
  *  2x4   |  Reg
  *   8    |  OP-kod
  *   16   |  Operand
- * ------ |  	    
+ * ------ |
  * = 32   |  Bitar
  **********************
 
 		       --Computer components--
  ********************************************************************
 
- Register file:	    16 register  
+ Register file:	    16 register
  ALU:	  	    See fancy ass ASCII art below for spec
  Program memory:    32 bitars width 8kB
  Data memory:       16 bitars width 64kB
- Video memory: 	    300B  20 x 15 tiles x 1 byte 
+ Video memory: 	    300B  20 x 15 tiles x 1 byte
  Tile memory: 	    8kB   128 tiles x 16x16 pixels (1 pixel = 1 byte)
 
  Joystick:	    --> Joystick decoder
- 		    	--> 23 bits shift register
-			--> 6 "Flags" with 4 direction 2 buttons 
+ 		    				--> 23 bits shift register
+								--> 6 "Flags" with 4 direction 2 buttons
 
 			      --Extra--
  --------------------------------------------------------------------
  Mono speaker:	--> Mux
       		--> Audio memory
- 
+
  ********************************************************************
 
 
  __|_____|__
- \	   / -ADD  -NOT
+ \	   		 / -ADD  -NOT
   \  ALU  /  -SUB  -AND
    \_____/   -MUL  -OR
-      |	     -LSR  -XOR 
+      |	     -LSR  -XOR
 	     -LSL
 
    Flags
@@ -59,16 +58,16 @@
 
 		       --GAME GRAPHICS DESIGN--
  ********************************************************************
- 
+
  Tiles		--> 16x16 pixels
  		--> 128 different models
 		--> Different model for when drilling
-		
+
  Game surface 	--> Room based
       		--> 300 tiles per room
 		--> Room wrapping
 
- Shops		--> Tile(s) reprecenation
+ Shops		--> Tile(s) representation
 
  ********************************************************************
 
@@ -80,15 +79,15 @@
       		    --> Activate button
 		    --> Joystick
 		--> Take action
-		
+
 ---------------------------------------------------------------------
 
 DataForwarding	--> Reg1 Rk, Rn, Rm
-		--> Kolla i uppslagsvärk om ingen Rn eller Rn och Rm
-		--> ska jämförs med Reg2 Rk och Reg3 Rk
+								--> Kolla i uppslagsvärk om ingen Rn eller Rn och Rm
+								--> ska jämförs med Reg2 Rk och Reg3 Rk
 
-		--> Ett ytterligare uppslagsvärk för om Rk finns i
-		--> Reg1 eller Reg2
+								--> Ett ytterligare uppslagsvärk för om Rk finns i
+								--> Reg1 eller Reg2
 
  ********************************************************************
 
