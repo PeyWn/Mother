@@ -4,9 +4,14 @@
    #		       		       	   			  #
    ################################################################
 
+   R	= Register	4-Bits
+   --  	= Blank		4-Bits
+   Addr	= Address	16-Bits
+   const= Constant	16-Bits
+
 			   --Minne start--
    ****************************************************************
-   00000000	--> NOP -
+   00000000	--> NOP -- -- -- --
    		--> Gör ingenting
    ****************************************************************
    
@@ -37,41 +42,41 @@
 		       --ALU-operationer 0011--
 			!!Flaggor uppdateras!!
    ****************************************************************
-   00110000 NOT	--> NOT Rn Rm --
-   		--> Rm <= NOT(Rn)
-   		--> Rm tilldelas bitvis invers av Rn.
+   00110000 NOT	--> NOT Rk Rn -- --
+     #30	--> Rk <= NOT(Rn)
+   		--> Rk tilldelas bitvis invers av Rn.
    ----------------------------------------------------------------
-   00110001 OR	--> OR Rn Rm Rk --
-   		--> Rk <= (Rn OR Rm)
+   00110001 OR	--> OR Rk Rn Rm --
+     #31	--> Rk <= (Rn OR Rm)
 		--> Rk tilldelas bitvis or av Rn och Rm.
    ----------------------------------------------------------------
-   00110010 AND	--> AND Rn Rm Rk --
-   		--> Rk <= (Rn AND Rm)
+   00110010 AND	--> AND Rk Rn Rm --
+     #32     	--> Rk <= (Rn AND Rm)
 		--> Rk tilldelas bitvis AND av Rn och Rm.
    ----------------------------------------------------------------
-   00110011 XOR	--> XOR Rn Rm Rk --
-   		--> Rk <= (Rn XOR Rm)
+   00110011 XOR	--> XOR Rk Rn Rm --
+     #33 	--> Rk <= (Rn XOR Rm)
 		--> Rk tilldelas bitvis XOR av Rn och Rm.
    ----------------------------------------------------------------
-   00110100 ADD	--> ADD Rn Rm Rk --
-   		--> Rk <= (Rn + Rm)
+   00110100 ADD	--> ADD Rk Rn Rm --
+     #34 	--> Rk <= (Rn + Rm)
 		--> Rk tilldelas aritmetisk summa av Rn och Rm.
    ----------------------------------------------------------------
-   00110101 SUB	--> SUB Rn Rm Rk --
-   		--> Rk <= (Rn - Rm)
+   00110101 SUB	--> SUB Rk Rn Rm --
+     #35 	--> Rk <= (Rn - Rm)
 		--> Rk tilldelas aritmetisk differens av Rn och Rm.
    ----------------------------------------------------------------
-   00110110 MUL	--> MUL Rn Rm Rk --
-   		--> Rk <= (Rn * Rm)
+   00110110 MUL	--> MUL Rk Rn Rm --
+     #36 	--> Rk <= (Rn * Rm)
 		--> Rk tilldelas aritmetisk multiplikation av Rn och Rm.
    ----------------------------------------------------------------
-   00110111 LSR	--> LSR Rn -- const
-   		--> LSR<const>(Rn) 
+   00110111 LSR	--> LSR Rk -- const
+     #37 	--> LSR<const>(Rk) 
 		--> Rn skiftas const steg åt höger. MSB fylls på med 0.
 		--> 0 < const < 17
    ----------------------------------------------------------------
-   00111000 LSL	--> LSL Rn -- const
-   		--> LSL<const>(Rn) 
+   00111000 LSL	--> LSL Rk -- const
+     #38 	--> LSL<const>(Rk) 
 		--> Rn skiftas const steg åt vänster. LSB fylls på med 0.
 		--> 0 < const < 17
    ----------------------------------------------------------------
@@ -140,7 +145,7 @@
    
 		      --Testinstruktioner 0110--
    ****************************************************************
-   01100000 CMP	--> CMP Rn Rm --
+   01100000 CMP	--> CMP -- Rn Rm -- 
    		--> (Rn - Rm)
 		--> Uppdaterar flaggor baserat på aritmetisk differens mellan Rn och Rm.
    ----------------------------------------------------------------

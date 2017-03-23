@@ -80,8 +80,15 @@
       		    --> Activate button
 		    --> Joystick
 		--> Take action
-		-----------------------------------------------------
-			
+		
+---------------------------------------------------------------------
+
+DataForwarding	--> Reg1 Rk, Rn, Rm
+		--> Kolla i uppslagsvärk om ingen Rn eller Rn och Rm
+		--> ska jämförs med Reg2 Rk och Reg3 Rk
+
+		--> Ett ytterligare uppslagsvärk för om Rk finns i
+		--> Reg1 eller Reg2
 
  ********************************************************************
 
