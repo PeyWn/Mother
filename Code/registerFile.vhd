@@ -15,7 +15,7 @@ entity regFile is
         --Writing to registers
         write_reg : in unsigned(3 downto 0);
         write_data : in unsigned(15 downto 0);
-        write_enable : in std_logic;
+        write_enable : in std_logic
     );
 end regFile;
 

@@ -16,7 +16,7 @@ entity vMem is
         --Ports for VGA_motor connection
         VGA_addr_row : in std_logic_vector(7 downto 0);
         VGA_addr_col : in std_logic_vector(7 downto 0);
-        VGA_out : out std_logic_vector(7 downto 0);
+        VGA_out : out std_logic_vector(7 downto 0)
     );
 end vMem;
 
