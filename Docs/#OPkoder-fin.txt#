@@ -32,7 +32,7 @@
    		--> Rn <= mem(Addr)
 		--> Rn tilldelas de som finns på minnet på adress Addr.
    ----------------------------------------------------------------
-   00100001 STR	--> STR -- Rn Addr
+   00100001 STR	--> STR Rn - Addr
    		--> mem(Addr) <= Rn
 		--> På minnesadress Addr skrivs datan i Rn in.
    ----------------------------------------------------------------
@@ -87,7 +87,7 @@
         --> Rn <= vMem(Addr)
         --> Rn tilldelas de som finns i videominnet på adress Addr.
    ----------------------------------------------------------------
-   01000001 STRV	--> STRV -- Rn Addr
+   01000001 STRV	--> STRV Rn -- Addr
         --> vMem(Addr) <= Rn
         --> På minnesadress Addr i videominnet skrivs datan i Rn in.
    ----------------------------------------------------------------
@@ -129,9 +129,9 @@
    		--> if(B1==1): pc <= (pc + const)
 		--> Hoppa om BTN1 = 1.
    ----------------------------------------------------------------
-   --> Hoppa om BTN2 = 1.
    01011000 BRB2--> BRB2 -- -- const
    		--> if(B2==1): pc <= (pc + const)
+		--> Hoppa om BTN2 = 1.
    ----------------------------------------------------------------
    01011001 BRJU--> BRJU -- -- const
    		--> if(JU==1): pc <= (pc + const)

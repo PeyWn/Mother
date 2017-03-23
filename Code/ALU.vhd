@@ -13,7 +13,7 @@ end ALU;
 
 architecture calc of ALU is
   type operation is (op_NOT, op_OR, op_AND, op_XOR, op_ADD, op_SUB, op_MUL, op_LSR, op_LSL);
-  
+
 begin
 
   --Calculations
@@ -28,14 +28,14 @@ begin
     (op_a * op_b)       when op_MUL,
     (op_a slr op_b)     when op_LSR,
     (op_a sll op_b)     when op_LSL,
-    op_a                when others;
+    op_a                when others; 
 
 
-  
+
   --Update flags
   z <= '1' when res = 0 else
        '0';
-  
+
   n <= '1' when res(15) = '1' else
        '0';
 
@@ -44,4 +44,3 @@ begin
        '0';
 
 end calc;
-  
