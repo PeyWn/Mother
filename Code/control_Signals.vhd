@@ -9,7 +9,7 @@ entity CPU_comb_net is
        -- Flags in from CPU
        -- Z N O: Alu flags
        -- btn1, btn2, left, right, up, down: Joystick flags
-       -- DF_prev: The value that DF_ir3 sould be.   
+       -- DF_prev: The value that DF_ir3 should be.   
        -- read reg prev: If previus instruction readed reg or not.
        
        ALU1_mux, dMem_write, vMem_write, regFile_write, jmp, stall, DF_next, read_reg_next  : out std_logic;
@@ -20,10 +20,10 @@ entity CPU_comb_net is
        
        writeback_mux, DF_mux_a, DF_mux_b : out unsigned(1 downto 0);
        --       writeback_mux   DF_mux_*
-       --00     TMP             Ingen
-       --01     TMP             ir2
-       --10     TMP             ir3
-       --11     TMP             båda
+       --00     vMem             Ingen
+       --01     dMem             ir2
+       --10     ALU              ir3
+       --11     --               båda
        
        ALU_operation : out unsigned(3 downto 0);
        
@@ -140,6 +140,9 @@ begin
                 '0';
 
   --writeback_mux
+  writeback_mux <= "00" when ir3(31 downto 24) = "01000000" else
+                   "01" when ir3(31 downto 24) = "00100000" else
+                   "10";
   
   --regFile_write
   --regFile_write is 1 when the instruction wants to write to the register file, otherwise 0.

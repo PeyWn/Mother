@@ -11,6 +11,8 @@ entity CPU is
         v_mem_row : out unsigned(7 downto 0);
         v_mem_col : out unsigned(7 downto 0);
         v_mem_operation : out std_logic
+        v_mem_data_out : in unsigned(7 downto 0);
+        v_mem_data_in : out unsigned(7 downto 0);
     );
 end CPU;
 
@@ -34,9 +36,53 @@ architecture Behavioral of CPU is
             --Writing to registers
             write_reg : in unsigned(3 downto 0);
             write_data : in unsigned(15 downto 0);
-            write_enable : in std_logic
-        );
+            write_enable : in std_logic);
     end component;
+    
+    component CPU_comb_net port(
+      ir0, ir1, ir2, ir3: in unsigned(31 downto 0);
+       z, n, o, btn1, btn2, left, right, up, down, DF_prev, read_reg_prev : in std_logic;
+       -- Flags in from CPU
+       -- Z N O: Alu flags
+       -- btn1, btn2, left, right, up, down: Joystick flags
+       -- DF_prev: The value that DF_ir3 sould be.   
+       -- read reg prev: If previus instruction readed reg or not.
+       
+       ALU1_mux, dMem_write, vMem_write, regFile_write, jmp, stall, DF_next, read_reg_next  : out std_logic;
+       -- ALU1_mux: if the mux should use constant or value from the register file.
+       -- DF next: The value of DF_ir2.
+       -- read reg next: If instrcution in ir0 reads reg, next clk the same is
+       -- true for ir1.
+       
+       writeback_mux, DF_mux_a, DF_mux_b : out unsigned(1 downto 0);
+       --       writeback_mux   DF_mux_*
+       --00     vMem             Ingen
+       --01     dMem             ir2
+       --10     ALU              ir3
+       --11     --               båda
+       
+       ALU_operation : out unsigned(3 downto 0));
+    end component;
+
+    component dMem
+      port(
+        --Ports to connect to CPU
+        dMem_adress : in unsigned(15 downto 0);               
+        dMem_operation : in std_logic; --1 is write
+        dMem_in : in unsigned(15 downto 0);
+        dMem_out : out unsigned(15 downto 0);
+        clk : in std_logic);
+    end component;
+
+    component ALU
+        port(op_a,op_b: in signed(15 downto 0);
+       op_code: in signed(3 downto 0);  --op_code counts from 0 to 9 in order
+                                        --that is written in the enumeration
+       res: buffer signed(15 downto 0);
+       z,n,o: out std_logic);
+    end component;
+    
+    --|| End Components ||
 
     --Program Counter
     signal PC : unsigned(9 downto 0) := "000000000";
@@ -48,10 +94,10 @@ architecture Behavioral of CPU is
 
 
     --Pipelined registers
-    signal isntr_reg0 : unsigned(31 downto 0);
-    signal isntr_reg1 : unsigned(31 downto 0);
-    signal isntr_reg3 : unsigned(31 downto 0);
-    signal isntr_reg2 : unsigned(31 downto 0);
+    signal instr_reg0 : unsigned(31 downto 0);
+    signal instr_reg1 : unsigned(31 downto 0);
+    signal instr_reg3 : unsigned(31 downto 0);
+    signal instr_reg2 : unsigned(31 downto 0);
 
     --NOP
     constant NOP : unsigned(31 downto 0) := x"00000000";
@@ -64,6 +110,13 @@ architecture Behavioral of CPU is
     signal N : std_logic; --Result is negative (2 complement)
     signal O : std_logic; --Overflow
 
+    --ALU registers
+    signal pre_ALU_a, pre_ALU_b : unsigned(15 downto 0);
+    signal ALU_res, ALU_res_reg : unsigned(15 downto 0);
+
+    --Stage 3 data register
+    signal stage3_data : unsigned(15 downto 0);
+      
     --Joystick status flags
     signal joy_btn1 : std_logic;
     signal joy_btn2 : std_logic;
@@ -72,6 +125,7 @@ architecture Behavioral of CPU is
     signal joy_up : std_logic;
     signal joy_down : std_logic;
 
+
     --NOP, jmp and stall muxes
     signal reg0_mux : unsigned(15 downto 0);
     signal reg1_mux : unsigned(15 downto 0);
@@ -79,22 +133,32 @@ architecture Behavioral of CPU is
     --!!!!Control signals!!!!
     signal stall : std_logic; --stall (leave instruction in reg0)
     signal jmp : std_logic; --jmp next CPU cycle
+    signal ALU_operation : unsigned(3 downto 0);  --Operation to send to ALU
 
+    --Control signals for Dataforwarding (sending and receiving
+    signal ir2_DF, ir3_DF, ir0_read_reg, ir1_read_reg : std_logic;
 
-
+    --ALU,DF and writeback mux control signals
+    signal ALU_mux : std_logic;
+    signal DF_mux_a, DF_mux_b : unsigned(1 downto 0);
+    signal writeback_mux : unsigned(1 downto 0);
+    
     -- Register file registers
-    signal reg_n : unsigned(15 downto 0); --First register under register file
-    signal reg_m : unsigned(15 downto 0); --Second register under register file
+    signal reg_a : unsigned(15 downto 0); --First register under register file
+    signal reg_b : unsigned(15 downto 0); --Second register under register file
 
     signal instr_const_reg : unsigned(15 downto 0); --Register for adress or constant directly from instruction
 
     -- Data memory registers
     signal pre_dMem : unsigned(15 downto 0);
     signal post_dMem : unsigned(15 downto 0);
-
+    signal post_dMem_data : unsigned(15 downto 0);
+    signal dMem_write : std_logic;  
+    
     --Video memory registers
     signal pre_vMem : unsigned(15 downto 0);
     signal post_vMem : unsigned(15 downto 0);
+    signal vMem_write : std_logic;
 
     --Register file in signals
     signal regFile_read1 : unsigned(3 downto 0);
@@ -106,7 +170,45 @@ architecture Behavioral of CPU is
     signal regFile_wData : unsigned(15 downto 0);
     signal regFile_wEnable : std_logic;
 
+    --Muxes
+    signal constant_mux : unsigned(15 downto 0);
+    signal alu1_mux : signal(15 downto 0);
+    signal alu2_mux : signal(15 downto 0);
+
+    signal writeback_mux_data : signal(15 downto 0);
+    
 begin
+  --Connect combinatoric net for control signals -- read in control_Signals.vhd
+  --for more info
+  comb_net : CPU_comb_net port map (ir0 => instr_reg0, ir1 => instr_reg1, ir2 => instr_reg2, ir3 => instr_reg3,
+                                    z => Z, n => N, o => O,
+                                    
+                                    btn1 => joy_btn1, btn2 => joy_btn2,
+                                    left => joy_left, right => joy_right, up => joy_up, down => joy_down,
+                                    
+                                    DF_prev => ir3_DF, DF_next => ir2_DF,
+                                    read_reg_prev => ir1_read_reg, read_reg_next => ir0_read_reg,
+                                    
+                                    ALU1_mux => ALU_mux, DF_mux_a => DF_mux_a, DF_mux_b => DF_mux_b,
+                                    writeback_mux => writeback_mux,
+                                    
+                                    dMem_write => dMem_write, vMem_write => vMem_write,
+                                    regFile_write => regFile_wEnable,
+                                    jmp => jmp, stall => stall,
+
+                                    ALU_operation => ALU_operation);
+
+
+  --Process for forwarding of the DF and read_reg values from one ir step to
+  --the next
+  process(clk)
+  begin
+    if rising_edge(clk) then
+      ir3_DF <= ir2_DF;
+      ir1_read_reg <= ir0_read_reg;
+    end if;
+  end process;
+    
     --Process for PC assignement
     process(clk)
     begin
@@ -135,6 +237,12 @@ begin
         end if;
     end process;
 
+  --Connect ALU
+  A1 : ALU port map (
+    (op_a => pre_ALU_A, op_b => pre_ALU_B, op_code => ALU_operation,
+     res => ALU_res.
+     z => Z, n => N, o => O);
+
     --Pipelining forward
     process(clk)
     begin
@@ -154,8 +262,23 @@ begin
     reg1_mux <= NOP when stall = '1' else
                 reg0;
 
-    --Connect register file
-    C2 : registerFile port map(clk => clk, read_alpha => regFile_read1,
+  --Connect data memory
+  D1 : dMem port map ( dMem_in => pre_dMem, dMem_out => post_dMem_data,
+                       clk => clk,
+                       dMem_adress => ALU_res, dMem_operation => dMem_write);
+
+  process(clk)
+    begin
+      if rising_edge(clk) then
+        pre_dMem <= alu1_mux;
+        pre_vMem <= alu1_mux;
+
+        post_dMem <= post_dMem_data;
+      end if;
+  end process;
+
+  --Connect register file
+  C2 : registerFile port map(clk => clk, read_alpha => regFile_read1,
                                 read_beta => regFile_read2,
                                 output_alpha => regFile_output1,
                                 output_beta => regFile_output2,
@@ -163,7 +286,57 @@ begin
                                 write_data => regFile_wData,
                                 write_enable => regFile_wEnable);
 
-    regFile_read1 <= reg0(19 downto 16);
-    regFile_read2 <= reg0(15 downto 12);
-    regFile_wReg <= reg3(23 downto 20);
+  regFile_read1 <= reg0(19 downto 16);
+  regFile_read2 <= reg0(15 downto 12);
+  regFile_wReg <= reg3(23 downto 20);
+
+  -- Registers around register file
+  process(clk)
+  begin
+    if rising_edge(clk) then
+      instr_const_reg <= reg0(15 downto 0);
+      
+      reg_a <= regFile_output1;
+      reg_b <= regFile_output2;
+    end if;
+  end process;
+
+  --Muxes above ALU
+  constant_mux <= instr_const_reg when ALU_mux = '1' else
+                  alu1_mux;
+
+  alu1_mux <= ALU_res_reg when DF_mux_a(1) = '1' else
+              writeback_mux_data when DF_mux_a(0) = '1' else
+              reg_a;
+
+  alu2_mux <= ALU_res_reg when DF_mux_b(1) = '1' else
+              writeback_mux_data when DF_mux_b(0) = '1' else
+              reg_b;
+
+  --writeback MUX
+  writeback_mux_data <= stage3_data when writeback_mux = "10" else
+                        post_dMem when writeback = "01" else
+                        post_vMem;
+
+  --Pass ALU res to next step
+  process(clk)
+    begin
+      if rising_edge(clk) then
+        stage3_data <= ALU_res_reg;
+      end if;
+    end process;
+
+    --vMem connections
+    v_mem_row <= ALU_res_reg(15 downto 8);
+    v_mem_col <= ALU_res_reg(7 downto 0);
+    v_mem_operation <= vMem_write;
+    v_mem_data_in <= pre_vMem(7 downto 0);
+
+    process(clk)
+      begin
+        if rising_edge(clk) then
+          post_vMem <= x"00" & v_mem_data_out;
+        end if;
+      end process;
+      
 end Behavioral;
