@@ -70,6 +70,7 @@
      #36 	      --> Rk <= (Rn * Rm)
 		            --> Rk tilldelas aritmetisk multiplikation av Rn och Rm.
    ----------------------------------------------------------------
+<<<<<<< HEAD
    00110111 LSR	--> LSR Rk -- const
      #37          --> LSR<const>(Rk)
 		            --> Rn skiftas const steg åt höger. MSB fylls på med 0.
@@ -79,6 +80,17 @@
      #38 	      --> LSL<const>(Rk)
 		            --> Rn skiftas const steg åt vänster. LSB fylls på med 0.
 		            --> 0 < const < 17
+=======
+   00110111 LSR	--> LSR Rk Rn const
+     #37 	--> LSR<const>(Rk)
+		--> Rk tilldelas Rn skiftad const steg åt höger. MSB fylls på med 0.
+		--> 0 < const < 17
+   ----------------------------------------------------------------
+   00111000 LSL	--> LSL Rk Rn const
+     #38 	--> LSL<const>(Rk)
+		--> Rk tilldelas Rn skiftad const steg åt vänster. LSB fylls på med 0.
+		--> 0 < const < 17
+>>>>>>> ef3efa08f84d040351c4f7772c40fd0ae2477a3f
    ----------------------------------------------------------------
 
 		   --Videominne operationer 0100--
