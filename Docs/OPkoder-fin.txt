@@ -11,16 +11,16 @@
 
 			   --Minne start--
    ****************************************************************
-   00000000	--> NOP -- -- -- --
-   		--> Gör ingenting
+   00000000 	    --> NOP -- -- -- --
+   		          --> Gör ingenting
    ****************************************************************
 
 
 		    --Register operationer 0001--
    ****************************************************************
    00010000 MOV	--> MOV Rn -- const
-   		--> Rn <= const
-		--> Tilldela register n ett konstant värde.
+   		         --> Rn <= const
+		            --> Tilldela register n ett konstant värde.
    ----------------------------------------------------------------
    ****************************************************************
 
@@ -29,67 +29,67 @@
 		     --Minnes operationer 0010--
    ****************************************************************
    00100000 LDA	--> LDA Rn -- Addr
-   		--> Rn <= mem(Addr)
-		--> Rn tilldelas de som finns på minnet på adress Addr.
+   		         --> Rn <= mem(Addr)
+		            --> Rn tilldelas de som finns på minnet på adress Addr.
    ----------------------------------------------------------------
    00100001 STR	--> STR -- Rn Addr
-   		--> mem(Addr) <= Rn
-		--> På minnesadress Addr skrivs datan i Rn in.
+   	            --> mem(Addr) <= Rn
+		            --> På minnesadress Addr skrivs datan i Rn in.
    ----------------------------------------------------------------
    ****************************************************************
 
 
-		       --ALU-operationer 0011--
-			!!Flaggor uppdateras!!
+		             --ALU-operationer 0011--
+			          !!Flaggor uppdateras!!
    ****************************************************************
    00110000 NOT	--> NOT Rk Rn -- --
-     #30	--> Rk <= NOT(Rn)
-   		--> Rk tilldelas bitvis invers av Rn.
+     #30	         --> Rk <= NOT(Rn)
+   		         --> Rk tilldelas bitvis invers av Rn.
    ----------------------------------------------------------------
-   00110001 OR	--> OR Rk Rn Rm --
-     #31	--> Rk <= (Rn OR Rm)
-		--> Rk tilldelas bitvis or av Rn och Rm.
+   00110001 OR	   --> OR Rk Rn Rm --
+     #31	         --> Rk <= (Rn OR Rm)
+	               --> Rk tilldelas bitvis or av Rn och Rm.
    ----------------------------------------------------------------
    00110010 AND	--> AND Rk Rn Rm --
-     #32     	--> Rk <= (Rn AND Rm)
-		--> Rk tilldelas bitvis AND av Rn och Rm.
+     #32     	   --> Rk <= (Rn AND Rm)
+		            --> Rk tilldelas bitvis AND av Rn och Rm.
    ----------------------------------------------------------------
    00110011 XOR	--> XOR Rk Rn Rm --
-     #33 	--> Rk <= (Rn XOR Rm)
-		--> Rk tilldelas bitvis XOR av Rn och Rm.
+     #33          --> Rk <= (Rn XOR Rm)
+	               --> Rk tilldelas bitvis XOR av Rn och Rm.
    ----------------------------------------------------------------
    00110100 ADD	--> ADD Rk Rn Rm --
-     #34 	--> Rk <= (Rn + Rm)
-		--> Rk tilldelas aritmetisk summa av Rn och Rm.
+     #34 	      --> Rk <= (Rn + Rm)
+		            --> Rk tilldelas aritmetisk summa av Rn och Rm.
    ----------------------------------------------------------------
    00110101 SUB	--> SUB Rk Rn Rm --
-     #35 	--> Rk <= (Rn - Rm)
-		--> Rk tilldelas aritmetisk differens av Rn och Rm.
+     #35 	      --> Rk <= (Rn - Rm)
+		            --> Rk tilldelas aritmetisk differens av Rn och Rm.
    ----------------------------------------------------------------
    00110110 MUL	--> MUL Rk Rn Rm --
-     #36 	--> Rk <= (Rn * Rm)
-		--> Rk tilldelas aritmetisk multiplikation av Rn och Rm.
+     #36 	      --> Rk <= (Rn * Rm)
+		            --> Rk tilldelas aritmetisk multiplikation av Rn och Rm.
    ----------------------------------------------------------------
    00110111 LSR	--> LSR Rk -- const
-     #37 	--> LSR<const>(Rk)
-		--> Rn skiftas const steg åt höger. MSB fylls på med 0.
-		--> 0 < const < 17
+     #37          --> LSR<const>(Rk)
+		            --> Rn skiftas const steg åt höger. MSB fylls på med 0.
+		            --> 0 < const < 17
    ----------------------------------------------------------------
    00111000 LSL	--> LSL Rk -- const
-     #38 	--> LSL<const>(Rk)
-		--> Rn skiftas const steg åt vänster. LSB fylls på med 0.
-		--> 0 < const < 17
+     #38 	      --> LSL<const>(Rk)
+		            --> Rn skiftas const steg åt vänster. LSB fylls på med 0.
+		            --> 0 < const < 17
    ----------------------------------------------------------------
 
 		   --Videominne operationer 0100--
    ****************************************************************
    01000000 LDAV	--> LDAV Rn -- Addr
-        --> Rn <= vMem(Addr)
-        --> Rn tilldelas de som finns i videominnet på adress Addr.
+                  --> Rn <= vMem(Addr)
+                  --> Rn tilldelas de som finns i videominnet på adress Addr.
    ----------------------------------------------------------------
    01000001 STRV	--> STRV -- Rn Addr
-        --> vMem(Addr) <= Rn
-        --> På minnesadress Addr i videominnet skrivs datan i Rn in.
+                  --> vMem(Addr) <= Rn
+                  --> På minnesadress Addr i videominnet skrivs datan i Rn in.
    ----------------------------------------------------------------
 
    ****************************************************************
@@ -97,64 +97,64 @@
 		      --Hoppinstruktioner 0101--
    ****************************************************************
    01010000 JMP	--> JMP -- -- const
-   		--> pc <= (pc + const)
-		--> Villkorslöst hopp const steg framåt.
-		--> const tvåkomplementstal.
+   		         --> pc <= (pc + const)
+		            --> Villkorslöst hopp const steg framåt.
+		            --> const tvåkomplementstal.
    ----------------------------------------------------------------
    01010001 BRN	--> BRN -- -- const
-      		--> if(N==1): pc <= (pc + const)
-		--> Hoppa om N = 1.
+      		      --> if(N==1): pc <= (pc + const)
+		            --> Hoppa om N = 1.
    ----------------------------------------------------------------
    01010010 BRZ	--> BRZ -- -- const
-   		--> if(Z==1): pc <= (pc + const)
-		--> Hoppa om Z = 1.
+   		         --> if(Z==1): pc <= (pc + const)
+		            --> Hoppa om Z = 1.
    ----------------------------------------------------------------
    01010011 BRO	--> BRO -- -- const
-   		--> if(O==1): pc <= (pc + const)
-		--> Hoppa om O = 1.
+   		         --> if(O==1): pc <= (pc + const)
+		            --> Hoppa om O = 1.
    ----------------------------------------------------------------
-   01010100 BRNN--> BRNN -- -- const
-   		--> if(N==0): pc <= (pc + const)
-		--> Hoppa om N = 0.
+   01010100 BRNN  --> BRNN -- -- const
+   		         --> if(N==0): pc <= (pc + const)
+		            --> Hoppa om N = 0.
    ----------------------------------------------------------------
-   01010101 BRNZ--> BRNZ -- -- const
-   		--> if(Z==0): pc <= (pc + const)
-		--> Hoppa om Z = 0.
+   01010101 BRNZ  --> BRNZ -- -- const
+   		         --> if(Z==0): pc <= (pc + const)
+		            --> Hoppa om Z = 0.
    ----------------------------------------------------------------
-   01010110 BRNO--> BRNO -- -- const
-   		--> if(O==0): pc <= (pc + const)
-		--> Hoppa om O = 0.
+   01010110 BRNO  --> BRNO -- -- const
+   		         --> if(O==0): pc <= (pc + const)
+		            --> Hoppa om O = 0.
    ----------------------------------------------------------------
-   01010111 BRB1--> BRB1 -- -- const
-   		--> if(B1==1): pc <= (pc + const)
-		--> Hoppa om BTN1 = 1.
+   01010111 BRB1  --> BRB1 -- -- const
+   		         --> if(B1==1): pc <= (pc + const)
+		            --> Hoppa om BTN1 = 1.
    ----------------------------------------------------------------
-   --> Hoppa om BTN2 = 1.
-   01011000 BRB2--> BRB2 -- -- const
-   		--> if(B2==1): pc <= (pc + const)
+   01011000 BRB2  --> BRB2 -- -- const
+   		         --> if(B2==1): pc <= (pc + const)
+                  --> Hoppa om BTN2 = 1.
    ----------------------------------------------------------------
-   01011001 BRJU--> BRJU -- -- const
-   		--> if(JU==1): pc <= (pc + const)
-		--> Hoppa om JoystickUp = 1.
+   01011001 BRJU  --> BRJU -- -- const
+   		         --> if(JU==1): pc <= (pc + const)
+		            --> Hoppa om JoystickUp = 1.
    ----------------------------------------------------------------
-   01011010 BRJD--> BRJD -- -- const
-   		--> if(JD==1): pc <= (pc + const)
-		--> Hoppa om JoystickDown = 1.
+   01011010 BRJD  --> BRJD -- -- const
+   		         --> if(JD==1): pc <= (pc + const)
+		            --> Hoppa om JoystickDown = 1.
    ----------------------------------------------------------------
-   01011011 BRJR--> BRJR -- -- const
-   		--> if(JR==1): pc <= (pc + const)
-		--> Hoppa om JoystickRight = 1.
+   01011011 BRJR  --> BRJR -- -- const
+   		         --> if(JR==1): pc <= (pc + const)
+		            --> Hoppa om JoystickRight = 1.
    ----------------------------------------------------------------
-   01011100 BRJL--> BRJL -- -- const
-   		--> if(JL==1): pc <= (pc + const)
-		--> Hoppa om JoystickLeft = 1.
+   01011100 BRJL  --> BRJL -- -- const
+   		         --> if(JL==1): pc <= (pc + const)
+		            --> Hoppa om JoystickLeft = 1.
    ----------------------------------------------------------------
    ****************************************************************
 
 		      --Testinstruktioner 0110--
    ****************************************************************
    01100000 CMP	--> CMP -- Rn Rm --
-   		--> (Rn - Rm)
-		--> Uppdaterar flaggor baserat på aritmetisk differens mellan Rn och Rm.
+   		         --> (Rn - Rm)
+		            --> Uppdaterar flaggor baserat på aritmetisk differens mellan Rn och Rm.
    ----------------------------------------------------------------
    ****************************************************************
