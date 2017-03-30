@@ -99,8 +99,8 @@ begin
               ir3(23 downto 20) = ir1(15 downto 12) else
               '0';
 
-  DF_mux_a <= DF_ir3_a & DF_ir2_a;
-  DF_mux_b <= DF_ir3_b & DF_ir2_b;
+  DF_mux_a <= DF_ir2_a & DF_ir3_a;
+  DF_mux_b <= DF_ir2_b & DF_ir3_b;
   
   --mem_access
   mem_access <= '1' when

@@ -14,21 +14,21 @@ architecture Behavioral of pMem is
 -- program Memory
 type p_mem_t is array (0 to 1023) of unsigned(31 downto 0);
   signal p_mem : p_mem_t := (
-    x"10100003", -- MOV r1 #3
-    x"10200004", -- MOV r2 #4
-    x"34312000", -- ADD r3 r1 r2
-    x"00000000", -- NOP
-    x"00000000",
-    x"00000000",
-    x"00000000",
-    x"00000000",
-    x"00000000",
-    x"00000000",
-    x"00000000",
-    x"00000000",
-    x"00000000",
-    x"00000000",
-    x"00000000",
+    x"10000001",     --MOV R0 1
+    x"10100001",     --MOV R1 1
+    x"10800000",     --MOV R8 0
+    x"1090000A",	 --MOV R9 10
+    x"10A00001",	 --MOV R10 1
+    x"34201000",    --ADD R2 R0 R1
+    x"34018000",    --ADD R0 R1 R8
+    x"34128000",    --ADD R1 R2 R8
+    x"3599A000",    --SUB R9 R9 R10
+    x"5500FFFB",     --BRNZ -5
+    x"00000000",     --NOP
+    x"21010000",     --STR R1 0
+    x"21020001",     --STR R2 1
+    x"20A00000",      --LDA RA 0
+    x"20B00001",                        --LDA RB 0
     x"00000000",
     x"00000000",
     x"00000000",

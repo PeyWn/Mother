@@ -15,7 +15,7 @@ end dMem;
 architecture Behavioral of dMem is
     type dMemData is array (0 to 32767) of unsigned(15 downto 0);
 
-    signal memory : dMemData;
+    signal memory : dMemData := (others=>(others=>'0'));
     
 begin
 --Write
@@ -26,6 +26,6 @@ begin
   end process;
 
   --Read
-  dMem_out <= memory(to_integer(dMem_adress));
+  dMem_out <= memory(to_integer(dMem_adress(14 downto 0)));
 
 end Behavioral;

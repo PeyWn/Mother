@@ -107,6 +107,8 @@ architecture Behavioral of CPU is
     signal new_inst : unsigned(31 downto 0);
 
     --ALU Status flags
+    signal ALU_Z, ALU_N, ALU_O : std_logic;  -- Statusflags received from ALU
+                                             -- to be updated next clkcycle
     signal Z : std_logic; --Result is zero
     signal N : std_logic; --Result is negative (2 complement)
     signal O : std_logic; --Overflow
@@ -242,7 +244,7 @@ begin
   A1 : ALU port map 
     (op_a => pre_ALU_A, op_b => pre_ALU_B, op_code => ALU_operation,
      res => ALU_res,
-     z => Z, n => N, o => O);
+     z => ALU_Z, n => ALU_N, o => ALU_O);
 
   pre_ALU_a <= constant_mux;
   pre_ALU_b <= alu2_mux;
@@ -331,6 +333,16 @@ begin
         stage3_data <= ALU_res_reg;
       end if;
     end process;
+
+    --Update status flags
+    process(clk)
+      begin
+        if rising_edge(clk) then
+          Z <= ALU_Z;
+          N <= ALU_N;
+          O <= ALU_O;
+        end if;
+      end process;
 
     --vMem connections
     v_mem_row <= ALU_res_reg(15 downto 8);
