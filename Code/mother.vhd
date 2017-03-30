@@ -18,9 +18,9 @@ architecture Behavioral of mother is
          --Video memory
          v_mem_row : out unsigned(7 downto 0);
          v_mem_col : out unsigned(7 downto 0);
-         v_mem_operation : out std_logic
-         v_mem_data_out : out unsigned(7 downto 0);
-         v_mem_data_in : in unsigned(7 downto 0)
+         v_mem_operation : out std_logic;
+         v_mem_data_write : out unsigned(7 downto 0);
+         v_mem_data_read : in unsigned(7 downto 0)
          );
   end component;
 
@@ -33,12 +33,12 @@ architecture Behavioral of mother is
         CPU_in : in unsigned(7 downto 0);
         CPU_out : out unsigned(7 downto 0);
 
-        clk : in std_logic();
+        clk : in std_logic;
 
         --Ports for VGA_motor connection
-        VGA_addr_row : in std_logic_vector(7 downto 0);
-        VGA_addr_col : in std_logic_vector(7 downto 0);
-        VGA_out : out std_logic_vector(7 downto 0)
+        VGA_addr_row : in unsigned(7 downto 0);
+        VGA_addr_col : in unsigned(7 downto 0);
+        VGA_out : out unsigned(7 downto 0)
     );
   end component;
 
@@ -55,8 +55,8 @@ begin
 
   -- Connect CPU
   C1 : CPU port map(clk=>clk, v_mem_row=>vMem_row_cpu, v_mem_col=>vMem_col_cpu,
-                    v_mem_operation=>vMem_operation, v_mem_data_out=>vMem_in_cpu,
-                    v_mem_data_in=>vMem_out_cpu);
+                    v_mem_operation=>vMem_operation, v_mem_data_write=>vMem_in_cpu,
+                    v_mem_data_read=>vMem_out_cpu);
 
   -- Connect video memeory
   C2 : vMem port map(clk=>clk, CPU_addr_row=>vMem_row_cpu,

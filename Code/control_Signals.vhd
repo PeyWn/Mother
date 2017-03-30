@@ -25,7 +25,8 @@ entity CPU_comb_net is
        --10     ALU              ir3
        --11     --               båda
        
-       ALU_operation : out unsigned(3 downto 0);
+       ALU_operation : out unsigned(3 downto 0)
+       );
        
 end CPU_comb_net;
 
@@ -43,18 +44,18 @@ begin
 
   --read_reg
   read_reg_ir0 <= '1' when
-                  ir0(32 downto 24) = x"21" or      -- STR
-                  ir0(32 downto 24) = x"30" or      -- NOT
-                  ir0(32 downto 24) = x"31" or      -- OR
-                  ir0(32 downto 24) = x"32" or      -- AND
-                  ir0(32 downto 24) = x"33" or      -- XOR
-                  ir0(32 downto 24) = x"34" or      -- ADD
-                  ir0(32 downto 24) = x"35" or      -- SUB
-                  ir0(32 downto 24) = x"36" or      -- MUL
-                  ir0(32 downto 24) = x"37" or      -- LSR
-                  ir0(32 downto 24) = x"38" or      -- LSL
-                  ir0(32 downto 24) = x"41" or      -- STRV
-                  ir0(32 downto 24) = x"60" else    -- CMP
+                  ir0(31 downto 24) = x"21" or      -- STR
+                  ir0(31 downto 24) = x"30" or      -- NOT
+                  ir0(31 downto 24) = x"31" or      -- OR
+                  ir0(31 downto 24) = x"32" or      -- AND
+                  ir0(31 downto 24) = x"33" or      -- XOR
+                  ir0(31 downto 24) = x"34" or      -- ADD
+                  ir0(31 downto 24) = x"35" or      -- SUB
+                  ir0(31 downto 24) = x"36" or      -- MUL
+                  ir0(31 downto 24) = x"37" or      -- LSR
+                  ir0(31 downto 24) = x"38" or      -- LSL
+                  ir0(31 downto 24) = x"41" or      -- STRV
+                  ir0(31 downto 24) = x"60" else    -- CMP
                   '0';
   
   read_reg_next <= read_reg_ir0;
@@ -82,19 +83,19 @@ begin
                      --the same comparison twice
 
   --DF muxxing and fluxxing
-  DF_ir2_a <= "1" when (DF_ir2 = '1' and read_reg_ir1 = '1') and
+  DF_ir2_a <= '1' when (DF_ir2 = '1' and read_reg_ir1 = '1') and
               ir2(23 downto 20) = ir1(19 downto 16) else
               '0';
 
-  DF_ir2_b <= "1" when (DF_ir2 = '1' and read_reg_ir1 = '1') and
+  DF_ir2_b <= '1' when (DF_ir2 = '1' and read_reg_ir1 = '1') and
               ir2(23 downto 20) = ir1(15 downto 12) else
               '0';
   
-  DF_ir3_a <= "1" when (DF_ir3 = '1' and read_reg_ir1 = '1') and
+  DF_ir3_a <= '1' when (DF_ir3 = '1' and read_reg_ir1 = '1') and
               ir3(23 downto 20) = ir1(19 downto 16) else
               '0';
 
-  DF_ir3_b <= "1" when (DF_ir3 = '1' and read_reg_ir1 = '1') and
+  DF_ir3_b <= '1' when (DF_ir3 = '1' and read_reg_ir1 = '1') and
               ir3(23 downto 20) = ir1(15 downto 12) else
               '0';
 
@@ -102,7 +103,7 @@ begin
   DF_mux_b <= DF_ir3_b & DF_ir2_b;
   
   --mem_access
-  mem_accsess <= '1' when
+  mem_access <= '1' when
                  ir1(31 downto 24) = x"20" or   --LDA
                  ir1(31 downto 24) = x"40" else --LDAV
                  '0';
@@ -146,13 +147,13 @@ begin
   
   --regFile_write
   --regFile_write is 1 when the instruction wants to write to the register file, otherwise 0.
-  regFile_write <= DF_mem;
+  regFile_write <= DF_prev;
   
   --stall need read_reg to check if inst contain read reg
-  stall <= '1' when (mem_access = '1' and read_red_ir0 = '1') and
+  stall <= '1' when (mem_access = '1' and read_reg_ir0 = '1') and
            (ir1(23 downto 20) = ir0(19 downto 16) or
-            ir1(23 downot 20) = ir0(15 dwonto 12)) else
-        <= '0';
+            ir1(23 downto 20) = ir0(15 downto 12)) else
+           '0';
   --Stall when instruction in ir1 wants to read from memory, instruction in ir0
   --wants to read from register file and the register file that ir1 wants to
   --store to is one of the registers ir0 wants to read from

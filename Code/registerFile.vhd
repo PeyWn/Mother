@@ -4,7 +4,7 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity regFile is
     port(
-        clk : in std_logic();
+        clk : in std_logic;
 
         --Reading from registers
         read_alpha : in unsigned(3 downto 0);
@@ -39,7 +39,7 @@ architecture Behavioral of regFile is
         x"0000",
         x"0000",
         x"0000"
-        )
+        );
 
     signal registers : reg_data := default_reg;
 begin

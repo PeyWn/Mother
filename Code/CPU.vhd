@@ -10,9 +10,9 @@ entity CPU is
         --Video memory
         v_mem_row : out unsigned(7 downto 0);
         v_mem_col : out unsigned(7 downto 0);
-        v_mem_operation : out std_logic
-        v_mem_data_out : in unsigned(7 downto 0);
-        v_mem_data_in : out unsigned(7 downto 0)
+        v_mem_operation : out std_logic;
+        v_mem_data_read : in unsigned(7 downto 0);
+        v_mem_data_write : out unsigned(7 downto 0)
     );
 end CPU;
 
@@ -25,7 +25,7 @@ architecture Behavioral of CPU is
     end component;
 
     component regFile port(
-            clk : in std_logic();
+            clk : in std_logic;
 
             --Reading from registers
             read_alpha : in unsigned(3 downto 0);
@@ -75,17 +75,18 @@ architecture Behavioral of CPU is
     end component;
 
     component ALU
-        port(op_a,op_b: in signed(15 downto 0);
-       op_code: in signed(3 downto 0);  --op_code counts from 0 to 9 in order
-                                        --that is written in the enumeration
-       res: buffer signed(15 downto 0);
-       z,n,o: out std_logic);
+      port(op_a,op_b: in unsigned(15 downto 0);
+           op_code: in unsigned(3 downto 0);  --op_code counts from 0 to 9 in order
+                                              --that is written in the enumeration
+                                              --The op_code 1111 is reserved for no operation, op_a just bleeds through
+           res: buffer unsigned(15 downto 0);
+           z,n,o: out std_logic);
     end component;
 
     --|| End Components ||
 
     --Program Counter
-    signal PC : unsigned(9 downto 0) := "000000000";
+    signal PC : unsigned(9 downto 0) := "0000000000";
     signal PC2 : unsigned(9 downto 0); --Program counter 2, for jumps
 
     signal PC_mux : unsigned(9 downto 0); --Mux for next PC value
@@ -127,8 +128,8 @@ architecture Behavioral of CPU is
 
 
     --NOP, jmp and stall muxes
-    signal reg0_mux : unsigned(15 downto 0);
-    signal reg1_mux : unsigned(15 downto 0);
+    signal reg0_mux : unsigned(31 downto 0);
+    signal reg1_mux : unsigned(31 downto 0);
 
     --!!!!Control signals!!!!
     signal stall : std_logic; --stall (leave instruction in reg0)
@@ -172,10 +173,10 @@ architecture Behavioral of CPU is
 
     --Muxes
     signal constant_mux : unsigned(15 downto 0);
-    signal alu1_mux : signal(15 downto 0);
-    signal alu2_mux : signal(15 downto 0);
+    signal alu1_mux : unsigned(15 downto 0);
+    signal alu2_mux : unsigned(15 downto 0);
 
-    signal writeback_mux_data : signal(15 downto 0);
+    signal writeback_mux_data : unsigned(15 downto 0);
 
 begin
   --Connect combinatoric net for control signals -- read in control_Signals.vhd
@@ -229,38 +230,41 @@ begin
     C1 : pMem  port map(pAddr => PC, pData => new_inst);
 
     --JMP address calculation
-    relative_jmp <= instr_reg0(10 downto 0);
+    relative_jmp <= signed(std_logic_vector(instr_reg0(10 downto 0)));
     process(clk)
     begin
         if rising_edge(clk) then
-            PC_jmp <= (relative_jmp + '0' & to_integer(PC2))(9 downto 0);
+            PC_jmp <= to_unsigned(to_integer(relative_jmp) + to_integer(PC2), 10);
         end if;
     end process;
 
   --Connect ALU
-  A1 : ALU port map (
+  A1 : ALU port map 
     (op_a => pre_ALU_A, op_b => pre_ALU_B, op_code => ALU_operation,
-     res => ALU_res.
+     res => ALU_res,
      z => Z, n => N, o => O);
+
+  pre_ALU_a <= constant_mux;
+  pre_ALU_b <= alu2_mux;
 
     --Pipelining forward
     process(clk)
     begin
         if(rising_edge(clk)) then
-            reg0 <= reg0_mux;
-            reg1 <= reg1_mux;
-            reg2 <= reg1;
-            reg3 <= reg2;
+            instr_reg0 <= reg0_mux;
+            instr_reg1 <= reg1_mux;
+            instr_reg2 <= instr_reg1;
+            instr_reg3 <= instr_reg2;
         end if;
     end process;
 
     --Jmp and stall mux
     reg0_mux <= NOP when jmp = '1' else
-                reg0 when stall = '1' else
+                instr_reg0 when stall = '1' else
                 new_inst;
 
     reg1_mux <= NOP when stall = '1' else
-                reg0;
+                instr_reg0;
 
   --Connect data memory
   D1 : dMem port map ( dMem_in => pre_dMem, dMem_out => post_dMem_data,
@@ -278,7 +282,7 @@ begin
   end process;
 
   --Connect register file
-  C2 : registerFile port map(clk => clk, read_alpha => regFile_read1,
+  C2 : regFile port map(clk => clk, read_alpha => regFile_read1,
                                 read_beta => regFile_read2,
                                 output_alpha => regFile_output1,
                                 output_beta => regFile_output2,
@@ -286,15 +290,16 @@ begin
                                 write_data => regFile_wData,
                                 write_enable => regFile_wEnable);
 
-  regFile_read1 <= reg0(19 downto 16);
-  regFile_read2 <= reg0(15 downto 12);
-  regFile_wReg <= reg3(23 downto 20);
+  regFile_read1 <= instr_reg0(19 downto 16);
+  regFile_read2 <= instr_reg0(15 downto 12);
+  regFile_wReg <= instr_reg3(23 downto 20);
+  regFile_wData <= writeback_mux_data;
 
   -- Registers around register file
   process(clk)
   begin
     if rising_edge(clk) then
-      instr_const_reg <= reg0(15 downto 0);
+      instr_const_reg <= instr_reg0(15 downto 0);
 
       reg_a <= regFile_output1;
       reg_b <= regFile_output2;
@@ -315,13 +320,14 @@ begin
 
   --writeback MUX
   writeback_mux_data <= stage3_data when writeback_mux = "10" else
-                        post_dMem when writeback = "01" else
+                        post_dMem when writeback_mux = "01" else
                         post_vMem;
 
   --Pass ALU res to next step
   process(clk)
     begin
       if rising_edge(clk) then
+        ALU_res_reg <= ALU_res;
         stage3_data <= ALU_res_reg;
       end if;
     end process;
@@ -330,12 +336,12 @@ begin
     v_mem_row <= ALU_res_reg(15 downto 8);
     v_mem_col <= ALU_res_reg(7 downto 0);
     v_mem_operation <= vMem_write;
-    v_mem_data_in <= pre_vMem(7 downto 0);
+    v_mem_data_write <= pre_vMem(7 downto 0);
 
     process(clk)
       begin
         if rising_edge(clk) then
-          post_vMem <= x"00" & v_mem_data_out;
+          post_vMem <= x"00" & v_mem_data_read;
         end if;
       end process;
 

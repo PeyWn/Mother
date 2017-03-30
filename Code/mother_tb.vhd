@@ -2,10 +2,10 @@ LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
 USE IEEE.NUMERIC_STD.ALL;
 
-ENTITY proj_tb IS
-END proj_tb;
+ENTITY mother_tb IS
+END mother_tb;
 
-ARCHITECTURE behavior OF proj_tb IS
+ARCHITECTURE behavior OF mother_tb IS
 
   --Component Declaration for the Unit Under Test (UUT)
   COMPONENT mother

@@ -11,12 +11,12 @@ entity vMem is
         CPU_in : in unsigned(7 downto 0);
         CPU_out : out unsigned(7 downto 0);
 
-        clk : in std_logic();
+        clk : in std_logic;
 
         --Ports for VGA_motor connection
-        VGA_addr_row : in std_logic_vector(7 downto 0);
-        VGA_addr_col : in std_logic_vector(7 downto 0);
-        VGA_out : out std_logic_vector(7 downto 0)
+        VGA_addr_row : in unsigned(7 downto 0);
+        VGA_addr_col : in unsigned(7 downto 0);
+        VGA_out : out unsigned(7 downto 0)
     );
 end vMem;
 
@@ -27,10 +27,14 @@ architecture Behavioral of vMem is
 
     signal VGA_addr : unsigned(7 downto 0);
     signal CPU_addr : unsigned(7 downto 0);
+    signal VGA_row_start, CPU_row_start : unsigned(15 downto 0);
 begin
     --Address calculations
-    VGA_addr <= VGA_addr_row * to_unsigned(15, 8) + VGA_addr_col;
-    CPU_addr <= CPU_addr_row * to_unsigned(15, 8) + CPU_addr_col;
+    VGA_row_start <= VGA_addr_row * to_unsigned(15, 8);
+    CPU_row_start <= CPU_addr_row * to_unsigned(15, 8);
+
+    VGA_addr <= VGA_row_start(7 downto 0) + VGA_addr_col;
+    CPU_addr <= CPU_row_start(7 downto 0) + CPU_addr_col;
 
     --Read operations
     VGA_out <= memory(to_integer(VGA_addr));
@@ -39,7 +43,7 @@ begin
                     x"00" when others;
 
     --CPU writing to memory
-    process(clk):
+    process(clk)
     begin
         if rising_edge(clk) AND CPU_operation = '1' then
             memory(to_integer(CPU_addr)) <= CPU_in;
