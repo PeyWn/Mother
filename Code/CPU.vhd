@@ -271,7 +271,7 @@ begin
   --Connect data memory
   D1 : dMem port map ( dMem_in => pre_dMem, dMem_out => post_dMem_data,
                        clk => clk,
-                       dMem_adress => ALU_res, dMem_operation => dMem_write);
+                       dMem_adress => ALU_res_reg, dMem_operation => dMem_write);
 
   process(clk)
     begin

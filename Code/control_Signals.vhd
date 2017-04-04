@@ -129,7 +129,11 @@ begin
   ALU_operation <= ir1(27 downto 24) when ir1(31 downto 28) = "0011" else
                    x"F";
 
-  ALU1_mux <= '1' when ir1(31 downto 24) = "00010000" else
+  ALU1_mux <= '1' when ir1(31 downto 24) = "00010000" or
+              ir1(31 downto 24) = "00100000" or
+              ir1(31 downto 24) = "00100001" or
+              ir1(31 downto 24) = "01000000" or
+              ir1(31 downto 24) = "01000001" else             
               '0'; -- 1 indicates read constant, 0 indicates read from register
 
   --dMem_write

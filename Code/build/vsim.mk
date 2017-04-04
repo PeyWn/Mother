@@ -9,7 +9,7 @@ S_REV=$(call reverse_order,$(S))
 VERILOGCOMPILE=vlog +acc $(COVERAGE) $(INCDIR)
 VHDLCOMPILE=vcom +acc $(COVERAGE)
 BATCHSIM?=vsim -c -do 'run -a;quit -f'
-GUISIM?=vsim
+GUISIM?=vsim -do 'do ../sim.do'
 
 # TODO: Don't recompile all files all the time!
 # (Re)compile all files used for the testbench
