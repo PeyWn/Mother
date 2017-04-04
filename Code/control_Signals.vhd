@@ -45,6 +45,7 @@ begin
   --read_reg
   read_reg_ir0 <= '1' when
                   ir0(31 downto 24) = x"21" or      -- STR
+                  ir0(31 downto 24) = x"23" or      -- STRR
                   ir0(31 downto 24) = x"30" or      -- NOT
                   ir0(31 downto 24) = x"31" or      -- OR
                   ir0(31 downto 24) = x"32" or      -- AND
@@ -55,6 +56,7 @@ begin
                   ir0(31 downto 24) = x"37" or      -- LSR
                   ir0(31 downto 24) = x"38" or      -- LSL
                   ir0(31 downto 24) = x"41" or      -- STRV
+                  ir0(31 downto 24) = x"43" or      -- STRVR
                   ir0(31 downto 24) = x"60" else    -- CMP
                   '0';
   
@@ -65,6 +67,7 @@ begin
   DF_ir2 <= '1' when
             ir2(31 downto 24) = "00010000" or    --MOV
             ir2(31 downto 24) = "00100000" or    --LDA
+            ir2(31 downto 24) = "00100010" or    --LDAR
             ir2(31 downto 24) = "00110000" or    --NOT
             ir2(31 downto 24) = "00110001" or    --OR
             ir2(31 downto 24) = "00110010" or    --AND
@@ -74,7 +77,8 @@ begin
             ir2(31 downto 24) = "00110110" or    --MUL
             ir2(31 downto 24) = "00110111" or    --LSR
             ir2(31 downto 24) = "00111000" or    --LSL
-            ir2(31 downto 24) = "01000000" else  --LDAV
+            ir2(31 downto 24) = "01000000" or    --LDAV
+            ir2(31 downto 24) = "01000010" else  --LDAVR
             '0';
   --DF_mem
   DF_ir3 <= DF_prev;
@@ -127,6 +131,7 @@ begin
   
   --ALU
   ALU_operation <= ir1(27 downto 24) when ir1(31 downto 28) = "0011" else
+                   x"9" when ir1(31 downto 28) = x"23" or ir1(31 downto 28) = x"43" else --STRR or STRVR
                    x"F";
 
   ALU1_mux <= '1' when ir1(31 downto 24) = "00010000" or
@@ -137,16 +142,18 @@ begin
               '0'; -- 1 indicates read constant, 0 indicates read from register
 
   --dMem_write
-  dMem_write <= '1' when ir2(31 downto 24) = "00100001" else
+  dMem_write <= '1' when ir2(31 downto 24) = "00100001" or
+                 ir2(31 downto 24) = "00100011" else
                 '0';
 
   --vMem_write
-  vMem_write <= '1' when ir2(31 downto 24) = "01000001" else
+  vMem_write <= '1' when ir2(31 downto 24) = "01000001" or
+                ir2(31 downto 24) = "01000011" else
                 '0';
 
   --writeback_mux
-  writeback_mux <= "00" when ir3(31 downto 24) = "01000000" else
-                   "01" when ir3(31 downto 24) = "00100000" else
+  writeback_mux <= "00" when ir3(31 downto 24) = "01000000" or ir3(31 downto 24) = "01000010" else
+                   "01" when ir3(31 downto 24) = "00100000" or ir3(31 downto 24) = "00100010" else
                    "10";
   
   --regFile_write
