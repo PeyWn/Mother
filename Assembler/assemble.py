@@ -20,7 +20,8 @@ Should work according to the following format
 - Add neccesary text after
 
 """
-valid_instr = {}
+valid_instr = {'NOP': '000', 'MOV':'R0C', 'LDA':'R0C', 'STR':'0RC', 'LDAR':'RR0',
+'STRR':'0RR', 'NOT':'RR0',}
 
 def decode_instruction(instr):
 
