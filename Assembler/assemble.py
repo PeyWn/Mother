@@ -20,8 +20,10 @@ Should work according to the following format
 - Add neccesary text after
 
 """
+valid_instr = {}
 
 def decode_instruction(instr):
+
     return 0;
 
 def decode_reg(reg):
@@ -38,3 +40,14 @@ def bin_to_hex(binary):
 
 def get_jmp(cur_line, sym_address):
     return 0;
+
+
+prog_file = open("test_prog.mom", "r")
+encoded = open("encoded_program.mom", "w")
+
+for instr in prog_file:
+    comment = "--" + instr
+    decode_instruction(instr.split())
+    encoded.write(comment)
+
+prog_file.close
