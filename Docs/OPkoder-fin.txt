@@ -34,8 +34,17 @@
    ----------------------------------------------------------------
    00100001 STR	--> STR -- Rn Addr
    	            --> mem(Addr) <= Rn
-		            --> PÃ¥ minnesadress Addr skrivs datan i Rn in.
+		            --> PÃ¥ minnesadress Addr skrivs datan i
+			    Rn in.
+   -----------------------------------------------------------------
+   00100010 LDAR --> LDAR Rn Rm --
+   	    	 --> Rn <= mem(Rm)
+		 --> Rn tilldelas det som finns på minnet på adressen
+		 lagrad i Rm.			  
    ----------------------------------------------------------------
+   00100011 STRR --> STRR -- Rn Rm --
+   	    	 --> mem(Rm) <= Rn
+		 --> Minnet på adress Rm tilldelas värdet av Rn
    ****************************************************************
 
 
@@ -103,7 +112,14 @@
                   --> vMem(Addr) <= Rn
                   --> PÃ¥ minnesadress Addr i videominnet skrivs datan i Rn in.
    ----------------------------------------------------------------
-
+   01000010 LDAVR --> LDAVR Rn Rm --
+   	    	 --> Rn <= vmem(Rm)
+		 --> Rn tilldelas det som finns på videominnet på adressen
+		 lagrad i Rm.			  
+   ----------------------------------------------------------------
+   01000011 STRVR --> STRVR -- Rn Rm --
+   	    	 --> vmem(Rm) <= Rn
+		 --> Videominnet på adress Rm tilldelas värdet av Rn
    ****************************************************************
 
 		      --Hoppinstruktioner 0101--

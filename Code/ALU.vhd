@@ -31,6 +31,7 @@ begin
     (op_a_signed * op_b_signed)                         when x"6",        --MUL
     (op_a_signed srl to_integer(op_b_signed))           when x"7",        --LSR
     (op_a_signed sll to_integer(op_b_signed))           when x"8",        --LSL
+    op_b_signed                                         when x"9",        --Pass B through
     op_a_signed                                         when others; 
 
 
