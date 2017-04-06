@@ -13,12 +13,16 @@ end ALU;
 
 architecture calc of ALU is
   signal op_a_signed, op_b_signed, res_signed : signed(15 downto 0);
+
+  signal mult_32 : signed(31 downto 0);
 begin
 
   --Calculations
   op_a_signed <= signed(std_logic_vector(op_a));
   op_b_signed <= signed(std_logic_vector(op_b));
   res <= unsigned(std_logic_vector(res_signed));
+
+  mult_32 <= (op_a_signed * op_b_signed);
   
   with op_code select
     res_signed <=
@@ -28,7 +32,7 @@ begin
     (op_a_signed xor op_b_signed)                       when x"3",        --XOR
     (op_a_signed + op_b_signed)                         when x"4",        --ADD
     (op_a_signed - op_b_signed)                         when x"5",        --SUB
-    (op_a_signed * op_b_signed)                         when x"6",        --MUL
+    mult_32(15 downto 0)                                 when x"6",        --MUL
     (op_a_signed srl to_integer(op_b_signed))           when x"7",        --LSR
     (op_a_signed sll to_integer(op_b_signed))           when x"8",        --LSL
     op_b_signed                                         when x"9",        --Pass B through

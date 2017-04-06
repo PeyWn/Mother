@@ -25,11 +25,11 @@ entity VGA_MOTOR is
     col	: out unsigned(7 downto 0);
 
     -- VGA out connection
-	vgaRed : out std_logic_vector(2 downto 0);
-	vgaGreen : out std_logic_vector(2 downto 0);
-	vgaBlue : out std_logic_vector(2 downto 1);
-	Hsync : out std_logic;
-	Vsync : out std_logic
+	vgaRed_port : out std_logic_vector(2 downto 0);
+	vgaGreen_port : out std_logic_vector(2 downto 0);
+	vgaBlue_port : out std_logic_vector(2 downto 1);
+	Hsync_port : out std_logic;
+	Vsync_port : out std_logic
     );
 end VGA_MOTOR;
 
@@ -43,7 +43,7 @@ architecture Behavioral of VGA_MOTOR is
   signal	Clk25		    : std_logic;			-- One pulse width 25 MHz signal
 
   signal 	tilePixel       : std_logic_vector(7 downto 0);	-- Tile pixel data
-  signal	tileAddr	    : unsigned(14 Downto 0);	-- Tile address
+  signal	tileAddr	    : unsigned(13 Downto 0);	-- Tile address
 
   signal    blank : std_logic;                    -- blanking signal
 
@@ -54,22 +54,22 @@ architecture Behavioral of VGA_MOTOR is
 -- Tile memory
   signal tileMem : ram_t :=
 		(
-        x"FF",x"FF",x"00",x"00",x"00",x"FF",x"FF",x"FF",x"FF",x"FF",x"00",x"00",x"00",x"FF",x"FF",x"FF", -- One Tile
-		x"FF",x"00",x"00",x"FF",x"00",x"00",x"FF",x"FF",x"FF",x"FF",x"00",x"00",x"00",x"FF",x"FF",x"FF",
-		x"00",x"00",x"FF",x"FF",x"FF",x"00",x"00",x"FF",x"FF",x"FF",x"00",x"00",x"00",x"FF",x"FF",x"FF",
-		x"00",x"00",x"FF",x"FF",x"FF",x"00",x"00",x"FF",x"FF",x"FF",x"00",x"00",x"00",x"FF",x"FF",x"FF",
-		x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"FF",x"FF",x"FF",x"00",x"00",x"00",x"FF",x"FF",x"FF",
-		x"00",x"00",x"FF",x"FF",x"FF",x"00",x"00",x"FF",x"FF",x"FF",x"00",x"00",x"00",x"FF",x"FF",x"FF",
-		x"00",x"00",x"FF",x"FF",x"FF",x"00",x"00",x"FF",x"FF",x"FF",x"00",x"00",x"00",x"FF",x"FF",x"FF",
-		x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"00",x"00",x"00",x"FF",x"FF",x"FF",
-        x"FF",x"FF",x"00",x"00",x"00",x"FF",x"FF",x"FF",x"FF",x"FF",x"00",x"00",x"00",x"FF",x"FF",x"FF",
-  		x"FF",x"00",x"00",x"FF",x"00",x"00",x"FF",x"FF",x"FF",x"FF",x"00",x"00",x"00",x"FF",x"FF",x"FF",
-  		x"00",x"00",x"FF",x"FF",x"FF",x"00",x"00",x"FF",x"FF",x"FF",x"00",x"00",x"00",x"FF",x"FF",x"FF",
-  		x"00",x"00",x"FF",x"FF",x"FF",x"00",x"00",x"FF",x"FF",x"FF",x"00",x"00",x"00",x"FF",x"FF",x"FF",
-  		x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"FF",x"FF",x"FF",x"00",x"00",x"00",x"FF",x"FF",x"FF",
-  		x"00",x"00",x"FF",x"FF",x"FF",x"00",x"00",x"FF",x"FF",x"FF",x"00",x"00",x"00",x"FF",x"FF",x"FF",
-  		x"00",x"00",x"FF",x"FF",x"FF",x"00",x"00",x"FF",x"FF",x"FF",x"00",x"00",x"00",x"FF",x"FF",x"FF",
-  		x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"00",x"00",x"00",x"FF",x"FF",x"FF",
+                x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC", -- One Tile
+		x"FC",x"e3",x"e3",x"E3",x"e3",x"e3",x"E3",x"E3",x"E3",x"E3",x"e3",x"e3",x"e3",x"E3",x"E3",x"FC",
+		x"FC",x"e3",x"E3",x"E3",x"E3",x"e3",x"e3",x"E3",x"E3",x"E3",x"e3",x"e3",x"e3",x"E3",x"E3",x"FC",
+		x"FC",x"e3",x"E3",x"E3",x"E3",x"e3",x"e3",x"E3",x"E3",x"E3",x"e3",x"e3",x"e3",x"E3",x"E3",x"FC",
+		x"FC",x"e3",x"e3",x"e3",x"e3",x"e3",x"e3",x"E3",x"E3",x"E3",x"e3",x"e3",x"e3",x"E3",x"E3",x"FC",
+		x"FC",x"e3",x"E3",x"E3",x"E3",x"e3",x"e3",x"E3",x"E3",x"E3",x"e3",x"e3",x"e3",x"E3",x"E3",x"FC",
+		x"FC",x"e3",x"E3",x"E3",x"E3",x"e3",x"e3",x"E3",x"E3",x"E3",x"e3",x"e3",x"e3",x"E3",x"E3",x"FC",
+		x"FC",x"E3",x"E3",x"E3",x"E3",x"E3",x"E3",x"E3",x"E3",x"E3",x"e3",x"e3",x"e3",x"E3",x"E3",x"FC",
+                x"FC",x"E3",x"e3",x"e3",x"e3",x"E3",x"E3",x"E3",x"E3",x"E3",x"e3",x"e3",x"e3",x"E3",x"E3",x"FC",
+  		x"FC",x"e3",x"e3",x"E3",x"e3",x"e3",x"E3",x"E3",x"E3",x"E3",x"e3",x"e3",x"e3",x"E3",x"E3",x"FC",
+  		x"FC",x"e3",x"E3",x"E3",x"E3",x"e3",x"e3",x"E3",x"E3",x"E3",x"e3",x"e3",x"e3",x"E3",x"E3",x"FC",
+  		x"FC",x"e3",x"E3",x"E3",x"E3",x"e3",x"e3",x"E3",x"E3",x"E3",x"e3",x"e3",x"e3",x"E3",x"E3",x"FC",
+  		x"FC",x"e3",x"e3",x"e3",x"e3",x"e3",x"e3",x"E3",x"E3",x"E3",x"e3",x"e3",x"e3",x"E3",x"E3",x"FC",
+  		x"FC",x"e3",x"E3",x"E3",x"E3",x"e3",x"e3",x"E3",x"E3",x"E3",x"e3",x"e3",x"e3",x"E3",x"E3",x"FC",
+  		x"FC",x"e3",x"E3",x"E3",x"E3",x"e3",x"e3",x"E3",x"E3",x"E3",x"e3",x"e3",x"e3",x"E3",x"E3",x"FC",
+                x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",
 
         x"FF",x"FF",x"00",x"00",x"00",x"FF",x"FF",x"FF",x"FF",x"FF",x"00",x"00",x"00",x"FF",x"FF",x"FF", -- One Tile
 		x"FF",x"00",x"00",x"FF",x"00",x"00",x"FF",x"FF",x"FF",x"FF",x"00",x"00",x"00",x"FF",x"FF",x"FF",
@@ -1172,7 +1172,7 @@ begin
 
 
   -- Horizontal sync
-    Hsync <= '0' when Xpixel >= 656 and Xpixel < 752 else
+    Hsync_port <= '0' when Xpixel >= 656 and Xpixel < 752 else
              '1';
 
   -- Vertical pixel counter
@@ -1190,7 +1190,7 @@ begin
     end process;
 
   -- Vertical sync
-   Vsync <= '0' when Ypixel >= 490 and Ypixel < 492 else
+   Vsync_port <= '0' when Ypixel >= 490 and Ypixel < 492 else
             '1';
 
   -- Blank
@@ -1214,23 +1214,24 @@ begin
 
 
   -- Tile memory address composite
-  tileAddr <= unsigned(tileNr(6 downto 0)) & Ypixel(4 downto 1) & Xpixel(4 downto 1);
+  tileAddr <= unsigned(tileNr(5 downto 0)) & Ypixel(4 downto 1) & Xpixel(4 downto 1);
 
 
   -- Picture memory address composite
-  -- addr <= to_unsigned(20, 7) * Ypixel(8 downto 5) + Xpixel(9 downto 5);
-  row <= "0000" & Ypixel(8 downto 5);
-  col <= "000" & Xpixel(9 downto 5);
+  row <= "0000" & Ypixel(8 downto 5) when blank = '0' else
+         x"00";
+  col <= "000" & Xpixel(9 downto 5) when blank = '0' else
+         x"00";
 
   -- VGA generation
-  vgaRed(2) 	<= tilePixel(7);
-  vgaRed(1) 	<= tilePixel(6);
-  vgaRed(0) 	<= tilePixel(5);
-  vgaGreen(2)   <= tilePixel(4);
-  vgaGreen(1)   <= tilePixel(3);
-  vgaGreen(0)   <= tilePixel(2);
-  vgaBlue(2) 	<= tilePixel(1);
-  vgaBlue(1) 	<= tilePixel(0);
+  vgaRed_port(2) 	<= tilePixel(7);
+  vgaRed_port(1) 	<= tilePixel(6);
+  vgaRed_port(0) 	<= tilePixel(5);
+  vgaGreen_port(2)   <= tilePixel(4);
+  vgaGreen_port(1)   <= tilePixel(3);
+  vgaGreen_port(0)   <= tilePixel(2);
+  vgaBlue_port(2) 	<= tilePixel(1);
+  vgaBlue_port(1) 	<= tilePixel(0);
 
 
 end Behavioral;

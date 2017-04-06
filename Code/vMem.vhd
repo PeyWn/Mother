@@ -21,20 +21,38 @@ entity vMem is
 end vMem;
 
 architecture Behavioral of vMem is
-    type v_mem_data is array (0 to 299) of unsigned(7 downto 0);
+    type v_mem_data is array (0 to 319) of unsigned(7 downto 0);
 
-    signal memory : v_mem_data;
+    signal memory : v_mem_data :=
+      (
+        x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
+        x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
+        x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
+        x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
+        x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
+        x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
+        x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
+        x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
+        x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
+        x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
+        x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
+        x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
+        x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
+        x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
+        x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
+        x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00"
+      );
 
-    signal VGA_addr : unsigned(7 downto 0);
-    signal CPU_addr : unsigned(7 downto 0);
+    signal VGA_addr : unsigned(8 downto 0);
+    signal CPU_addr : unsigned(8 downto 0);
     signal VGA_row_start, CPU_row_start : unsigned(15 downto 0);
 begin
     --Address calculations
-    VGA_row_start <= VGA_addr_row * to_unsigned(15, 8);
-    CPU_row_start <= CPU_addr_row * to_unsigned(15, 8);
+    VGA_row_start <= VGA_addr_row * to_unsigned(20, 8);
+    CPU_row_start <= CPU_addr_row * to_unsigned(20, 8);
 
-    VGA_addr <= VGA_row_start(7 downto 0) + VGA_addr_col;
-    CPU_addr <= CPU_row_start(7 downto 0) + CPU_addr_col;
+    VGA_addr <= VGA_row_start(8 downto 0) + VGA_addr_col;
+    CPU_addr <= CPU_row_start(8 downto 0) + CPU_addr_col;
 
     --Read operations
     VGA_out <= memory(to_integer(VGA_addr));

@@ -60,12 +60,12 @@ architecture Behavioral of mother is
     	row	: out unsigned(7 downto 0);
         col	: out unsigned(7 downto 0);
 
-        -- VGA out connection
-    	vgaRed : out std_logic_vector(2 downto 0);
-    	vgaGreen : out std_logic_vector(2 downto 0);
-    	vgaBlue : out std_logic_vector(2 downto 1);
-    	Hsync : out std_logic;
-    	Vsync : out std_logic
+        -- VGA out connectio
+       vgaRed_port : out std_logic_vector(2 downto 0);
+       vgaGreen_port : out std_logic_vector(2 downto 0);
+       vgaBlue_port : out std_logic_vector(2 downto 1);
+       Hsync_port : out std_logic;
+       Vsync_port : out std_logic
     );
   end component;
 
@@ -94,8 +94,8 @@ begin
 
   -- Connect VGA_Motor
   VGA_CON : VGA_motor port map(clk=>clk, tileNr=>vMem_out_vga,
-                        row=>vMem_row_vga, col=>vMem_col_vga, vgaRed=>vgaRed,
-                        vgaGreen=>vgaGreen, vgaBlue=>vgaBlue, Hsync=>Hsync,
-                        Vsync=>Vsync);
+                        row=>vMem_row_vga, col=>vMem_col_vga, vgaRed_port=>vgaRed,
+                        vgaGreen_port=>vgaGreen, vgaBlue_port=>vgaBlue, Hsync_port=>Hsync,
+                        Vsync_port=>Vsync);
 
 end Behavioral;
