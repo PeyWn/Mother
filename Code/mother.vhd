@@ -6,9 +6,9 @@ use IEEE.NUMERIC_STD.ALL;
 entity mother is
   port(
         clk: in std_logic;
-	    rst: in std_logic
+	    rst: in std_logic;
 
-        --VAG connection
+        --VGA connection
         vgaRed : out std_logic_vector(2 downto 0);
     	vgaGreen : out std_logic_vector(2 downto 0);
     	vgaBlue : out std_logic_vector(2 downto 1);
@@ -56,7 +56,7 @@ architecture Behavioral of mother is
         clk	: in std_logic;
 
         -- Connection to vMem
-    	tileNr : in std_logic_vector(7 downto 0);
+    	tileNr : in unsigned(7 downto 0);
     	row	: out unsigned(7 downto 0);
         col	: out unsigned(7 downto 0);
 
