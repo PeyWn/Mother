@@ -4,8 +4,17 @@ use IEEE.NUMERIC_STD.ALL;
 
 --CPU interface
 entity mother is
-  port(clk: in std_logic;
-	     rst: in std_logic);
+  port(
+        clk: in std_logic;
+	    rst: in std_logic
+
+        --VAG connection
+        vgaRed : out std_logic_vector(2 downto 0);
+    	vgaGreen : out std_logic_vector(2 downto 0);
+    	vgaBlue : out std_logic_vector(2 downto 1);
+    	Hsync : out std_logic;
+    	Vsync : out std_logic
+      );
 end mother ;
 
 architecture Behavioral of mother is
@@ -42,6 +51,24 @@ architecture Behavioral of mother is
     );
   end component;
 
+  component VGA_motor
+    port(
+        clk	: in std_logic;
+
+        -- Connection to vMem
+    	tileNr : in std_logic_vector(7 downto 0);
+    	row	: out unsigned(7 downto 0);
+        col	: out unsigned(7 downto 0);
+
+        -- VGA out connection
+    	vgaRed : out std_logic_vector(2 downto 0);
+    	vgaGreen : out std_logic_vector(2 downto 0);
+    	vgaBlue : out std_logic_vector(2 downto 1);
+    	Hsync : out std_logic;
+    	Vsync : out std_logic
+    );
+  end component;
+
   signal vMem_row_cpu : unsigned(7 downto 0);
   signal vMem_col_cpu : unsigned(7 downto 0);
   signal vMem_row_vga : unsigned(7 downto 0);
@@ -54,15 +81,21 @@ architecture Behavioral of mother is
 begin
 
   -- Connect CPU
-  C1 : CPU port map(clk=>clk, v_mem_row=>vMem_row_cpu, v_mem_col=>vMem_col_cpu,
+  CPU_CON : CPU port map(clk=>clk, v_mem_row=>vMem_row_cpu, v_mem_col=>vMem_col_cpu,
                     v_mem_operation=>vMem_operation, v_mem_data_write=>vMem_in_cpu,
                     v_mem_data_read=>vMem_out_cpu);
 
   -- Connect video memeory
-  C2 : vMem port map(clk=>clk, CPU_addr_row=>vMem_row_cpu,
+  VMEM_CON : vMem port map(clk=>clk, CPU_addr_row=>vMem_row_cpu,
                     CPU_addr_col=>vMem_col_cpu, CPU_operation=>vMem_operation,
                     CPU_in=>vMem_in_cpu, CPU_out=>vMem_out_cpu,
                     VGA_addr_row=>vMem_row_vga, VGA_addr_col=>vMem_col_vga,
                     VGA_out=>vMem_out_vga);
+
+  -- Connect VGA_Motor
+  VGA_CON : VGA_motor port map(clk=>clk, tileNr=>vMem_out_vga,
+                        row=>vMem_row_vga, col=>vMem_col_vga, vgaRed=>vgaRed,
+                        vgaGreen=>vgaGreen, vgaBlue=>vgaBlue, Hsync=>Hsync,
+                        Vsync=>Vsync);
 
 end Behavioral;
