@@ -39,12 +39,12 @@
    -----------------------------------------------------------------
    00100010 LDAR --> LDAR Rn Rm --
    	    	 --> Rn <= mem(Rm)
-		 --> Rn tilldelas det som finns på minnet på adressen
-		 lagrad i Rm.			  
+		 --> Rn tilldelas det som finns pï¿½ minnet pï¿½ adressen
+		 lagrad i Rm.
    ----------------------------------------------------------------
    00100011 STRR --> STRR -- Rn Rm --
    	    	 --> mem(Rm) <= Rn
-		 --> Minnet på adress Rm tilldelas värdet av Rn
+		 --> Minnet pï¿½ adress Rm tilldelas vï¿½rdet av Rn
    ****************************************************************
 
 
@@ -79,17 +79,6 @@
      #36 	      --> Rk <= (Rn * Rm)
 		            --> Rk tilldelas aritmetisk multiplikation av Rn och Rm.
    ----------------------------------------------------------------
-<<<<<<< HEAD
-   00110111 LSR	--> LSR Rk -- const
-     #37          --> LSR<const>(Rk)
-		            --> Rn skiftas const steg Ã¥t hÃ¶ger. MSB fylls pÃ¥ med 0.
-		            --> 0 < const < 17
-   ----------------------------------------------------------------
-   00111000 LSL	--> LSL Rk -- const
-     #38 	      --> LSL<const>(Rk)
-		            --> Rn skiftas const steg Ã¥t vÃ¤nster. LSB fylls pÃ¥ med 0.
-		            --> 0 < const < 17
-=======
    00110111 LSR	--> LSR Rk Rn const
      #37 	--> LSR<const>(Rk)
 		--> Rk tilldelas Rn skiftad const steg Ã¥t hÃ¶ger. MSB fylls pÃ¥ med 0.
@@ -99,7 +88,6 @@
      #38 	--> LSL<const>(Rk)
 		--> Rk tilldelas Rn skiftad const steg Ã¥t vÃ¤nster. LSB fylls pÃ¥ med 0.
 		--> 0 < const < 17
->>>>>>> ef3efa08f84d040351c4f7772c40fd0ae2477a3f
    ----------------------------------------------------------------
 
 		   --Videominne operationer 0100--
@@ -114,12 +102,12 @@
    ----------------------------------------------------------------
    01000010 LDAVR --> LDAVR Rn Rm --
    	    	 --> Rn <= vmem(Rm)
-		 --> Rn tilldelas det som finns på videominnet på adressen
-		 lagrad i Rm.			  
+		 --> Rn tilldelas det som finns pï¿½ videominnet pï¿½ adressen
+		 lagrad i Rm.
    ----------------------------------------------------------------
    01000011 STRVR --> STRVR -- Rn Rm --
    	    	 --> vmem(Rm) <= Rn
-		 --> Videominnet på adress Rm tilldelas värdet av Rn
+		 --> Videominnet pï¿½ adress Rm tilldelas vï¿½rdet av Rn
    ****************************************************************
 
 		      --Hoppinstruktioner 0101--
