@@ -1,6 +1,9 @@
 import sys
 
 """
+TODO: Write the hex program and similar to the pMem.vhd file
+Catch all exceptions and add where the error occured
+
 Assembler for motherlode project
 
 program.mtr -> pMem.vhd
@@ -28,7 +31,7 @@ Should work according to the following format
 FILE_NAME = "pMem.vhd"
 
 INSTR_WIDTH = 32
-INST_COUNT = 1023
+INST_COUNT = 1024
 
 PRE_TEXT = """library IEEE;
 use IEEE.STD_LOGIC_1164.all;
@@ -56,7 +59,7 @@ pData <= p_mem(to_integer(pAddr));
 end Behavioral;
 """
 
-#Erro class to raise for syntax errors in assembler code
+#Error class to raise for syntax errors in assembler code
 class AssemblerError(Exception):
     def __init__(self, value):
         self.value = value
@@ -78,52 +81,104 @@ class AssemblerError(Exception):
     C - 0/R/C
 """
 valid_instr = {
-    'NOP': '000',
-    'MOV':'R0C',
-    'LDA':'R0C',
-    'STR':'0RC',
-    'LDAR':'RR0',
-    'STRR':'0RR',
-    'NOT':'RR0',
-    'OR' : 'RRR',
-    'AND' : 'RRR',
-    'XOR' : 'RRR',
-    'ADD' : 'RRR',
-    'SUB' : 'RRR',
-    'MUL' : 'RRR',
-    'LSR' : 'RRC',
-    'LSL' : 'RRC',
-    'LDAV' : 'R0C',
-    'STRV' : '0RC',
-    'LDAVR' : 'RR0',
-    'STRVR' : '0RR',
-    'JMP' : '00C',
-    'BRN' : '00C',
-    'BRZ' : '00C',
-    'BRO' : '00C',
-    'BRNN' : '00C',
-    'BRNZ' : '00C',
-    'BRNO' : '00C',
-    'BRB1' : '00C',
-    'BRB2' : '00C',
-    'BRJU' : '00C',
-    'BRJD' : '00C',
-    'BRJR' : '00C',
-    'BRJL' : '00C',
-    'CMP' : '0RR'
+    'NOP': ('000','0000'),
+    'MOV': ('R0C','0100'),
+    'LDA': ('R0C','0200'),
+    'STR': ('0RC','0201'),
+    'LDAR': ('RR0','0202'),
+    'STRR': ('0RR','0203'),
+    'NOT': ('RR0','0300'),
+    'OR' : ('RRR','0301'),
+    'AND' : ('RRR','0302'),
+    'XOR' : ('RRR','0303'),
+    'ADD' : ('RRR','0304'),
+    'SUB' : ('RRR','0305'),
+    'MUL' : ('RRR','0306'),
+    'LSR' : ('RRC','0307'),
+    'LSL' : ('RRC','0308'),
+    'LDAV' : ('R0C','0400'),
+    'STRV' : ('0RC','0401'),
+    'LDAVR' : ('RR0','0402'),
+    'STRVR' : ('0RR','0403'),
+    'JMP' : ('00C','0500'),
+    'BRN' : ('00C','0501'),
+    'BRZ' : ('00C','0502'),
+    'BRO' : ('00C','0503'),
+    'BRNN' : ('00C','0504'),
+    'BRNZ' : ('00C','0505'),
+    'BRNO' : ('00C','0506'),
+    'BRB1' : ('00C','0507'),
+    'BRB2' : ('00C','0508'),
+    'BRJU' : ('00C','0509'),
+    'BRJD' : ('00C','050A'),
+    'BRJR' : ('00C','050B'),
+    'BRJL' : ('00C','050C'),
+    'CMP' : ('0RR','0600')
     }
 
-#List of symbloic adresses
+#List of symbloic adresses, formar is {SYMBOLIC_ADRESS:(PROGRAM_LINE, FILE_LINE)} to generate good error message"
 sym_addr = {}
 
+#Counter to know what program line the assembler is at, used for relative jumps and similar
+prog_line = 0
+#Counter to know what line of the source program we are at, used for showing syntax errors
+file_line = 0
+
 def decode_instruction(instr):
-    return 0;
+    """
+    Takes a line of assembly code and converts it to a hex instruction.
+    If it isn't an instruction it is evaluated as a symbolic adress and used to calculate relative jumps.
+    Returns the hex encoded instruction if succesful, otherwise it returns an empty string
+    """
+    global sym_addr
+    global prog_line
+    global file_line
+
+    file_line ++
+    program_hex = ""
+
+    instr = instr.upper()
+    instr = instr.split()
+
+    if len(instr) == 0: #Ignore blank lines
+        return program_hex
+
+    try:
+        instr_data = valid_instr[instr[0]]    #Check if it is an instruction
+        instr_format =  instr_data[0]           #The general structure of the instruction
+        program_hex = instr_data[1]             #The hexcode for the instruction
+        instr = instr[1:]                       #Remove the instruction so that the first in instr is the next register/constant to be evaluated
+
+        for i in instr_format:
+            if char == 'R':
+                program_hex = program_hex + decode_reg(instr[0])
+                instr = instr[1:]
+
+            elif char == '0':
+                program_hex = program_hex + "0"
+
+            elif char == 'C':
+                program_hex = program_hex + decode_const(instr[0])
+                instr = instr[1:]
+
+            program_hex = program_hex + ((8 - len(program_hex)) * '0') #Fill it to 8 hex characters with 0's
+
+            prog_line ++
+    except KeyError:
+        try:
+            adress = sym_addr[instr[0]][1]                  #Check if the symbolic adress already exists
+            raise AssemblerError("The symbolic adress: " + instr[0] " already exists at line " + adress)
+        except KeyError:
+            sym_addr[instr[0]] = (prog_line, file_line)
+
+
+    return program_hex;
 
 """
 Takes a string on the format RX and gives the hex value for the decimal number X.
 """
 def decode_reg(reg):
-    if reg[0]lower() != 'r' || len(reg) < 2 || len(reg) > 3:
+    if reg[0] != 'R' || len(reg) < 2 || len(reg) > 3:
         raise AssemblerError(reg + "is not a register")
 
     nr_str = reg[1:];
@@ -141,8 +196,25 @@ def decode_const(const):
 Returns the given integer dec as a 16-bit hex number, stored in a string.
 """
 def dec_to_hex(dec):
-    #Needs to be able to handle both positive and negative numbers
-    return 0;
+    """
+    Converts a decimal number to a 4 digit hex number. Negative numbers are handled as two-complement binary numbers.
+    """
+    upper_limit = pow(2,16)
+
+    if dec > upper_limit:
+        raise AssemblerError("Decimal number " + dec + " exceeded the size of a 16-bit number.")
+
+    negative_num = false
+    if(dec < 0):
+        dec = upper_limit + dec #
+        negative_num = true
+
+    hex_res = hex(dec)[2:]
+
+    for i in range(4-len(hex_res))
+        hex_res = "F" + hex_res if negative_num else "0" + hex_res
+
+    return hex_res;
 
 def bin_to_hex(binary):
     if len(binary) > 16:
@@ -190,15 +262,16 @@ except IOError:
     sys.exit("Error: Can not open file " + input_file_name)
 
 encoded = open("encoded_program.mom", "w")
-
+program_hex = ""
 #Add pre text
 
 #Add instructions
 for instr in prog_file:
     comment = "--" + instr
-    decode_instruction(instr.split())
+    hex_instr = decode_instruction(instr)
     encoded.write(comment)
-
+    if hex_instr:
+        program_hex = program_hex + hex_instr + "\n"
 #Add post text
 
 prog_file.close
