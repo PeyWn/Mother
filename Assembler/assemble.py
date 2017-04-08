@@ -257,6 +257,7 @@ def get_jmp(cur_line, sym_address):
 
     return dec_to_hex(relative_jmp);
 
+
 # ============================================================================#
 #       PROGRAM START
 # ============================================================================#
@@ -275,15 +276,29 @@ except IOError:
 
 encoded = open("encoded_program.mom", "w")
 program_hex = ""
-#Add pre text
 
+#Add pre text
+#==============================================================================
+# File rows to list with elements => (row, row number)
+#==============================================================================
+rows = [];  #list if file rows and there number
+lnr = 0;    #line number in file
+
+for line in prog_file:
+    rows.append((line, lnr));
+    print(str(l[lnr]) + '\n')
+    lnr = lnr + 1
+
+#==============================================================================
 #Add instructions
+#==============================================================================
 for instr in prog_file:
     comment = "--" + instr
     hex_instr = decode_instruction(instr)
     encoded.write(comment)
     if hex_instr:
         program_hex = program_hex + hex_instr + "\n"
+#==============================================================================
 #Add post text
 
 prog_file.close
