@@ -257,9 +257,9 @@ def get_jmp(cur_line, sym_address):
 
     return dec_to_hex(relative_jmp);
 
-# --     ***     --
-# PROGRAM START
-# --     ***     --
+# ============================================================================#
+#       PROGRAM START
+# ============================================================================#
 arguments = sys.argv;
 
 if len(arguments) < 2:
