@@ -127,7 +127,6 @@ file_line = 0
 def decode_instruction(instr):
     """
     Takes a line of assembly code and converts it to a hex instruction.
-    If it isn't an instruction it is evaluated as a symbolic adress and used to calculate relative jumps.
     Returns the hex encoded instruction if succesful, otherwise it returns an empty string
     """
     global sym_addr
@@ -139,9 +138,6 @@ def decode_instruction(instr):
 
     instr = instr.upper()
     instr = instr.split()
-
-    if len(instr) == 0: #Ignore blank lines
-        return program_hex
 
     try:
         instr_data = valid_instr[instr[0]]    #Check if it is an instruction
@@ -157,7 +153,7 @@ def decode_instruction(instr):
             elif char == '0':
                 program_hex = program_hex + "0"
 
-            elif char == 'C':
+            elif char == 'C'
                 program_hex = program_hex + decode_const(instr[0])
                 instr = instr[1:]
 
@@ -165,12 +161,7 @@ def decode_instruction(instr):
 
             prog_line ++
     except KeyError:
-        try:
-            adress = sym_addr[instr[0]][1]                  #Check if the symbolic adress already exists
-            raise AssemblerError("The symbolic adress: " + instr[0] " already exists at line " + adress)
-        except KeyError:
-            sym_addr[instr[0]] = (prog_line, file_line)
-
+        raise AssemblerError("Invalid instruction: " + instr[0])
 
     return program_hex;
 
@@ -257,6 +248,24 @@ def get_jmp(cur_line, sym_address):
 
     return dec_to_hex(relative_jmp);
 
+def find_sym_adresses(rows):
+    global sym_addr
+
+    cur_row = 0
+
+    instr = rows[1]
+
+    for i in  range(len(rows)):
+        row = rows[i]
+        operation = row.split()[0]
+
+        try:
+            valid_instr[operation]
+            cur_row++;
+        except KeyError:
+            #Is symbolic adress
+            sym_addr[operation] = cur_row;
+            rows.remove(i)
 
 # ============================================================================#
 #       PROGRAM START
