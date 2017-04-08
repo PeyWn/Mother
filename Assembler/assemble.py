@@ -190,7 +190,19 @@ def decode_reg(reg):
     return dec_to_hex(reg_int)[-1];
 
 def decode_const(const):
-    return 0;
+
+  if const[0] == 'X':
+    res = const[1:]
+    if len(res) > 4;
+  elif const[0] == 'B':
+    res = bin_to_hex(const[1:])
+  else:
+    res = dec_to_hex(const[1:]);
+
+  zeros = 4-len(res)
+  if zeros < 0:
+    raise AssemblerError("Hexadecimal number " + res + " exceeded the size of a 16-bit number.")
+  return zeros*'0' + res:
 
 """
 Returns the given integer dec as a 16-bit hex number, stored in a string.
