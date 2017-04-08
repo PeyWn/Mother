@@ -267,9 +267,9 @@ def find_sym_adresses(rows):
             sym_addr[operation] = cur_row;
             rows.remove(i)
 
-# --     ***     --
-# PROGRAM START
-# --     ***     --
+# ============================================================================#
+#       PROGRAM START
+# ============================================================================#
 arguments = sys.argv;
 
 if len(arguments) < 2:
