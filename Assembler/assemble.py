@@ -133,7 +133,7 @@ def decode_instruction(instr):
     global prog_line
     global file_line
 
-    file_line ++
+    file_line += 1
     program_hex = ""
 
     instr = instr.upper()
@@ -153,13 +153,13 @@ def decode_instruction(instr):
             elif char == '0':
                 program_hex = program_hex + "0"
 
-            elif char == 'C'
+            elif char == 'C':
                 program_hex = program_hex + decode_const(instr[0])
                 instr = instr[1:]
 
             program_hex = program_hex + ((8 - len(program_hex)) * '0') #Fill it to 8 hex characters with 0's
 
-            prog_line ++
+            prog_line += 1
     except KeyError:
         raise AssemblerError("Invalid instruction: " + instr[0])
 
@@ -169,7 +169,7 @@ def decode_instruction(instr):
 Takes a string on the format RX and gives the hex value for the decimal number X.
 """
 def decode_reg(reg):
-    if reg[0] != 'R' || len(reg) < 2 || len(reg) > 3:
+    if reg[0] != 'R' or len(reg) < 2 or len(reg) > 3:
         raise AssemblerError(reg + "is not a register")
 
     nr_str = reg[1:];
@@ -181,10 +181,8 @@ def decode_reg(reg):
     return dec_to_hex(reg_int)[-1];
 
 def decode_const(const):
-
   if const[0] == 'X':
     res = const[1:]
-    if len(res) > 4;
   elif const[0] == 'B':
     res = bin_to_hex(const[1:])
   else:
@@ -193,7 +191,7 @@ def decode_const(const):
   zeros = 4-len(res)
   if zeros < 0:
     raise AssemblerError("Hexadecimal number " + res + " exceeded the size of a 16-bit number.")
-  return zeros*'0' + res:
+  return zeros*'0' + res
 
 """
 Returns the given integer dec as a 16-bit hex number, stored in a string.
@@ -214,7 +212,7 @@ def dec_to_hex(dec):
 
     hex_res = hex(dec)[2:]
 
-    for i in range(4-len(hex_res))
+    for i in range(4-len(hex_res)):
         hex_res = "F" + hex_res if negative_num else "0" + hex_res
 
     return hex_res;
@@ -230,7 +228,7 @@ def bin_to_hex(binary):
 
         if cur_n  == '1':
             tot += pow(2,i)
-        else if cur_n != '0':
+        elif cur_n != '0':
             raise AssemblerError("Symbol " + cur_n + " of " + binary + "is not a binary symbol.")
 
     return dec_to_hex(tot);
@@ -252,20 +250,19 @@ def find_sym_adresses(rows):
     global sym_addr
 
     cur_row = 0
+    while cur_row < range(len(rows)):
+        print(cur_row)
 
-    instr = rows[1]
-
-    for i in  range(len(rows)):
-        row = rows[i]
-        operation = row.split()[0]
+        row = rows[cur_row]
+        operation = row[1].split()[0]
 
         try:
             valid_instr[operation]
-            cur_row++;
+            cur_row += 1
         except KeyError:
             #Is symbolic adress
-            sym_addr[operation] = cur_row;
-            rows.remove(i)
+            sym_addr[operation] = cur_row
+            del rows[cur_row]
 
 # ============================================================================#
 #       PROGRAM START
@@ -283,10 +280,6 @@ try:
 except IOError:
     sys.exit("Error: Can not open file " + input_file_name)
 
-encoded = open("encoded_program.mom", "w")
-program_hex = ""
-
-#Add pre text
 #==============================================================================
 # File rows to list with elements => (row, row number)
 #==============================================================================
@@ -294,20 +287,51 @@ rows = [];  #list if file rows and there number
 lnr = 0;    #line number in file
 
 for line in prog_file:
-    rows.append((line, lnr));
-    print(str(l[lnr]) + '\n')
-    lnr = lnr + 1
+    #Check so line is not empty
+    line = line.strip()
+
+    if line:
+        rows.append((lnr, line));
+        lnr = lnr + 1
+#==============================================================================
+# Pre Process symbolic adresses
+#==============================================================================
+find_sym_adresses(rows)
 
 #==============================================================================
 #Add instructions
 #==============================================================================
-for instr in prog_file:
-    comment = "--" + instr
-    hex_instr = decode_instruction(instr)
-    encoded.write(comment)
-    if hex_instr:
-        program_hex = program_hex + hex_instr + "\n"
-#==============================================================================
-#Add post text
+program_hexes = []
 
+for row in rows:
+    instr = row[1]
+    file_lnr = row[0]
+    comment = "--" + instr
+    try:
+        hex_instr = decode_instruction(instr)
+    except AssemblerError as e:
+        print("Syntax Error: ")
+        print(input_file_name + ": line " + str(file_lnr) + " | " + e.value)
+        system.exit(0);
+
+    program_hexes.append((hex_instr, comment))
+#==============================================================================
+# Write to file
+#==============================================================================
+output_file = open(FILE_NAME, "w")
+
+output_file.write(PRE_TEXT)
+
+for i in range(len(program_hexes)):
+    write_hex = program_hexes[i]
+    output_file.write("x\"" + write_hex[0] + "\"")
+
+    if i != (len(program_hexes) - 1):
+        output_file.write(",")
+
+    output_file.write("\n")
+
+output_file.write(POST_TEXT)
 prog_file.close
+
+print("Assembly Succesfull")
