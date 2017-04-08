@@ -23,7 +23,7 @@ begin
   res <= unsigned(std_logic_vector(res_signed));
 
   mult_32 <= (op_a_signed * op_b_signed);
-  
+
   with op_code select
     res_signed <=
     (not op_a_signed)                                   when x"0",        --NOT
@@ -36,7 +36,7 @@ begin
     (op_a_signed srl to_integer(op_b_signed))           when x"7",        --LSR
     (op_a_signed sll to_integer(op_b_signed))           when x"8",        --LSL
     op_b_signed                                         when x"9",        --Pass B through
-    op_a_signed                                         when others; 
+    op_a_signed                                         when others;
 
 
 

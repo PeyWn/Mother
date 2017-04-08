@@ -1,0 +1,79 @@
+START
+    MOV R0 7
+    MOV R1 x10
+    MOV R2 b10000100 //132
+
+MEMTEST
+    STR R0 xAA
+    LDA RF xAA //Should put 7 in RF
+
+    STRR R0 R1
+    LDAR RE R1 //Should put 7 in RE
+
+ALU
+    MOV R0 b1111000011110000
+    NOT R1 R0 //0000111100001111
+    AND R2 R0 R1 //0000 in R2
+    OR R3 R0 R1 //FFFF in R3
+    XOR R4 R0 R3 //0000111100001111 in R4
+
+ALU_AR
+    MOV R0 43
+    MOV R1 3457
+    ADD R3 R0 R1 //3500 in R3
+    SUB R4 R3 R1 //43 in R0
+    MOV R5 3
+    MUL R6 R0 R5 //129 in R6
+    LSR R7 R0 2 //10 in R7
+    LSL R8 R7 //20 in R8
+
+VMEM
+    MOV R0 4
+    MOV R1 7
+    STRV R0 0
+    STRV R1 1
+    STRV R0 x2
+    STRV R1 b11
+
+    LDAV R2 3 //7 in R2
+
+    MOV R4 2
+    STRVR R4 R4
+    LDAVR R0 R4 //2 in R0
+
+JMP_INSTR
+    JMP JUMP_HERE
+    NOP
+    NOP
+    NOP //Not run
+JUMP_HERE
+    MOV R0 5
+    MOV R1 7
+    CMP R0 R1
+    BRN BRN_JMP //jump
+    NOP
+BRN_JMP
+    BRNN DIE //not jump
+    NOP
+    CMP R0 R0
+    BRZ BRZ_JMP //jump
+    NOP
+    NOP
+    NOP
+BRZ_JMP
+    BRNZ DIE //not jump
+    NOT
+    MOV R0 xFFFF
+    ADD R1 R0 R0
+    BRO BRO_JMP //jump
+    NOP
+BRO_JMP
+    BRNO DIE //not jump
+    NOP
+    NOP
+    NOP
+    NOP
+    NOP
+DIE
+    JMP DIE
+    NOP

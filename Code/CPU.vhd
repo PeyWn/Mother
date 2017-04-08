@@ -62,6 +62,7 @@ architecture Behavioral of CPU is
        --11     --               båda
 
        ALU_operation : out unsigned(3 downto 0));
+       flag_update : out std_logic
     end component;
 
     component dMem
@@ -137,6 +138,7 @@ architecture Behavioral of CPU is
     signal stall : std_logic; --stall (leave instruction in reg0)
     signal jmp : std_logic; --jmp next CPU cycle
     signal ALU_operation : unsigned(3 downto 0);  --Operation to send to ALU
+    signal flag_update : std_logic;
 
     --Control signals for Dataforwarding (sending and receiving
     signal ir2_DF, ir3_DF, ir0_read_reg, ir1_read_reg : std_logic;
@@ -199,7 +201,8 @@ begin
                                     regFile_write => regFile_wEnable,
                                     jmp => jmp, stall => stall,
 
-                                    ALU_operation => ALU_operation);
+                                    ALU_operation => ALU_operation,
+                                    flag_update=>flag_update);
 
 
   --Process for forwarding of the DF and read_reg values from one ir step to
@@ -241,7 +244,7 @@ begin
     end process;
 
   --Connect ALU
-  A1 : ALU port map 
+  A1 : ALU port map
     (op_a => pre_ALU_A, op_b => pre_ALU_B, op_code => ALU_operation,
      res => ALU_res,
      z => ALU_Z, n => ALU_N, o => ALU_O);
@@ -337,7 +340,7 @@ begin
     --Update status flags
     process(clk)
       begin
-        if rising_edge(clk) then
+        if rising_edge(clk) and flag_update = '1' then
           Z <= ALU_Z;
           N <= ALU_N;
           O <= ALU_O;
