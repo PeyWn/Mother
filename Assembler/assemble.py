@@ -33,6 +33,8 @@ FILE_NAME = "pMem.vhd"
 INSTR_WIDTH = 32
 INST_COUNT = 1024
 
+OTHERS_SYNTAX = "(others=>(others=>0))"
+
 PRE_TEXT = """library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 use IEEE.NUMERIC_STD.all;
@@ -81,39 +83,39 @@ class AssemblerError(Exception):
     C - 0/R/C
 """
 valid_instr = {
-    'NOP': ('000','0000'),
-    'MOV': ('R0C','0100'),
-    'LDA': ('R0C','0200'),
-    'STR': ('0RC','0201'),
-    'LDAR': ('RR0','0202'),
-    'STRR': ('0RR','0203'),
-    'NOT': ('RR0','0300'),
-    'OR' : ('RRR','0301'),
-    'AND' : ('RRR','0302'),
-    'XOR' : ('RRR','0303'),
-    'ADD' : ('RRR','0304'),
-    'SUB' : ('RRR','0305'),
-    'MUL' : ('RRR','0306'),
-    'LSR' : ('RRC','0307'),
-    'LSL' : ('RRC','0308'),
-    'LDAV' : ('R0C','0400'),
-    'STRV' : ('0RC','0401'),
-    'LDAVR' : ('RR0','0402'),
-    'STRVR' : ('0RR','0403'),
-    'JMP' : ('00C','0500'),
-    'BRN' : ('00C','0501'),
-    'BRZ' : ('00C','0502'),
-    'BRO' : ('00C','0503'),
-    'BRNN' : ('00C','0504'),
-    'BRNZ' : ('00C','0505'),
-    'BRNO' : ('00C','0506'),
-    'BRB1' : ('00C','0507'),
-    'BRB2' : ('00C','0508'),
-    'BRJU' : ('00C','0509'),
-    'BRJD' : ('00C','050A'),
-    'BRJR' : ('00C','050B'),
-    'BRJL' : ('00C','050C'),
-    'CMP' : ('0RR','0600')
+    'NOP': ('000','00'),
+    'MOV': ('R0C','10'),
+    'LDA': ('R0C','29'),
+    'STR': ('0RC','21'),
+    'LDAR': ('RR0','22'),
+    'STRR': ('0RR','23'),
+    'NOT': ('RR0','30'),
+    'OR' : ('RRR','31'),
+    'AND' : ('RRR','32'),
+    'XOR' : ('RRR','33'),
+    'ADD' : ('RRR','34'),
+    'SUB' : ('RRR','35'),
+    'MUL' : ('RRR','36'),
+    'LSR' : ('RRC','37'),
+    'LSL' : ('RRC','38'),
+    'LDAV' : ('R0C','40'),
+    'STRV' : ('0RC','41'),
+    'LDAVR' : ('RR0','42'),
+    'STRVR' : ('0RR','43'),
+    'JMP' : ('00S','50'),
+    'BRN' : ('00S','51'),
+    'BRZ' : ('00S','52'),
+    'BRO' : ('00S','53'),
+    'BRNN' : ('00S','54'),
+    'BRNZ' : ('00S','55'),
+    'BRNO' : ('00S','56'),
+    'BRB1' : ('00S','57'),
+    'BRB2' : ('00S','58'),
+    'BRJU' : ('00S','59'),
+    'BRJD' : ('00S','5A'),
+    'BRJR' : ('00S','5B'),
+    'BRJL' : ('00S','5C'),
+    'CMP' : ('0RR','60')
     }
 
 #List of symbloic adresses, formar is {SYMBOLIC_ADRESS:(PROGRAM_LINE, FILE_LINE)} to generate good error message"
@@ -121,10 +123,10 @@ sym_addr = {}
 
 #Counter to know what program line the assembler is at, used for relative jumps and similar
 prog_line = 0
-#Counter to know what line of the source program we are at, used for showing syntax errors
-file_line = 0
 
 def decode_instruction(instr):
+    print("Decoding: " + instr)
+
     """
     Takes a line of assembly code and converts it to a hex instruction.
     Returns the hex encoded instruction if succesful, otherwise it returns an empty string
@@ -133,7 +135,6 @@ def decode_instruction(instr):
     global prog_line
     global file_line
 
-    file_line += 1
     program_hex = ""
 
     instr = instr.upper()
@@ -144,26 +145,31 @@ def decode_instruction(instr):
         instr_format =  instr_data[0]           #The general structure of the instruction
         program_hex = instr_data[1]             #The hexcode for the instruction
         instr = instr[1:]                       #Remove the instruction so that the first in instr is the next register/constant to be evaluated
-
-        for i in instr_format:
-            if char == 'R':
-                program_hex = program_hex + decode_reg(instr[0])
-                instr = instr[1:]
-
-            elif char == '0':
+        for char in instr_format:
+            if char == '0':
                 program_hex = program_hex + "0"
+            else:
+                if len(instr) == 0:
+                    raise AssemblerError("Too few arguments given.")
 
-            elif char == 'C':
-                program_hex = program_hex + decode_const(instr[0])
-                instr = instr[1:]
+                if char == 'R':
+                    program_hex = program_hex + decode_reg(instr[0])
+                    instr = instr[1:]
+                elif char == 'C':
+                    program_hex = program_hex + decode_const(instr[0])
+                    instr = instr[1:]
+                elif char == 'S':
+                    program_hex = program_hex + get_jmp(instr[0])
+                    instr = instr[1:]
 
-            program_hex = program_hex + ((8 - len(program_hex)) * '0') #Fill it to 8 hex characters with 0's
+        program_hex = program_hex + ((8 - len(program_hex)) * '0') #Fill it to 8 hex characters with 0's
 
-            prog_line += 1
     except KeyError:
         raise AssemblerError("Invalid instruction: " + instr[0])
 
     return program_hex;
+
+HEX_VALUES = ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F')
 
 """
 Takes a string on the format RX and gives the hex value for the decimal number X.
@@ -172,13 +178,12 @@ def decode_reg(reg):
     if reg[0] != 'R' or len(reg) < 2 or len(reg) > 3:
         raise AssemblerError(reg + "is not a register")
 
-    nr_str = reg[1:];
-    reg_int = int(nr_str);
+    reg_i = reg[1:];
 
-    if reg_int > 15:
+    if not (reg_i in HEX_VALUES):
         raise AssemblerError("Register nr " + reg_int + " does not exist");
 
-    return dec_to_hex(reg_int)[-1];
+    return reg_i;
 
 def decode_const(const):
   if const[0] == 'X':
@@ -186,12 +191,17 @@ def decode_const(const):
   elif const[0] == 'B':
     res = bin_to_hex(const[1:])
   else:
-    res = dec_to_hex(const[1:]);
+    try:
+        res = dec_to_hex(int(const));
+    except ValueError:
+        raise AssemblerError(const + " is not a decimal number.")
 
-  zeros = 4-len(res)
-  if zeros < 0:
+  zeroes = 4-len(res)
+
+  if zeroes < 0:
     raise AssemblerError("Hexadecimal number " + res + " exceeded the size of a 16-bit number.")
-  return zeros*'0' + res
+
+  return zeroes*'0' + res
 
 """
 Returns the given integer dec as a 16-bit hex number, stored in a string.
@@ -201,14 +211,15 @@ def dec_to_hex(dec):
     Converts a decimal number to a 4 digit hex number. Negative numbers are handled as two-complement binary numbers.
     """
     upper_limit = pow(2,16)
-
     if dec > upper_limit:
+        print(dec)
+        print("Wut?")
         raise AssemblerError("Decimal number " + dec + " exceeded the size of a 16-bit number.")
 
-    negative_num = false
+    negative_num = False
     if(dec < 0):
         dec = upper_limit + dec #
-        negative_num = true
+        negative_num = True
 
     hex_res = hex(dec)[2:]
 
@@ -236,23 +247,23 @@ def bin_to_hex(binary):
 """
 Returns the relative jump in hex.
 """
-def get_jmp(cur_line, sym_address):
+def get_jmp(sym_address):
+    global prog_line
+
     try:
-        jmp_line = sym_addr[sym_adress]
+        jmp_line = sym_addr[sym_address]
     except KeyError:
         raise AssemblerError("Symbolic adress " + sym_adress + " not found.");
 
-    relative_jmp = jmp_line - cur_line;
+    relative_jmp = jmp_line - prog_line;
 
-    return dec_to_hex(relative_jmp);
+    return dec_to_hex(relative_jmp)
 
 def find_sym_adresses(rows):
     global sym_addr
 
     cur_row = 0
-    while cur_row < range(len(rows)):
-        print(cur_row)
-
+    while cur_row < len(rows):
         row = rows[cur_row]
         operation = row[1].split()[0]
 
@@ -284,7 +295,7 @@ except IOError:
 # File rows to list with elements => (row, row number)
 #==============================================================================
 rows = [];  #list if file rows and there number
-lnr = 0;    #line number in file
+lnr = 1;    #line number in file
 
 for line in prog_file:
     #Check so line is not empty
@@ -292,7 +303,8 @@ for line in prog_file:
 
     if line:
         rows.append((lnr, line));
-        lnr = lnr + 1
+
+    lnr = lnr + 1
 #==============================================================================
 # Pre Process symbolic adresses
 #==============================================================================
@@ -309,10 +321,11 @@ for row in rows:
     comment = "--" + instr
     try:
         hex_instr = decode_instruction(instr)
+        prog_line += 1
     except AssemblerError as e:
-        print("Syntax Error: ")
+        print("Syntax Error: Instruction " + instr)
         print(input_file_name + ": line " + str(file_lnr) + " | " + e.value)
-        system.exit(0);
+        sys.exit(0);
 
     program_hexes.append((hex_instr, comment))
 #==============================================================================
@@ -324,12 +337,13 @@ output_file.write(PRE_TEXT)
 
 for i in range(len(program_hexes)):
     write_hex = program_hexes[i]
-    output_file.write("x\"" + write_hex[0] + "\"")
+    output_file.write("x\"" + write_hex[0] + "\",")
 
-    if i != (len(program_hexes) - 1):
-        output_file.write(",")
+    output_file.write(" " + write_hex[1])
 
     output_file.write("\n")
+
+output_file.write(OTHERS_SYNTAX + "\n")
 
 output_file.write(POST_TEXT)
 prog_file.close

@@ -1,0 +1,14 @@
+MOV R0 1
+MOV R1 1
+MOV R8 0
+MOV R9 10
+MOV RA 1
+JUMP
+    ADD R2 R0 R1
+    ADD R0 R1 R8
+    ADD R1 R2 R8
+    SUB R9 R9 RA
+    BRNZ JUMP
+    NOP
+    STR R1 0
+    STR R2 1

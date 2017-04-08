@@ -25,7 +25,7 @@ ALU_AR
     MOV R5 3
     MUL R6 R0 R5 //129 in R6
     LSR R7 R0 2 //10 in R7
-    LSL R8 R7 //20 in R8
+    LSL R8 R7 1 //20 in R8
 
 VMEM
     MOV R0 4
@@ -62,7 +62,7 @@ BRN_JMP
     NOP
 BRZ_JMP
     BRNZ DIE //not jump
-    NOT
+    NOP
     MOV R0 xFFFF
     ADD R1 R0 R0
     BRO BRO_JMP //jump
