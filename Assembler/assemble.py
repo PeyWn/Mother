@@ -1,33 +1,6 @@
 import sys
 
-"""
-TODO: Write the hex program and similar to the pMem.vhd file
-Catch all exceptions and add where the error occured
-
-Assembler for motherlode project
-
-program.mtr -> pMem.vhd
-
-Should work according to the following format
-- Add neccesary text to top of file
-- Decode instructions one at a time
-    - Read one line
-    - Split line at spaces
-    - Lookup instructions
-    - If symbolic adress
-        - Add to list of symbolic adresses
-    - If operation
-        - Write hex code of Operation
-        - Follow structure for Operation
-            - Convert registers to hex
-            - Convert constant to hex
-            - Lookup symbolic adress and calculate relative jmp
-- Add neccesary text after
-
-"""
-
 #CONSTANTS
-
 FILE_NAME = "pMem.vhd"
 
 INSTR_WIDTH = 32
@@ -125,8 +98,6 @@ sym_addr = {}
 prog_line = 0
 
 def decode_instruction(instr):
-    print("Decoding: " + instr)
-
     """
     Takes a line of assembly code and converts it to a hex instruction.
     Returns the hex encoded instruction if succesful, otherwise it returns an empty string
@@ -167,9 +138,9 @@ def decode_instruction(instr):
     except KeyError:
         raise AssemblerError("Invalid instruction: " + instr[0])
 
-    return program_hex;
+    return program_hex
 
-HEX_VALUES = ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F')
+HEX_VALUES = [hex(i)[2].upper() for i in range(16)]
 
 """
 Takes a string on the format RX and gives the hex value for the decimal number X.
@@ -186,26 +157,27 @@ def decode_reg(reg):
     return reg_i;
 
 def decode_const(const):
-  if const[0] == 'X':
-    res = const[1:]
-  elif const[0] == 'B':
-    res = bin_to_hex(const[1:])
-  else:
-    try:
-        res = dec_to_hex(int(const));
-    except ValueError:
-        raise AssemblerError(const + " is not a decimal number.")
+    """
+    Decodes constant from a decimal, binary or hexadecimal. Returns a 4 character long string of hexadecimal numbers.
+    """
 
-  zeroes = 4-len(res)
+    if const[0] == 'X':
+        res = const[1:]
+    elif const[0] == 'B':
+        res = bin_to_hex(const[1:])
+    else:
+        try:
+            res = dec_to_hex(int(const));
+        except ValueError:
+            raise AssemblerError(const + " is not a decimal number.")
 
-  if zeroes < 0:
-    raise AssemblerError("Hexadecimal number " + res + " exceeded the size of a 16-bit number.")
+    zeroes = 4-len(res)
 
-  return zeroes*'0' + res
+    if zeroes < 0:
+        raise AssemblerError("Hexadecimal number " + res + " exceeded the size of a 16-bit number.")
 
-"""
-Returns the given integer dec as a 16-bit hex number, stored in a string.
-"""
+    return zeroes*'0' + res
+
 def dec_to_hex(dec):
     """
     Converts a decimal number to a 4 digit hex number. Negative numbers are handled as two-complement binary numbers.
@@ -229,6 +201,9 @@ def dec_to_hex(dec):
     return hex_res;
 
 def bin_to_hex(binary):
+    """
+    Converts a string of 1s and 0s from a binary number to a string of hexadecimal numbers.
+    """
     if len(binary) > 16:
         raise AssemblerError(binary + " is not a valid 16 bit binary number.")
 
@@ -244,10 +219,10 @@ def bin_to_hex(binary):
 
     return dec_to_hex(tot);
 
-"""
-Returns the relative jump in hex.
-"""
 def get_jmp(sym_address):
+    """
+    Returns the relative jump in hex.
+    """
     global prog_line
 
     try:
@@ -260,6 +235,9 @@ def get_jmp(sym_address):
     return dec_to_hex(relative_jmp)
 
 def find_sym_adresses(rows):
+    """
+    Loops through all rows and finds the symbolic addresses.
+    """
     global sym_addr
 
     cur_row = 0
