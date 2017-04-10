@@ -85,9 +85,11 @@ architecture Behavioral of CPU is
     end component;
 
     component LFSR
-        port(rndv : out vector(15 downto 0);
-            clk : in std_logic);
+        port(rnd : out unsigned(15 downto 0);
+            clk : in std_logic
+          );
     end component;
+    
     --|| End Components ||
 
     --Program Counter
@@ -134,7 +136,7 @@ architecture Behavioral of CPU is
     signal joy_down : std_logic;
 
     --LFSR random signal vector
-    signal rnd : vector(15 downto 0);
+    signal rnd : unsigned(15 downto 0);
 
     --NOP, jmp and stall muxes
     signal reg0_mux : unsigned(31 downto 0);

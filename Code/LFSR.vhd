@@ -9,7 +9,7 @@ entity LFSR is
 end LFSR;
 
 architecture random_gen of LFSR is
-  signal vector : unsigned(15 downto 0) <= (others => 0);
+  signal vector : unsigned(15 downto 0) := (others => '0');
   begin
     process(clk)
     begin
@@ -25,7 +25,7 @@ architecture random_gen of LFSR is
         vector(5) <= vector(4) xor vector(15);
         vector(15 downto 6) <= vector(14 downto 5);
 
-        rnd <= vector(15 downto 0);
+        rnd <= vector;
       end if;
     end process;
 end random_gen;

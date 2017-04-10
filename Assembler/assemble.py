@@ -69,8 +69,8 @@ valid_instr = {
     'ADD' : ('RRR','34'),
     'SUB' : ('RRR','35'),
     'MUL' : ('RRR','36'),
-    'LSR' : ('RRC','37'),
-    'LSL' : ('RRC','38'),
+    'LSR' : ('RRR','37'),
+    'LSL' : ('RRR','38'),
     'LDAV' : ('R0C','40'),
     'STRV' : ('0RC','41'),
     'LDAVR' : ('RR0','42'),
@@ -147,7 +147,7 @@ Takes a string on the format RX and gives the hex value for the decimal number X
 """
 def decode_reg(reg):
     if reg[0] != 'R' or len(reg) < 2 or len(reg) > 3:
-        raise AssemblerError(reg + "is not a register")
+        raise AssemblerError(reg + " is not a register")
 
     reg_i = reg[1:];
 

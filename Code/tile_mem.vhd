@@ -8,12 +8,12 @@ entity tile_mem is
     tile_pixel_X : in unsigned(7 downto 0);
     tile_pixel_Y : in unsigned(7 downto 0);
 
-    pixel_out : in unsigned(7 downto 0);
-
+    pixel_out : in unsigned(7 downto 0)
+)
 end tile_mem;
 
 architecture Behavioral of tile_mem is
-  type tMem_data is array (0 to 32767) of unsigned(7 downto 0);
+  type tMem_data is array (0 to 16383) of unsigned(7 downto 0);
 
   signal tMem : tMem_data :=
   (

@@ -26,6 +26,7 @@ begin
   end process;
 
   --Read
-  dMem_out <= memory(to_integer(dMem_adress(14 downto 0)));
+  dMem_out <= memory(to_integer(dMem_adress(14 downto 0))) when dMem_adress < 32768 else
+              x"0000";
 
 end Behavioral;
