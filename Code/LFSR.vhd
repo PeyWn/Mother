@@ -2,7 +2,7 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
---LFSR interface keno med sköldpaddor
+--LFSR interface, random vector generator
 entity LFSR is
   port(rnd : out unsigned(15 downto 0);
     clk : in std_logic);
