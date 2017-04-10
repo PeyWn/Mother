@@ -24,8 +24,10 @@ ALU_AR
     SUB R4 R3 R1 //43 in R0
     MOV R5 3
     MUL R6 R0 R5 //129 in R6
-    LSR R7 R0 2 //10 in R7
-    LSL R8 R7 1 //20 in R8
+    MOV R9 2
+    LSR R7 R0 R9 //10 in R7
+    MOV R9 1
+    LSL R8 R7 r9 //20 in R8
 
 VMEM
     MOV R0 4

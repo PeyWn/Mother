@@ -6,7 +6,7 @@ FILE_NAME = "pMem.vhd"
 INSTR_WIDTH = 32
 INST_COUNT = 1024
 
-OTHERS_SYNTAX = "(others=>(others=>0))"
+OTHERS_SYNTAX = "others=>(others=>'0')"
 
 PRE_TEXT = """library IEEE;
 use IEEE.STD_LOGIC_1164.all;
@@ -58,7 +58,8 @@ class AssemblerError(Exception):
 valid_instr = {
     'NOP': ('000','00'),
     'MOV': ('R0C','10'),
-    'LDA': ('R0C','29'),
+    'LFSR':('R00', '11'), 
+    'LDA': ('R0C','20'),
     'STR': ('0RC','21'),
     'LDAR': ('RR0','22'),
     'STRR': ('0RR','23'),
@@ -69,8 +70,8 @@ valid_instr = {
     'ADD' : ('RRR','34'),
     'SUB' : ('RRR','35'),
     'MUL' : ('RRR','36'),
-    'LSR' : ('RRC','37'),
-    'LSL' : ('RRC','38'),
+    'LSR' : ('RRR','37'),
+    'LSL' : ('RRR','38'),
     'LDAV' : ('R0C','40'),
     'STRV' : ('0RC','41'),
     'LDAVR' : ('RR0','42'),
@@ -147,7 +148,7 @@ Takes a string on the format RX and gives the hex value for the decimal number X
 """
 def decode_reg(reg):
     if reg[0] != 'R' or len(reg) < 2 or len(reg) > 3:
-        raise AssemblerError(reg + "is not a register")
+        raise AssemblerError(reg + " is not a register")
 
     reg_i = reg[1:];
 

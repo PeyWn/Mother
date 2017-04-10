@@ -22,6 +22,9 @@
    		         --> Rn <= const
 		            --> Tilldela register n ett konstant värde.
    ----------------------------------------------------------------
+   00010001 LFSR  --> LFSR Rn -- -- --
+                  --> Rn <= random vector from LFSR.vhd
+   ----------------------------------------------------------------
    ****************************************************************
 
 
@@ -34,8 +37,7 @@
    ----------------------------------------------------------------
    00100001 STR	--> STR -- Rn Addr
    	            --> mem(Addr) <= Rn
-		            --> På minnesadress Addr skrivs datan i
-			    Rn in.
+		            --> På minnesadress Addr skrivs datan i Rn in.
    -----------------------------------------------------------------
    00100010 LDAR --> LDAR Rn Rm --
    	    	 --> Rn <= mem(Rm)
@@ -79,14 +81,14 @@
      #36 	      --> Rk <= (Rn * Rm)
 		            --> Rk tilldelas aritmetisk multiplikation av Rn och Rm.
    ----------------------------------------------------------------
-   00110111 LSR	--> LSR Rk Rn const
-     #37 	--> LSR<const>(Rk)
-		--> Rk tilldelas Rn skiftad const steg åt höger. MSB fylls på med 0.
+   00110111 LSR	--> LSR Rk Rn Rm
+     #37 	--> LSR<Rm>(Rk)
+		--> Rk tilldelas Rn skiftad Rm steg åt höger. MSB fylls på med 0.
 		--> 0 < const < 17
    ----------------------------------------------------------------
-   00111000 LSL	--> LSL Rk Rn const
-     #38 	--> LSL<const>(Rk)
-		--> Rk tilldelas Rn skiftad const steg åt vänster. LSB fylls på med 0.
+   00111000 LSL	--> LSL Rk Rn Rm
+     #38 	--> LSL<Rm>(Rk)
+		--> Rk tilldelas Rn skiftad Rm steg åt vänster. LSB fylls på med 0.
 		--> 0 < const < 17
    ----------------------------------------------------------------
 

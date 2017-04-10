@@ -44,8 +44,11 @@ architecture Behavioral of regFile is
     signal registers : reg_data := default_reg;
 begin
     --Reading
-    output_alpha <= registers(to_integer(read_alpha));
-    output_beta <= registers(to_integer(read_beta));
+    output_alpha <= write_data when write_enable = '1' and read_alpha = write_reg else
+                    registers(to_integer(read_alpha));
+    
+    output_beta <= write_data when write_enable = '1' and read_beta = write_reg else
+                   registers(to_integer(read_beta));
 
     process(clk)
     begin

@@ -58,6 +58,7 @@ begin
                   ir0(31 downto 24) = x"38" or      -- LSL
                   ir0(31 downto 24) = x"41" or      -- STRV
                   ir0(31 downto 24) = x"43" or      -- STRVR
+                  ir0(31 downto 24) = x"42" or      -- LDRVR                  
                   ir0(31 downto 24) = x"60" else    -- CMP
                   '0';
 
@@ -132,7 +133,7 @@ begin
 
   --ALU
   ALU_operation <= ir1(27 downto 24) when ir1(31 downto 28) = "0011" else
-                   x"9" when ir1(31 downto 28) = x"23" or ir1(31 downto 28) = x"43" else --STRR or STRVR
+                   x"9" when ir1(31 downto 24) = x"23" or ir1(31 downto 24) = x"43" else --STRR or STRVR
                    x"F";
 
   --Update flags
@@ -159,6 +160,7 @@ begin
   --writeback_mux
   writeback_mux <= "00" when ir3(31 downto 24) = "01000000" or ir3(31 downto 24) = "01000010" else
                    "01" when ir3(31 downto 24) = "00100000" or ir3(31 downto 24) = "00100010" else
+                   "11" when ir3(31 downto 24) = "00010001" else
                    "10";
 
   --regFile_write

@@ -61,8 +61,8 @@ architecture Behavioral of CPU is
        --10     ALU              ir3
        --11     --               båda
 
-       ALU_operation : out unsigned(3 downto 0));
-       flag_update : out std_logic
+       ALU_operation : out unsigned(3 downto 0);
+       flag_update : out std_logic);
     end component;
 
     component dMem
@@ -84,6 +84,12 @@ architecture Behavioral of CPU is
            z,n,o: out std_logic);
     end component;
 
+    component LFSR
+        port(rnd : out unsigned(15 downto 0);
+            clk : in std_logic
+          );
+    end component;
+    
     --|| End Components ||
 
     --Program Counter
@@ -129,6 +135,8 @@ architecture Behavioral of CPU is
     signal joy_up : std_logic;
     signal joy_down : std_logic;
 
+    --LFSR random signal vector
+    signal rnd : unsigned(15 downto 0);
 
     --NOP, jmp and stall muxes
     signal reg0_mux : unsigned(31 downto 0);
@@ -300,6 +308,7 @@ begin
   regFile_wReg <= instr_reg3(23 downto 20);
   regFile_wData <= writeback_mux_data;
 
+  L1 : LFSR port map( clk => clk, rnd => rnd);
   -- Registers around register file
   process(clk)
   begin
@@ -326,6 +335,7 @@ begin
   --writeback MUX
   writeback_mux_data <= stage3_data when writeback_mux = "10" else
                         post_dMem when writeback_mux = "01" else
+                        rnd when writeback_mux = "11" else
                         post_vMem;
 
   --Pass ALU res to next step
