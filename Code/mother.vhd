@@ -9,11 +9,22 @@ entity mother is
 	    rst: in std_logic;
 
         --VGA connection
-        vgaRed : out std_logic_vector(2 downto 0);
+      vgaRed : out std_logic_vector(2 downto 0);
     	vgaGreen : out std_logic_vector(2 downto 0);
     	vgaBlue : out std_logic_vector(2 downto 1);
     	Hsync : out std_logic;
-    	Vsync : out std_logic
+    	Vsync : out std_logic;
+
+      --JSTK
+      JA           : out unsigned(7 downto 0);
+      clk          : out std_logic;   -- JSTK Pin 4
+      joy_btn1     : out std_logic;
+      joy_btn2     : out std_logic;
+      joy_left     : out std_logic;
+      joy_right    : out std_logic;
+      joy_up       : out std_logic;
+      joy_down     : out std_logic
+
       );
 end mother ;
 
@@ -23,6 +34,14 @@ architecture Behavioral of mother is
     port(
          --System clk
          clk : in std_logic;
+
+         --JSTK
+         decoded_joy_btn1     : in std_logic;
+         decoded_joy_btn2     : in std_logic;
+         decoded_joy_left     : in std_logic;
+         decoded_joy_right    : in std_logic;
+         decoded_joy_up       : in std_logic;
+         decoded_joy_down     : in std_logic;
 
          --Video memory
          v_mem_row : out unsigned(7 downto 0);
@@ -69,6 +88,20 @@ architecture Behavioral of mother is
     );
   end component;
 
+  component JSTK
+    port (
+    CS           : out std_logic := '0';
+    output_JSTK  : in std_logic;
+    clk          : in std_logic;   -- JSTK Pin 4
+    joy_btn1     : out std_logic;
+    joy_btn2     : out std_logic;
+    joy_left     : out std_logic;
+    joy_right    : out std_logic;
+    joy_up       : out std_logic;
+    joy_down     : out std_logic
+    );
+  end component;
+
   signal vMem_row_cpu : unsigned(7 downto 0);
   signal vMem_col_cpu : unsigned(7 downto 0);
   signal vMem_row_vga : unsigned(7 downto 0);
@@ -83,7 +116,11 @@ begin
   -- Connect CPU
   CPU_CON : CPU port map(clk=>clk, v_mem_row=>vMem_row_cpu, v_mem_col=>vMem_col_cpu,
                     v_mem_operation=>vMem_operation, v_mem_data_write=>vMem_in_cpu,
-                    v_mem_data_read=>vMem_out_cpu);
+                    v_mem_data_read=>vMem_out_cpu,
+
+                    decoded_joy_btn1 =>joy_btn1, decoded_joy_btn2 => joy_btn2, decoded_joy_up => joy_up,
+                    decoded_joy_down => joy_down, decoded_joy_left => joy_left, decoded_joy_right => joy_right
+                    );
 
   -- Connect video memeory
   VMEM_CON : vMem port map(clk=>clk, CPU_addr_row=>vMem_row_cpu,
@@ -97,5 +134,11 @@ begin
                         row=>vMem_row_vga, col=>vMem_col_vga, vgaRed_port=>vgaRed,
                         vgaGreen_port=>vgaGreen, vgaBlue_port=>vgaBlue, Hsync_port=>Hsync,
                         Vsync_port=>Vsync);
+
+  JSTK_CON : JSTK port map(CS => JA(0), output_JSTK => JA(1), clk => JA(4) joy_btn1 => joy_btn1,
+                        joy_btn2 => joy_btn2; joy_left => joy_left; joy_right => joy_right,
+                        joy_up => joy_up, joy_down => joy_down);
+
+  );
 
 end Behavioral;

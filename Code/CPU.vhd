@@ -7,6 +7,15 @@ entity CPU is
         --System clk
         clk : in std_logic;
 
+
+        --JSTK
+        decoded_joy_btn1     : in std_logic;
+        decoded_joy_btn2     : in std_logic;
+        decoded_joy_left     : in std_logic;
+        decoded_joy_right    : in std_logic;
+        decoded_joy_up       : in std_logic;
+        decoded_joy_down     : in std_logic;
+
         --Video memory
         v_mem_row : out unsigned(7 downto 0);
         v_mem_col : out unsigned(7 downto 0);
@@ -89,7 +98,7 @@ architecture Behavioral of CPU is
             clk : in std_logic
           );
     end component;
-    
+
     --|| End Components ||
 
     --Program Counter
@@ -309,7 +318,7 @@ begin
   regFile_wData <= writeback_mux_data;
 
   L1 : LFSR port map( clk => clk, rnd => rnd);
-  
+
   -- Registers around register file
   process(clk)
   begin
@@ -370,5 +379,14 @@ begin
           post_vMem <= x"00" & v_mem_data_read;
         end if;
       end process;
+
+    --JSTK
+    joy_btn1 <= decoded_joy_btn1;
+    joy_btn2 <= decoded_joy_btn2;
+    joy_up   <= decoded_joy_up;
+    joy_down <= decoded_joy_down;
+    joy_right <= decoded_joy_right;
+    joy_left <= decoded_joy_left;
+
 
 end Behavioral;

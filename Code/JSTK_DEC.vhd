@@ -15,10 +15,10 @@ entity JSTK is
   joy_up       : out std_logic;
   joy_down     : out std_logic
   );
-end entity;
+end JSTK;
 
 architecture Behavioral of JSTK is
-  signal vector   : unsigned(39 downto 0) := (others => '0');
+  signal shift_reg   : unsigned(39 downto 0) := (others => '0');
   signal counter  : unsigned(5 downto 0)  := (others => '0');
   signal x_pos    : unsigned(9 downto 0);
   signal y_pos    : unsigned(9 downto 0);
@@ -29,22 +29,22 @@ architecture Behavioral of JSTK is
     begin
       if rising_edge(clk) then
 
-        --Shift in 40 bits from JOYSTK into vector
+        --Shift in 40 bits from JOYSTK into shift_reg
         if counter < 40 then
           counter <= counter + '1';
-          vector(38 downto 0) <= vector(39 downto 1);
-          vector(39) <= output_JSTK;
+          shift_reg(38 downto 0) <= shift_reg(39 downto 1);
+          shift_reg(39) <= output_JSTK;
 
         else
           counter <= counter(others => '0');
 
-          --Extract values from vector into variables
-          x_pos   <= vector(9 downto 0);
-          y_pos   <= vector(25 downto 16);
-          buttons <= vector(34 downto 32);
+          --Extract values from shift_reg into variables
+          x_pos   <= shift_reg(9 downto 0);
+          y_pos   <= shift_reg(25 downto 16);
+          buttons <= shift_reg(34 downto 32);
 
-        endif;
-      endif;
+        end if;
+      end if;
     end process;
 
     --Set all output signals.
