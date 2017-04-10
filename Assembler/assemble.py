@@ -58,6 +58,7 @@ class AssemblerError(Exception):
 valid_instr = {
     'NOP': ('000','00'),
     'MOV': ('R0C','10'),
+    'LFSR':('R00', '11'), 
     'LDA': ('R0C','20'),
     'STR': ('0RC','21'),
     'LDAR': ('RR0','22'),
