@@ -65,7 +65,7 @@ BRN_JMP
 BRZ_JMP
     BRNZ DIE //not jump
     NOP
-    MOV R0 xFFFF
+    MOV R0 x8FFF
     ADD R1 R0 R0
     BRO BRO_JMP //jump
     NOP
