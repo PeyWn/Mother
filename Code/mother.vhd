@@ -16,15 +16,10 @@ entity mother is
     	Vsync : out std_logic;
 
       --JSTK
-      JA           : out unsigned(7 downto 0);
-      clk          : out std_logic;   -- JSTK Pin 4
-      joy_btn1     : out std_logic;
-      joy_btn2     : out std_logic;
-      joy_left     : out std_logic;
-      joy_right    : out std_logic;
-      joy_up       : out std_logic;
-      joy_down     : out std_logic
-
+        MOSI: out std_logic;
+        MISO: in std_logic;
+        CS : out std_logic;
+        SCLK : out std_logic
       );
 end mother ;
 
@@ -90,9 +85,9 @@ architecture Behavioral of mother is
 
   component JSTK
     port (
-    CS           : out std_logic := '0';
+    CS           : out std_logic;
     output_JSTK  : in std_logic;
-    clk          : in std_logic;   -- JSTK Pin 4
+    SCLK         : in std_logic;   -- JSTK Pin 4
     joy_btn1     : out std_logic;
     joy_btn2     : out std_logic;
     joy_left     : out std_logic;
@@ -109,10 +104,18 @@ architecture Behavioral of mother is
   signal vMem_out_cpu : unsigned(7 downto 0);
   signal vMem_out_vga : unsigned(7 downto 0);
 
+  signal joy_btn1     : std_logic;
+  signal joy_btn2     : std_logic;
+  signal joy_left     : std_logic;
+  signal joy_right    : std_logic;
+  signal joy_up       : std_logic;
+  signal joy_down     : std_logic;
+  
   signal vMem_in_cpu : unsigned(7 downto 0);
   signal vMem_operation : std_logic;
 begin
 
+  SCLK <= CLK;
   -- Connect CPU
   CPU_CON : CPU port map(clk=>clk, v_mem_row=>vMem_row_cpu, v_mem_col=>vMem_col_cpu,
                     v_mem_operation=>vMem_operation, v_mem_data_write=>vMem_in_cpu,
@@ -135,10 +138,10 @@ begin
                         vgaGreen_port=>vgaGreen, vgaBlue_port=>vgaBlue, Hsync_port=>Hsync,
                         Vsync_port=>Vsync);
 
-  JSTK_CON : JSTK port map(CS => JA(0), output_JSTK => JA(1), clk => JA(4) joy_btn1 => joy_btn1,
-                        joy_btn2 => joy_btn2; joy_left => joy_left; joy_right => joy_right,
+  JSTK_CON : JSTK port map(CS => CS, output_JSTK => MISO, SCLK => CLK, joy_btn1 => joy_btn1,
+                        joy_btn2 => joy_btn2, joy_left => joy_left, joy_right => joy_right,
                         joy_up => joy_up, joy_down => joy_down);
 
-  );
+  
 
 end Behavioral;

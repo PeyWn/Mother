@@ -7,7 +7,7 @@ entity JSTK is
   port (
   CS           : out std_logic := '0';
   output_JSTK  : in std_logic;   -- döp om till rätt JSTK Pin 2
-  clk          : in std_logic;   -- JSTK Pin 4
+  SCLK         : in std_logic;   -- JSTK Pin 4
   joy_btn1     : out std_logic;
   joy_btn2     : out std_logic;
   joy_left     : out std_logic;
