@@ -133,11 +133,13 @@ begin
 
   --ALU
   ALU_operation <= ir1(27 downto 24) when ir1(31 downto 28) = "0011" else
+                   x"5" when ir1(31 downto 24) = x"60" else
                    x"9" when ir1(31 downto 24) = x"23" or ir1(31 downto 24) = x"43" else --STRR or STRVR
                    x"F";
 
   --Update flags
-  flag_update <= '1' when ir1(31 downto 28) = "0011" else
+  flag_update <= '1' when ir1(31 downto 28) = "0011" or
+                 ir1(31 downto 24) = x"60" else
                 '0';
 
   ALU1_mux <= '1' when ir1(31 downto 24) = "00010000" or
