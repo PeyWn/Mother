@@ -19,10 +19,10 @@ architecture random_gen of LFSR is
 
         vector(0) <= vector(15); -- vector(15) feedback
         vector(1) <= vector(0);
-        vector(2) <= vector(1) xor vector(15);
-        vector(3) <= vector(2) xor vector(15);
+        vector(2) <= vector(1) xnor vector(15);
+        vector(3) <= vector(2) xnor vector(15);
         vector(4) <= vector(3);
-        vector(5) <= vector(4) xor vector(15);
+        vector(5) <= vector(4) xnor vector(15);
         vector(15 downto 6) <= vector(14 downto 5);
 
         rnd <= vector;
