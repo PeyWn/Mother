@@ -1,0 +1,24 @@
+Hex	Tile
+00	Error tile, contains all colours
+-- Numbers --
+01	Number 0
+02	Number 1
+03	Number 2
+04	Number 3
+05	Number 4
+06	Number 5
+07	Number 6
+08	Number 7
+09	Number 8
+0A	Number 9
+-- Player --
+0B	Player Left
+0C	Player Right
+0D	Player Down
+0E	Player Up
+-- Environment --
+0F	Standard ground
+10	Rock
+11	Silver Rock
+12	Gold Rock
+13	Ruby Rock
