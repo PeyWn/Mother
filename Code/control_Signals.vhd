@@ -80,7 +80,8 @@ begin
             ir2(31 downto 24) = "00110111" or    --LSR
             ir2(31 downto 24) = "00111000" or    --LSL
             ir2(31 downto 24) = "01000000" or    --LDAV
-            ir2(31 downto 24) = "01000010" else  --LDAVR
+            ir2(31 downto 24) = "01000010" or  --LDAVR
+            ir2(31 downto 24) = x"11" else
             '0';
   --DF_mem
   DF_ir3 <= DF_prev;

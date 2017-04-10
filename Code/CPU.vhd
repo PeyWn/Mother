@@ -309,6 +309,7 @@ begin
   regFile_wData <= writeback_mux_data;
 
   L1 : LFSR port map( clk => clk, rnd => rnd);
+  
   -- Registers around register file
   process(clk)
   begin
