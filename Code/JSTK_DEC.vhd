@@ -5,6 +5,7 @@ use IEEE.NUMERIC_STD.ALL;
 --Joystick interface
 entity JSTK is
   port (
+  CS           : out std_logic := '0';
   output_JSTK  : in std_logic;   -- döp om till rätt JSTK Pin 2
   clk          : in std_logic;   -- JSTK Pin 4
   joy_btn1     : out std_logic;
@@ -17,8 +18,8 @@ entity JSTK is
 end entity;
 
 architecture Behavioral of JSTK is
-  signal vector   : unsigned(39 downto 0) <= (others => '0');
-  signal counter  : unsigned(5 downto 0)  <= (others => '0');
+  signal vector   : unsigned(39 downto 0) := (others => '0');
+  signal counter  : unsigned(5 downto 0)  := (others => '0');
   signal x_pos    : unsigned(9 downto 0);
   signal y_pos    : unsigned(9 downto 0);
   signal buttons  : unsigned(2 downto 0);
