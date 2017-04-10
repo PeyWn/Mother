@@ -6,7 +6,7 @@ FILE_NAME = "pMem.vhd"
 INSTR_WIDTH = 32
 INST_COUNT = 1024
 
-OTHERS_SYNTAX = "(others=>(others=>0))"
+OTHERS_SYNTAX = "others=>(others=>'0')"
 
 PRE_TEXT = """library IEEE;
 use IEEE.STD_LOGIC_1164.all;
@@ -58,7 +58,7 @@ class AssemblerError(Exception):
 valid_instr = {
     'NOP': ('000','00'),
     'MOV': ('R0C','10'),
-    'LDA': ('R0C','29'),
+    'LDA': ('R0C','20'),
     'STR': ('0RC','21'),
     'LDAR': ('RR0','22'),
     'STRR': ('0RR','23'),

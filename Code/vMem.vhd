@@ -57,7 +57,7 @@ begin
     --Read operations
     VGA_out <= memory(to_integer(VGA_addr));
     WITH CPU_operation select
-        CPU_out <=   memory(to_integer(CPU_addr)) when '0',
+        CPU_out <= memory(to_integer(CPU_addr)) when '0',
                     x"00" when others;
 
     --CPU writing to memory

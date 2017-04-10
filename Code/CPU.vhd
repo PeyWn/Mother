@@ -61,8 +61,8 @@ architecture Behavioral of CPU is
        --10     ALU              ir3
        --11     --               båda
 
-       ALU_operation : out unsigned(3 downto 0));
-       flag_update : out std_logic
+       ALU_operation : out unsigned(3 downto 0);
+       flag_update : out std_logic);
     end component;
 
     component dMem
