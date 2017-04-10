@@ -5,7 +5,7 @@ use IEEE.NUMERIC_STD.ALL;
 --Joystick interface
 entity JSTK is
   port (
-  output_JSTK       : in std_logic;   -- döp om till rätt JSTK Pin 2
+  output_JSTK  : in std_logic;   -- döp om till rätt JSTK Pin 2
   clk          : in std_logic;   -- JSTK Pin 4
   joy_btn1     : out std_logic;
   joy_btn2     : out std_logic;
