@@ -159,6 +159,7 @@ begin
   --writeback_mux
   writeback_mux <= "00" when ir3(31 downto 24) = "01000000" or ir3(31 downto 24) = "01000010" else
                    "01" when ir3(31 downto 24) = "00100000" or ir3(31 downto 24) = "00100010" else
+                   "11" when ir3(31 downto 24) = "00010001" else
                    "10";
 
   --regFile_write
