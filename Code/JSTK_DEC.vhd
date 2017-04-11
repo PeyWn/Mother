@@ -7,7 +7,7 @@ entity JSTK is
   port (
   CS           : out std_logic := '0';
   output_JSTK  : in std_logic;   -- döp om till rätt JSTK Pin 2
-  SCLK         : in std_logic;   -- JSTK Pin 4
+  CLK         : in std_logic;   -- JSTK Pin 4
   joy_btn1     : out std_logic;
   joy_btn2     : out std_logic;
   joy_left     : out std_logic;
@@ -31,12 +31,12 @@ architecture Behavioral of JSTK is
 
         --Shift in 40 bits from JOYSTK into shift_reg
         if counter < 40 then
-          counter <= counter + '1';
+          counter <= counter + 1;
           shift_reg(38 downto 0) <= shift_reg(39 downto 1);
           shift_reg(39) <= output_JSTK;
 
         else
-          counter <= counter(others => '0');
+          counter <= (others => '0');
 
           --Extract values from shift_reg into variables
           x_pos   <= shift_reg(9 downto 0);

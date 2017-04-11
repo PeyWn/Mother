@@ -16,7 +16,7 @@ entity mother is
     	Vsync : out std_logic;
 
       --JSTK
-        MOSI: out std_logic;
+        --MOSI: out std_logic;
         MISO: in std_logic;
         CS : out std_logic;
         SCLK : out std_logic
@@ -87,7 +87,7 @@ architecture Behavioral of mother is
     port (
     CS           : out std_logic;
     output_JSTK  : in std_logic;
-    SCLK         : in std_logic;   -- JSTK Pin 4
+    CLK         : in std_logic;   -- JSTK Pin 4
     joy_btn1     : out std_logic;
     joy_btn2     : out std_logic;
     joy_left     : out std_logic;
@@ -138,7 +138,7 @@ begin
                         vgaGreen_port=>vgaGreen, vgaBlue_port=>vgaBlue, Hsync_port=>Hsync,
                         Vsync_port=>Vsync);
 
-  JSTK_CON : JSTK port map(CS => CS, output_JSTK => MISO, SCLK => CLK, joy_btn1 => joy_btn1,
+  JSTK_CON : JSTK port map(CS => CS, output_JSTK => MISO, CLK => CLK, joy_btn1 => joy_btn1,
                         joy_btn2 => joy_btn2, joy_left => joy_left, joy_right => joy_right,
                         joy_up => joy_up, joy_down => joy_down);
 
