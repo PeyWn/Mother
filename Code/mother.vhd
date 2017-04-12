@@ -16,7 +16,7 @@ entity mother is
     	Vsync : out std_logic;
 
       --JSTK
-        --MOSI: out std_logic;
+        MOSI: out std_logic;
         MISO: in std_logic;
         CS : out std_logic;
         SCLK : out std_logic
@@ -116,6 +116,7 @@ architecture Behavioral of mother is
 begin
 
   SCLK <= CLK;
+  MOSI <= '0';
   -- Connect CPU
   CPU_CON : CPU port map(clk=>clk, v_mem_row=>vMem_row_cpu, v_mem_col=>vMem_col_cpu,
                     v_mem_operation=>vMem_operation, v_mem_data_write=>vMem_in_cpu,

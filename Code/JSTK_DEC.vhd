@@ -48,13 +48,13 @@ architecture Behavioral of JSTK is
     end process;
 
     --Set all output signals.
-    -- x_/y_ pos is 2 to the power of 9, or 512 bits large
-    -- 512 /4 and 3/4 equals 128 and 384 respectivly
-    joy_up    <= '1' when (x_pos > 384) else '0';
-    joy_down  <= '1' when (x_pos < 128) else '0';
+    -- x_/y_ pos is 2 to the power of 9, or 1024 dec large
+    -- 1024 /4 and 3/4 equals 256 and 768 respectivly
+    joy_up    <= '1' when (x_pos > 768) else '0';
+    joy_down  <= '1' when (x_pos < 256) else '0';
 
-    joy_right <= '1' when (y_pos > 384) else '0';
-    joy_left  <= '1' when (y_pos < 128) else '0';
+    joy_right <= '1' when (y_pos > 768) else '0';
+    joy_left  <= '1' when (y_pos < 256) else '0';
 
     joy_btn1 <= buttons(1);
     joy_btn2 <= buttons(2);
