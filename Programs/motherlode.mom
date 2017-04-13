@@ -1,0 +1,87 @@
+PROGRAM_START
+    NOP
+    BRB1 GAME_BOOT //Start game at button press
+    NOP
+    JMP PROGRAM_START
+    NOP
+
+GAME_BOOT
+    MOV R0 10 //Set player default coordinates
+    MOV R1 8
+    STR R0 0 //X
+    STR R1 1 //Y
+
+    MOV R0 0 //Row
+    MOV R1 0 //Col
+    MOV RE x0001 //For masking
+VMEM_FILL_LOOP
+    LFSR R2 //Move random number to R0
+    AND R2 R2 RE //Only keep last 2 bits of R0
+    MOV RF 1
+    CMP R2 RF
+    BRZ VMEM_FILL_ROCK
+    MOV R3 x0F //Tile address
+    JMP VMEM_FILL_END_LOOP
+    NOP
+VMEM_FILL_ROCK
+    MOV R3 x10 //Tile address
+    JMP VMEM_FILL_END_LOOP
+VMEM_FILL_END_LOOP
+    MOV RD 8
+    LSR R4 R0 RD
+    ADD R4 R4 R1 //R4 contains indexing for vmem
+    STRVR R3 R4 //Write tile address
+    MOV RD 1
+    ADD R1 R1 RD
+    MOV RD 21
+    CMP R1 RD //Check if col has reached 21
+    BRZ VMEM_FILL_RST_X
+    NOP
+    JMP VMEM_FILL_LOOP
+    NOP
+VMEM_FILL_RST_X
+    MOV R1 0 //Reset col
+    MOV RD 1
+    ADD R1 RD R1 //add one to row
+    MOV RD 17
+    CMP R1 RD //Check if row is 17
+    BRZ PLACE_PLAYER
+    NOP
+    JMP VMEM_FILL_LOOP
+    NOP
+
+PLACE_PLAYER
+    MOV R0 x0D //Player down tile
+    STRV R0 x070A
+    MOV R0 x7
+    STR R0 1
+    MOV R0 xA
+    STR R0 0
+
+GAMEPLAY_START
+
+
+
+MOVE_RIGHT
+    MOV R0 1 //Orientation
+    STR R0 2
+    LDA R1 0 //X pos
+    LDA R2 1 //Y pos
+
+    MOV RF 8
+    LSR R3 R1 RF
+    ADD R3 R3 R2 //Vmem old pos in R3
+    MOV RF x0F
+    STRVR RF R3 //Write over old tile
+
+    MOV RF 1
+    ADD R1 R1 RF //Add one to R1
+    STR R1 0
+
+    MOV RF x0B //Start for player sprites
+    ADD R0 R0 RF
+
+    MOV RF 8
+    LSR R3 R1 RF
+    ADD R3 R3 R2 //Vmem new pos in R3
+    STRVR RF R3 //Write new tile

@@ -1,0 +1,14 @@
+##### - Memory Adresses to data in dMem - #####
+
+DECIMAL NOTATION
+
+0 - Player x [0-19]
+1 - Player y [0-15]
+2 - Player direction [0:left, 1:right, 2:down, 3:up]
+
+100 - BTN1 last state
+101 - BTN2 last state
+102 - JOY_UP last state
+103 - JOY_DOWN last state
+104 - JOY_LEFT last state
+105 - JOY_RIGHT last state
