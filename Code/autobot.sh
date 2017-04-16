@@ -1,3 +1,3 @@
 #!/bin/sh
 
-python ../Assembler/assemble.py ../Programs/$1
+python ../Assembler/assemble.py $1
