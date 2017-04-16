@@ -86,6 +86,7 @@ architecture Behavioral of mother is
   component JSTK
     port (
     CS           : out std_logic;
+    SCLK         : out std_logic;
     output_JSTK  : in std_logic;
     CLK         : in std_logic;   -- JSTK Pin 4
     joy_btn1     : out std_logic;
@@ -110,12 +111,10 @@ architecture Behavioral of mother is
   signal joy_right    : std_logic;
   signal joy_up       : std_logic;
   signal joy_down     : std_logic;
-  
+
   signal vMem_in_cpu : unsigned(7 downto 0);
   signal vMem_operation : std_logic;
 begin
-
-  SCLK <= CLK;
   MOSI <= '0';
   -- Connect CPU
   CPU_CON : CPU port map(clk=>clk, v_mem_row=>vMem_row_cpu, v_mem_col=>vMem_col_cpu,
@@ -139,10 +138,10 @@ begin
                         vgaGreen_port=>vgaGreen, vgaBlue_port=>vgaBlue, Hsync_port=>Hsync,
                         Vsync_port=>Vsync);
 
-  JSTK_CON : JSTK port map(CS => CS, output_JSTK => MISO, CLK => CLK, joy_btn1 => joy_btn1,
+  JSTK_CON : JSTK port map(CS => CS, SCLK =>SCLK, output_JSTK => MISO, CLK => CLK, joy_btn1 => joy_btn1,
                         joy_btn2 => joy_btn2, joy_left => joy_left, joy_right => joy_right,
                         joy_up => joy_up, joy_down => joy_down);
 
-  
+
 
 end Behavioral;

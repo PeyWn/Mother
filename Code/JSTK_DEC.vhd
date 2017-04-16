@@ -6,6 +6,7 @@ use IEEE.NUMERIC_STD.ALL;
 entity JSTK is
   port (
   CS           : out std_logic := '0';
+  SCLK         : out std_logic;
   output_JSTK  : in std_logic;   -- döp om till rätt JSTK Pin 2
   CLK         : in std_logic;   -- JSTK Pin 4
   joy_btn1     : out std_logic;
@@ -24,11 +25,28 @@ architecture Behavioral of JSTK is
   signal y_pos    : unsigned(9 downto 0);
   signal buttons  : unsigned(2 downto 0);
 
+  -- System clock is 100 000 kHz
+  -- Divide by 1500 to get 66.6666... kHz (suitable for joystick)
+  signal clk_div_counter : unsigned(10 downto 0) := 0;
+  signal low_clk : std_logic;
+
   begin
+
+    -- clk divider counter
+    process(clk)
+    begin
+        if rising_edge(clk) then
+            if clk_div_counter = 1499 then
+                clk_div_counter <= 0;
+            else
+                clk_div_counter <= clk_div_counter + 1;
+            end if;
+        end if;
+    end process;
+
     process(clk, output_JSTK)
     begin
-      if rising_edge(clk) then
-
+      if rising_edge(clk) and low_clk = '1' then
         --Shift in 40 bits from JOYSTK into shift_reg
         if counter < 40 then
           counter <= counter + 1;
@@ -59,4 +77,5 @@ architecture Behavioral of JSTK is
     joy_btn1 <= buttons(1);
     joy_btn2 <= buttons(2);
 
+    SCLK <= low_clk;
 end architecture;
