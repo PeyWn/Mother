@@ -9,15 +9,15 @@ entity mother is
 	    rst: in std_logic;
 
         --VGA connection
-      vgaRed : out std_logic_vector(2 downto 0);
+        vgaRed : out std_logic_vector(2 downto 0);
     	vgaGreen : out std_logic_vector(2 downto 0);
     	vgaBlue : out std_logic_vector(2 downto 1);
     	Hsync : out std_logic;
     	Vsync : out std_logic;
 
       --JSTK
-        MOSI: out std_logic;
-        MISO: in std_logic;
+        MOSI: in std_logic;
+        MISO: out std_logic;
         CS : out std_logic;
         SCLK : out std_logic
       );
@@ -115,7 +115,7 @@ architecture Behavioral of mother is
   signal vMem_in_cpu : unsigned(7 downto 0);
   signal vMem_operation : std_logic;
 begin
-  MOSI <= '0';
+  MISO <= '0';
   -- Connect CPU
   CPU_CON : CPU port map(clk=>clk, v_mem_row=>vMem_row_cpu, v_mem_col=>vMem_col_cpu,
                     v_mem_operation=>vMem_operation, v_mem_data_write=>vMem_in_cpu,
@@ -138,7 +138,7 @@ begin
                         vgaGreen_port=>vgaGreen, vgaBlue_port=>vgaBlue, Hsync_port=>Hsync,
                         Vsync_port=>Vsync);
 
-  JSTK_CON : JSTK port map(CS => CS, SCLK =>SCLK, output_JSTK => MISO, CLK => CLK, joy_btn1 => joy_btn1,
+  JSTK_CON : JSTK port map(CS => CS, SCLK =>SCLK, output_JSTK => MOSI, CLK => CLK, joy_btn1 => joy_btn1,
                         joy_btn2 => joy_btn2, joy_left => joy_left, joy_right => joy_right,
                         joy_up => joy_up, joy_down => joy_down);
 

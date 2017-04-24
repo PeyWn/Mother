@@ -27,7 +27,7 @@ architecture Behavioral of JSTK is
 
   -- System clock is 100 000 kHz
   -- Divide by 1500 to get 66.6666... kHz (suitable for joystick)
-  signal clk_div_counter : unsigned(10 downto 0) := 0;
+  signal clk_div_counter : unsigned(10 downto 0) := "00000000000";
   signal low_clk : std_logic;
 
   begin
@@ -37,18 +37,21 @@ architecture Behavioral of JSTK is
     begin
         if rising_edge(clk) then
             if clk_div_counter = 1499 then
-                clk_div_counter <= 0;
+                clk_div_counter <= "00000000000";
             else
                 clk_div_counter <= clk_div_counter + 1;
             end if;
         end if;
     end process;
 
+    low_clk <= '1' when clk_div_counter = 1499 else
+               '0';
+
     process(clk, output_JSTK)
     begin
       if rising_edge(clk) and low_clk = '1' then
         --Shift in 40 bits from JOYSTK into shift_reg
-        if counter < 40 then
+        if counter < 39 then
           counter <= counter + 1;
           shift_reg(38 downto 0) <= shift_reg(39 downto 1);
           shift_reg(39) <= output_JSTK;
