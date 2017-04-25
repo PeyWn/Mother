@@ -89,7 +89,7 @@ begin
   DF_next <= DF_ir2; --Save the result to use in the next step instead of doing
                      --the same comparison twice
 
-  --DF muxxing and fluxxing
+  --DF signals for ir2 and ir3 (a and b are the different registers)
   DF_ir2_a <= '1' when (DF_ir2 = '1' and read_reg_ir1 = '1') and
               ir2(23 downto 20) = ir1(19 downto 16) else
               '0';
@@ -113,10 +113,9 @@ begin
   mem_access <= '1' when
                  ir1(31 downto 24) = x"20" or   --LDA
                  ir1(31 downto 24) = x"40" or --LDAV
-                 ir1(31 downto 24) = x"11" else  --LFSR (Not memory acces, but
-                                                 --data
-                                                 --still only available in last
-                                                 --step
+                 ir1(31 downto 24) = x"11" else  --LFSR (Not memory access, but
+                                                 --data is still only available in
+                                                 --last step.
                  '0';
 
   --jump

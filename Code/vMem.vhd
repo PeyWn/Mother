@@ -26,7 +26,7 @@ architecture Behavioral of vMem is
     signal memory : v_mem_data :=
       (
         x"0F",x"0F",x"0F",x"0F",x"0F",x"0F",x"0F",x"0F",x"0F",x"0F",x"0F",x"0F",x"0F",x"0F",x"0F",x"0F",x"0F",x"0F",x"0F",x"0F",
-        x"0F",x"0F",x"10",x"10",x"0F",x"0F",x"12",x"11",x"0F",x"0F",x"11",x"11",x"0F",x"0D",x"0B",x"0F",x"13",x"13",x"0F",x"0F",
+        x"0F",x"0F",x"10",x"10",x"0F",x"0F",x"12",x"12",x"0F",x"0F",x"11",x"11",x"0F",x"0D",x"0B",x"0F",x"13",x"13",x"0F",x"0F",
         x"0F",x"0F",x"10",x"0F",x"10",x"0F",x"12",x"0F",x"11",x"0F",x"11",x"0F",x"0F",x"0D",x"0F",x"0F",x"13",x"0F",x"0F",x"0F",
         x"0F",x"0F",x"10",x"10",x"0F",x"0F",x"12",x"12",x"0F",x"0F",x"11",x"11",x"0F",x"0C",x"0D",x"0F",x"13",x"13",x"0F",x"0F",
         x"0F",x"0F",x"10",x"0F",x"0F",x"0F",x"12",x"0F",x"12",x"0F",x"11",x"0F",x"0F",x"0F",x"0D",x"0F",x"0F",x"13",x"0F",x"0F",

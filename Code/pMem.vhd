@@ -155,12 +155,14 @@ x"34714000", --ADD R7 R1 R4 //New x-pos
 x"34825000", --ADD R8 R2 R5 //New y-pos
 x"10F00008", --MOV RF 8
 x"38B8F000", --LSL RB R8 RF //Shift new y
-x"34B87000", --ADD RB R8 R7 //Vmem new pos in RB
-x"429B0000", --LDAVR R9 RB
-x"20A00003", --LDA RA 3
-x"10F00010", --MOV RF x10
-x"600AF000", --CMP RA RF
-x"5100000d", --BRN TURN
+x"34BB7000", --ADD RB RB R7 //Vmem new pos in RB
+x"429B0000", --LDAVR R9 RB //Tile where player tries to move in R9
+x"20A00003", --LDA RA 3 //Drill level in RA
+x"10F0000F", --MOV RF x0F
+x"3599F000", --SUB R9 R9 RF
+x"600A9000", --CMP RA R9
+x"5100000e", --BRN TURN
+x"00000000", --NOP
 x"10F00008", --MOV RF 8
 x"3832F000", --LSL R3 R2 RF //Shift old y
 x"34331000", --ADD R3 R3 R1 //Vmem old pos in R3
@@ -171,7 +173,7 @@ x"21080001", --STR R8 1
 x"10F0000B", --MOV RF x0B //Start for player sprites
 x"34F0F000", --ADD RF R0 RF
 x"430FB000", --STRVR RF RB //Write over new tile
-x"5000ffad", --JMP MAIN_LOOP
+x"5000ffab", --JMP MAIN_LOOP
 x"00000000", --NOP
 x"10F00008", --MOV RF 8
 x"3832F000", --LSL R3 R2 RF //Shift up y
@@ -179,7 +181,7 @@ x"34331000", --ADD R3 R3 R1 //Vmem pos in R3
 x"10F0000B", --MOV RF x0B //Start for player tiles
 x"34F0F000", --ADD RF R0 RF
 x"430F3000", --STRVR RF R3 //Write over new tile
-x"5000ffa5", --JMP MAIN_LOOP
+x"5000ffa3", --JMP MAIN_LOOP
 x"00000000", --NOP
 others=>(others=>'0')
 );

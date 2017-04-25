@@ -46,6 +46,7 @@ architecture Behavioral of JSTK is
         end if;
     end process;
 
+    -- Operate counter and shift register
     process(clk, MISO)
     begin
       if rising_edge(clk) and low_clk = '1' and clk_div_counter = 0 then

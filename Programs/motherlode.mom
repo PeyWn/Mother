@@ -170,13 +170,15 @@ MOVE //R4 should contain delta-x, R5 should contain delta-y, R0 should contain d
     ADD R8 R2 R5 //New y-pos
     MOV RF 8
     LSL RB R8 RF //Shift new y
-    ADD RB R8 R7 //Vmem new pos in RB
+    ADD RB RB R7 //Vmem new pos in RB
 
-    LDAVR R9 RB
-    LDA RA 3
-    MOV RF x10
-    CMP RA RF
+    LDAVR R9 RB //Tile where player tries to move in R9
+    LDA RA 3 //Drill level in RA
+    MOV RF x0F
+    SUB R9 R9 RF
+    CMP RA R9
     BRN TURN
+    NOP
 
     MOV RF 8
     LSL R3 R2 RF //Shift old y

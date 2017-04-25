@@ -317,6 +317,7 @@ begin
   regFile_wReg <= instr_reg3(23 downto 20);
   regFile_wData <= writeback_mux_data;
 
+  -- Connect LFS-register
   L1 : LFSR port map( clk => clk, rnd => rnd);
 
   -- Registers around register file
@@ -373,6 +374,7 @@ begin
     v_mem_operation <= vMem_write;
     v_mem_data_write <= pre_vMem(7 downto 0);
 
+    -- Move data forwarding information forward
     process(clk)
       begin
         if rising_edge(clk) then
@@ -380,7 +382,7 @@ begin
         end if;
       end process;
 
-    --JSTK
+    --JSTK connection
     joy_btn1 <= decoded_joy_btn1;
     joy_btn2 <= decoded_joy_btn2;
     joy_up   <= decoded_joy_up;
