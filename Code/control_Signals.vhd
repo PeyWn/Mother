@@ -123,12 +123,12 @@ begin
          (ir1(31 downto 24) = "01010100" and N = '0') or        --BRNN
          (ir1(31 downto 24) = "01010101" and Z = '0') or        --BRNZ
          (ir1(31 downto 24) = "01010110" and O = '0') or        --BRNO
-         (ir1(31 downto 24) = "01010111" and btn1 = '0') or     --BRB1
-         (ir1(31 downto 24) = "01011000" and btn2 = '0') or     --BRB2
-         (ir1(31 downto 24) = "01011001" and up = '0') or       --BRJU
-         (ir1(31 downto 24) = "01011010" and down = '0') or     --BRJD
-         (ir1(31 downto 24) = "01011011" and left = '0') or     --BRJL
-         (ir1(31 downto 24) = "01011100" and right = '0') else  --BRJR
+         (ir1(31 downto 24) = "01010111" and btn1 = '1') or     --BRB1
+         (ir1(31 downto 24) = "01011000" and btn2 = '1') or     --BRB2
+         (ir1(31 downto 24) = "01011001" and up = '1') or       --BRJU
+         (ir1(31 downto 24) = "01011010" and down = '1') or     --BRJD
+         (ir1(31 downto 24) = "01011011" and left = '1') or     --BRJL
+         (ir1(31 downto 24) = "01011100" and right = '1') else  --BRJR
          '0';
 
 

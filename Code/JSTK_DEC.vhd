@@ -53,22 +53,20 @@ architecture Behavioral of JSTK is
         if counter = 40 then
           counter <= (others => '0');
           CS <= '0';
-        elsif counter = 39 then
-          cs <= '1';
 
-          --Extract values from shift_reg into variables
           x_pos   <= shift_reg(9 downto 0);
           y_pos   <= shift_reg(25 downto 16);
           buttons <= shift_reg(39 downto 37);
-
-          --Go to 40
-          counter <= counter + 1;
         else
           counter <= counter + 1;
 
           --Shift
           shift_reg(38 downto 0) <= shift_reg(39 downto 1);
           shift_reg(39) <= MISO;
+
+          if counter = 39 then
+            cs <= '1';
+          end if;
         end if;
       end if;
     end process;
@@ -86,7 +84,7 @@ architecture Behavioral of JSTK is
     joy_left  <= '1' when (y_pos < 256) else '0';
 
     joy_btn1 <= buttons(1);
-    joy_btn2 <= buttons(2);
+    joy_btn2 <= buttons(0);
 
     SCLK <= low_clk;
 end architecture;
