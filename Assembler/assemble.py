@@ -58,7 +58,7 @@ class AssemblerError(Exception):
 valid_instr = {
     'NOP': ('000','00'),
     'MOV': ('R0C','10'),
-    'LFSR':('R00', '11'), 
+    'LFSR':('R00', '11'),
     'LDA': ('R0C','20'),
     'STR': ('0RC','21'),
     'LDAR': ('RR0','22'),
@@ -229,7 +229,7 @@ def get_jmp(sym_address):
     try:
         jmp_line = sym_addr[sym_address]
     except KeyError:
-        raise AssemblerError("Symbolic adress " + sym_adress + " not found.");
+        raise AssemblerError("Symbolic adress " + sym_address + " not found.");
 
     relative_jmp = jmp_line - prog_line;
 
