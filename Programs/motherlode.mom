@@ -13,22 +13,24 @@ GAME_BOOT
 
     MOV R0 0 //Row
     MOV R1 0 //Col
-    MOV RE x0001 //For masking
+    MOV RE x00FF //For masking
 VMEM_FILL_LOOP
-    LFSR R2 //Move random number to R0
-    AND R2 R2 RE //Only keep last 2 bits of R0
-    MOV RF 1
+    LFSR R2 //Move random number to R2
+    AND R2 R2 RE //Only keep one byte of R2
+    MOV RF 125
     CMP R2 RF
-    BRZ VMEM_FILL_ROCK
+    BRN VMEM_FILL_ROCK
+    NOP
     MOV R3 x0F //Tile address
     JMP VMEM_FILL_END_LOOP
     NOP
 VMEM_FILL_ROCK
     MOV R3 x10 //Tile address
     JMP VMEM_FILL_END_LOOP
+    NOP
 VMEM_FILL_END_LOOP
     MOV RD 8
-    LSR R4 R0 RD
+    LSL R4 R0 RD
     ADD R4 R4 R1 //R4 contains indexing for vmem
     STRVR R3 R4 //Write tile address
     MOV RD 1
@@ -42,9 +44,9 @@ VMEM_FILL_END_LOOP
 VMEM_FILL_RST_X
     MOV R1 0 //Reset col
     MOV RD 1
-    ADD R1 RD R1 //add one to row
+    ADD R0 RD R0 //add one to row
     MOV RD 17
-    CMP R1 RD //Check if row is 17
+    CMP R0 RD //Check if row is 17
     BRZ PLACE_PLAYER
     NOP
     JMP VMEM_FILL_LOOP
@@ -64,7 +66,7 @@ MAIN_LOOP
     MOV RF 0
     BRJU JOY_UP
     NOP
-    STR RF 100
+    STR RF 102
     BRJD JOY_DOWN
     NOP
     STR RF 103
@@ -84,7 +86,11 @@ JOY_UP
     BRZ MAIN_LOOP
     NOP
     STR RF 102
-    JMP MOVE_UP
+    
+    MOV R0 3
+    MOV R4 0
+    MOV R5 -1
+    JMP MOVE
     NOP
 JOY_DOWN
     MOV RF 1
@@ -93,7 +99,11 @@ JOY_DOWN
     BRZ MAIN_LOOP
     NOP
     STR RF 103
-    JMP MOVE_DOWN
+
+    MOV R0 2
+    MOV R4 0
+    MOV R5 1
+    JMP MOVE
     NOP
 JOY_RIGHT
     MOV RF 1
@@ -102,7 +112,11 @@ JOY_RIGHT
     BRZ MAIN_LOOP
     NOP
     STR RF 105
-    JMP MOVE_RIGHT
+
+    MOV R0 1
+    MOV R4 1
+    MOV R5 0
+    JMP MOVE
     NOP
 JOY_LEFT
     MOV RF 1
@@ -111,111 +125,38 @@ JOY_LEFT
     BRZ MAIN_LOOP
     NOP
     STR RF 104
-    JMP MOVE_LEFT
+
+    MOV R0 0
+    MOV R4 -1
+    MOV R5 0
+    JMP MOVE
     NOP
 
-
-
-MOVE_RIGHT
-    MOV R0 1 //Orientation
+MOVE //R4 should contain delta-x, R5 should contain delta-y, R0 should
+    contain direction
     STR R0 2
     LDA R1 0 //X pos
     LDA R2 1 //Y pos
 
     MOV RF 8
-    LSL R3 R1 RF
-    ADD R3 R3 R2 //Vmem old pos in R3
+    LSL R3 R2 RF //Shift old y
+    ADD R3 R3 R1 //Vmem old pos in R3
     MOV RF x0F
     STRVR RF R3 //Write over old tile
 
-    MOV RF 1
-    ADD R1 R1 RF //Add one to x
+    ADD R1 R1 R4 //New x-pos
+    ADD R2 R2 R5 //New y-pos
     STR R1 0
+    STR R2 1
+
+    MOV RF 8
+    LSL R3 R2 RF //Shift new y
+    ADD R3 R3 R1 //Vmem new pos in R3
 
     MOV RF x0B //Start for player sprites
-    ADD R0 R0 RF
+    ADD RF R0 RF
 
-    MOV RF 8
-    LSR R3 R1 RF
-    ADD R3 R3 R2 //Vmem new pos in R3
-    STRVR RF R3 //Write new tile
-    JMP MAIN_LOOP
-    NOP
+    STRVR RF R3 //Write over new tile
 
-MOVE_LEFT
-    MOV R0 0 //Orientation
-    STR R0 2
-    LDA R1 0 //X pos
-    LDA R2 1 //Y pos
-
-    MOV RF 8
-    LSL R3 R1 RF
-    ADD R3 R3 R2 //Vmem old pos in R3
-    MOV RF x0F
-    STRVR RF R3 //Write over old tile
-
-    MOV RF -1
-    ADD R1 R1 RF //Subtract one to x
-    STR R1 0
-
-    MOV RF x0B //Start for player sprites
-    ADD R0 R0 RF
-
-    MOV RF 8
-    LSR R3 R1 RF
-    ADD R3 R3 R2 //Vmem new pos in R3
-    STRVR RF R3 //Write new tile
-    JMP MAIN_LOOP
-    NOP
-
-MOVE_DOWN
-    MOV R0 2 //Orientation
-    STR R0 2
-    LDA R1 0 //X pos
-    LDA R2 1 //Y pos
-
-    MOV RF 8
-    LSL R3 R1 RF
-    ADD R3 R3 R2 //Vmem old pos in R3
-    MOV RF x0F
-    STRVR RF R3 //Write over old tile
-
-    MOV RF 1
-    ADD R2 R2 RF //Add one to Y
-    STR R1 0
-
-    MOV RF x0B //Start for player sprites
-    ADD R0 R0 RF
-
-    MOV RF 8
-    LSR R3 R1 RF
-    ADD R3 R3 R2 //Vmem new pos in R3
-    STRVR RF R3 //Write new tile
-    JMP MAIN_LOOP
-    NOP
-
-MOVE_UP
-    MOV R0 3 //Orientation
-    STR R0 2
-    LDA R1 0 //X pos
-    LDA R2 1 //Y pos
-
-    MOV RF 8
-    LSL R3 R1 RF
-    ADD R3 R3 R2 //Vmem old pos in R3
-    MOV RF x0F
-    STRVR RF R3 //Write over old tile
-
-    MOV RF -1
-    ADD R2 R2 RF //Subtract one to Y
-    STR R1 0
-
-    MOV RF x0B //Start for player sprites
-    ADD R0 R0 RF
-
-    MOV RF 8
-    LSR R3 R1 RF
-    ADD R3 R3 R2 //Vmem new pos in R3
-    STRVR RF R3 //Write new tile
     JMP MAIN_LOOP
     NOP

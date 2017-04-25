@@ -19,7 +19,10 @@ entity mother is
         MOSI: out std_logic;
         MISO: in std_logic;
         CS : out std_logic;
-        SCLK : out std_logic
+        SCLK : out std_logic;
+
+      --Led for testing
+      LED : out std_logic_vector(5 downto 0)
       );
 end mother ;
 
@@ -116,6 +119,14 @@ architecture Behavioral of mother is
   signal vMem_in_cpu : unsigned(7 downto 0);
   signal vMem_operation : std_logic;
 begin
+
+
+  LED(0) <= joy_btn1;
+  LED(1) <= joy_btn2;
+  LED(2) <= joy_left;
+  LED(3) <= joy_right;
+  LED(4) <= joy_up;
+  LED(5) <= joy_down;
   
   -- Connect CPU
   CPU_CON : CPU port map(clk=>clk, v_mem_row=>vMem_row_cpu, v_mem_col=>vMem_col_cpu,
