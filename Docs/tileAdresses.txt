@@ -1,5 +1,4 @@
 Hex	Tile
-00	Error tile, contains all colours
 -- Numbers --
 01	Number 0
 02	Number 1

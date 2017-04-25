@@ -17,17 +17,43 @@ GAME_BOOT
 VMEM_FILL_LOOP
     LFSR R2 //Move random number to R2
     AND R2 R2 RE //Only keep one byte of R2
-    MOV RF 125
+    MOV RF 125 //Start comparing for which tile to place
     CMP R2 RF
-    BRN VMEM_FILL_ROCK
+    BRN VMEM_FILL_STONE
     NOP
-    MOV R3 x0F //Tile address
+    MOV RF 163 //These numbers are carefully choosen
+    CMP R2 RF
+    BRN VMEM_FILL_SILVER
+    NOP
+    MOV RF 189
+    CMP R2 RF
+    BRN VMEM_FILL_GOLD
+    NOP
+    MOV RF 202
+    CMP R2 RF
+    BRN VMEM_FILL_RUBY
+    NOP
+    MOV R3 x0F //Stone Tile address
     JMP VMEM_FILL_END_LOOP
     NOP
-VMEM_FILL_ROCK
+
+VMEM_FILL_STONE
     MOV R3 x10 //Tile address
     JMP VMEM_FILL_END_LOOP
     NOP
+VMEM_FILL_SILVER
+    MOV R3 x11 //Tile address
+    JMP VMEM_FILL_END_LOOP
+    NOP
+VMEM_FILL_GOLD
+    MOV R3 x12 //Tile address
+    JMP VMEM_FILL_END_LOOP
+    NOP
+VMEM_FILL_RUBY
+    MOV R3 x13 //Tile address
+    JMP VMEM_FILL_END_LOOP
+    NOP
+
 VMEM_FILL_END_LOOP
     MOV RD 8
     LSL R4 R0 RD
@@ -56,9 +82,11 @@ PLACE_PLAYER
     MOV R0 x0D //Player down tile
     STRV R0 x070A
     MOV R0 x7
-    STR R0 1
+    STR R0 1 // y-pos
     MOV R0 xA
-    STR R0 0
+    STR R0 0 //x-pos
+    MOV R0 1
+    STR R0 3 //Drill level
 
 GAMEPLAY_START
 
@@ -86,7 +114,7 @@ JOY_UP
     BRZ MAIN_LOOP
     NOP
     STR RF 102
-    
+
     MOV R0 3
     MOV R4 0
     MOV R5 -1
@@ -132,11 +160,23 @@ JOY_LEFT
     JMP MOVE
     NOP
 
-MOVE //R4 should contain delta-x, R5 should contain delta-y, R0 should
-    contain direction
+MOVE //R4 should contain delta-x, R5 should contain delta-y, R0 should contain direction
     STR R0 2
     LDA R1 0 //X pos
     LDA R2 1 //Y pos
+    LDA R6 3 //Drill level
+
+    ADD R7 R1 R4 //New x-pos
+    ADD R8 R2 R5 //New y-pos
+    MOV RF 8
+    LSL RB R8 RF //Shift new y
+    ADD RB R8 R7 //Vmem new pos in RB
+
+    LDAVR R9 RB
+    LDA RA 3
+    MOV RF x10
+    CMP RA RF
+    BRN TURN
 
     MOV RF 8
     LSL R3 R2 RF //Shift old y
@@ -144,19 +184,23 @@ MOVE //R4 should contain delta-x, R5 should contain delta-y, R0 should
     MOV RF x0F
     STRVR RF R3 //Write over old tile
 
-    ADD R1 R1 R4 //New x-pos
-    ADD R2 R2 R5 //New y-pos
-    STR R1 0
-    STR R2 1
-
-    MOV RF 8
-    LSL R3 R2 RF //Shift new y
-    ADD R3 R3 R1 //Vmem new pos in R3
+    STR R7 0
+    STR R8 1
 
     MOV RF x0B //Start for player sprites
     ADD RF R0 RF
 
-    STRVR RF R3 //Write over new tile
+    STRVR RF RB //Write over new tile
 
+    JMP MAIN_LOOP
+    NOP
+
+TURN //R0 - direction, R1 - x-pos, R2 - y-pos
+    MOV RF 8
+    LSL R3 R2 RF //Shift up y
+    ADD R3 R3 R1 //Vmem pos in R3
+    MOV RF x0B //Start for player tiles
+    ADD RF R0 RF
+    STRVR RF R3 //Write over new tile
     JMP MAIN_LOOP
     NOP

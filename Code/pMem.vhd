@@ -28,14 +28,35 @@ x"10100000", --MOV R1 0 //Col
 x"10E000FF", --MOV RE x00FF //For masking
 x"11200000", --LFSR R2 //Move random number to R2
 x"3222E000", --AND R2 R2 RE //Only keep one byte of R2
-x"10F0007d", --MOV RF 125
+x"10F0007d", --MOV RF 125 //Start comparing for which tile to place
 x"6002F000", --CMP R2 RF
-x"51000005", --BRN VMEM_FILL_ROCK
+x"51000011", --BRN VMEM_FILL_STONE
 x"00000000", --NOP
-x"1030000F", --MOV R3 x0F //Tile address
-x"50000005", --JMP VMEM_FILL_END_LOOP
+x"10F000a3", --MOV RF 163 //These numbers are carefully choosen
+x"6002F000", --CMP R2 RF
+x"51000010", --BRN VMEM_FILL_SILVER
+x"00000000", --NOP
+x"10F000bd", --MOV RF 189
+x"6002F000", --CMP R2 RF
+x"5100000f", --BRN VMEM_FILL_GOLD
+x"00000000", --NOP
+x"10F000ca", --MOV RF 202
+x"6002F000", --CMP R2 RF
+x"5100000e", --BRN VMEM_FILL_RUBY
+x"00000000", --NOP
+x"1030000F", --MOV R3 x0F //Stone Tile address
+x"5000000e", --JMP VMEM_FILL_END_LOOP
 x"00000000", --NOP
 x"10300010", --MOV R3 x10 //Tile address
+x"5000000b", --JMP VMEM_FILL_END_LOOP
+x"00000000", --NOP
+x"10300011", --MOV R3 x11 //Tile address
+x"50000008", --JMP VMEM_FILL_END_LOOP
+x"00000000", --NOP
+x"10300012", --MOV R3 x12 //Tile address
+x"50000005", --JMP VMEM_FILL_END_LOOP
+x"00000000", --NOP
+x"10300013", --MOV R3 x13 //Tile address
 x"50000002", --JMP VMEM_FILL_END_LOOP
 x"00000000", --NOP
 x"10D00008", --MOV RD 8
@@ -48,7 +69,7 @@ x"10D00015", --MOV RD 21
 x"6001D000", --CMP R1 RD //Check if col has reached 21
 x"52000004", --BRZ VMEM_FILL_RST_X
 x"00000000", --NOP
-x"5000ffea", --JMP VMEM_FILL_LOOP
+x"5000ffd5", --JMP VMEM_FILL_LOOP
 x"00000000", --NOP
 x"10100000", --MOV R1 0 //Reset col
 x"10D00001", --MOV RD 1
@@ -57,14 +78,16 @@ x"10D00011", --MOV RD 17
 x"6000D000", --CMP R0 RD //Check if row is 17
 x"52000004", --BRZ PLACE_PLAYER
 x"00000000", --NOP
-x"5000ffe1", --JMP VMEM_FILL_LOOP
+x"5000ffcc", --JMP VMEM_FILL_LOOP
 x"00000000", --NOP
 x"1000000D", --MOV R0 x0D //Player down tile
 x"4100070A", --STRV R0 x070A
 x"10000007", --MOV R0 x7
-x"21000001", --STR R0 1
+x"21000001", --STR R0 1 // y-pos
 x"1000000A", --MOV R0 xA
-x"21000000", --STR R0 0
+x"21000000", --STR R0 0 //x-pos
+x"10000001", --MOV R0 1
+x"21000003", --STR R0 3 //Drill level
 x"10F00000", --MOV RF 0
 x"5900000e", --BRJU JOY_UP
 x"00000000", --NOP
@@ -127,22 +150,36 @@ x"00000000", --NOP
 x"21000002", --STR R0 2
 x"20100000", --LDA R1 0 //X pos
 x"20200001", --LDA R2 1 //Y pos
+x"20600003", --LDA R6 3 //Drill level
+x"34714000", --ADD R7 R1 R4 //New x-pos
+x"34825000", --ADD R8 R2 R5 //New y-pos
+x"10F00008", --MOV RF 8
+x"38B8F000", --LSL RB R8 RF //Shift new y
+x"34B87000", --ADD RB R8 R7 //Vmem new pos in RB
+x"429B0000", --LDAVR R9 RB
+x"20A00003", --LDA RA 3
+x"10F00010", --MOV RF x10
+x"600AF000", --CMP RA RF
+x"5100000d", --BRN TURN
 x"10F00008", --MOV RF 8
 x"3832F000", --LSL R3 R2 RF //Shift old y
 x"34331000", --ADD R3 R3 R1 //Vmem old pos in R3
 x"10F0000F", --MOV RF x0F
 x"430F3000", --STRVR RF R3 //Write over old tile
-x"34114000", --ADD R1 R1 R4 //New x-pos
-x"34225000", --ADD R2 R2 R5 //New y-pos
-x"21010000", --STR R1 0
-x"21020001", --STR R2 1
-x"10F00008", --MOV RF 8
-x"3832F000", --LSL R3 R2 RF //Shift new y
-x"34331000", --ADD R3 R3 R1 //Vmem new pos in R3
+x"21070000", --STR R7 0
+x"21080001", --STR R8 1
 x"10F0000B", --MOV RF x0B //Start for player sprites
 x"34F0F000", --ADD RF R0 RF
+x"430FB000", --STRVR RF RB //Write over new tile
+x"5000ffad", --JMP MAIN_LOOP
+x"00000000", --NOP
+x"10F00008", --MOV RF 8
+x"3832F000", --LSL R3 R2 RF //Shift up y
+x"34331000", --ADD R3 R3 R1 //Vmem pos in R3
+x"10F0000B", --MOV RF x0B //Start for player tiles
+x"34F0F000", --ADD RF R0 RF
 x"430F3000", --STRVR RF R3 //Write over new tile
-x"5000ffb3", --JMP MAIN_LOOP
+x"5000ffa5", --JMP MAIN_LOOP
 x"00000000", --NOP
 others=>(others=>'0')
 );
