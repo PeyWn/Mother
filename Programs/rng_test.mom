@@ -1,5 +1,15 @@
 START
-	LFSR R0
-	LFSR R1
-	LFSR R2
-	JMP START
+    MOV RE x00FF //For masking
+    LFSR R2 //Move random number to R2
+    AND R2 R2 RE //Only keep one byte of R2
+    MOV RF 125
+    CMP R2 RF
+    BRN VMEM_FILL_ROCK
+    NOP
+    JMP START
+    NOP
+VMEM_FILL_ROCK
+    MOV RF 1
+    ADD R0 R0 RF
+    JMP START
+    NOP
