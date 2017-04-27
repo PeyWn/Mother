@@ -18,11 +18,12 @@ Cockpit Border		02
 --Ground--
 Base			88
 Border			60
-Rock			77
+Rock			DF
 --Rocks--
 Border			60
-Rock			73
-Border			43
+Rock			DF
+Cracks			FF
+Border			77
 Silver			7B
 Gold			DD
 Ruby			C0
