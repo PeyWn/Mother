@@ -21,8 +21,8 @@ Border			60
 Rock			DF
 --Rocks--
 Border			60
-Rock			DF
-Cracks			FF
+Rock			B6
+Cracks			00
 Border			77
 Silver			7B
 Gold			DD
