@@ -52,7 +52,35 @@ x"430F1000", --STRVR RF R1	//Put drill icon
 x"10F00002", --MOV RF x2	//1 symbol
 x"1010000D", --MOV R1 xD  	//screen addres for symbol
 x"430F1000", --STRVR RF R1	//Put 1 icon
-x"10000001", --MOV R0 1 //Row
+x"10400000", --MOV	R4 0
+x"10500000", --MOV R5 0
+x"50000013", --JMP INNER_LOOP
+x"00000000", --NOP
+x"10400000", --MOV R4 0 //sets x to 0
+x"10F00001", --MOV RF 1
+x"3455F000", --ADD R5 R5 RF //y++
+x"10F00008", --MOV RF 8
+x"6005F000", --CMP R5 RF	//all rooms generated check
+x"5200004d", --BRZ LOAD_VM
+x"00000000", --NOP
+x"5000000a", --JMP INNER_LOOP
+x"00000000", --NOP
+x"10F00001", --MOV RF 1
+x"3444F000", --ADD R4 R4 RF //x++
+x"10F00008", --MOV RF 8
+x"6004F000", --CMP R4 RF //all rooms in row generated check
+x"5200fff3", --BRZ Y_SCREEN
+x"00000000", --NOP
+x"50000002", --JMP INNER_LOOP
+x"00000000", --NOP
+x"106003e8", --MOV R6 1000 //START VALUE IS 1000 IN MEM
+x"10F008c0", --MOV RF 2240 //NEXT 5 LINES CALCULATES START ADDRESS OF CURRENT ROOM
+x"36F5F000", --MUL RF R5 RF
+x"3466F000", --ADD R6 R6 RF
+x"10F00118", --MOV RF 280
+x"36F4F000", --MUL RF R4 RF
+x"3466F000", --ADD R6 R6 RF //R6 is now correct address
+x"10000000", --MOV R0 0 //Row
 x"10100000", --MOV R1 0 //Col
 x"10E000FF", --MOV RE x00FF //For masking
 x"11200000", --LFSR R2 //Move random number to R2
@@ -88,26 +116,56 @@ x"00000000", --NOP
 x"10300013", --MOV R3 x13 //Tile address
 x"50000002", --JMP VMEM_FILL_END_LOOP
 x"00000000", --NOP
-x"10D00008", --MOV RD 8
-x"3840D000", --LSL R4 R0 RD
-x"34441000", --ADD R4 R4 R1 //R4 contains indexing for vmem
-x"43034000", --STRVR R3 R4 //Write tile address
+x"10F00014", --MOV RF 20
+x"367F0000", --MUL R7 RF R0  //20*y
+x"34776000", --ADD R7 R7 R6  //START ADDRESS + 20y
+x"34717000", --ADD R7 R1 R7  //START AFFRESS + 20y + x, R7 now contains current address for tile
+x"23037000", --STRR R3 R7 //WRITE TO VMEM FROM DMEM
 x"10D00001", --MOV RD 1
 x"3411D000", --ADD R1 R1 RD
-x"10D00015", --MOV RD 21
-x"6001D000", --CMP R1 RD //Check if col has reached 21
+x"10D00014", --MOV RD 20
+x"6001D000", --CMP R1 RD //Check if col has reached 20
 x"52000004", --BRZ VMEM_FILL_RST_X
 x"00000000", --NOP
-x"5000ffd5", --JMP VMEM_FILL_LOOP
+x"5000ffd4", --JMP VMEM_FILL_LOOP
 x"00000000", --NOP
 x"10100000", --MOV R1 0 //Reset col
 x"10D00001", --MOV RD 1
 x"340D0000", --ADD R0 RD R0 //add one to row
-x"10D00011", --MOV RD 17
-x"6000D000", --CMP R0 RD //Check if row is 17
-x"52000004", --BRZ PLACE_PLAYER
+x"10D0000e", --MOV RD 14
+x"6000D000", --CMP R0 RD //Check if row is 14
+x"5200ffbb", --BRZ X_SCREEN
 x"00000000", --NOP
-x"5000ffcc", --JMP VMEM_FILL_LOOP
+x"5000ffcb", --JMP VMEM_FILL_LOOP
+x"00000000", --NOP
+x"10F00004", --MOV RF 4
+x"210F000a", --STR RF 10  //ROOM X = 4
+x"210F000b", --STR RF 11  //ROOM Y = 4
+x"10202b48", --MOV R2 11080 // START ADDRESS FOR ROOM AT 4,4
+x"10000001", --MOV R0 1 //y
+x"10100000", --MOV R1 0 //x
+x"22320000", --LDAR R3 R2 //Load tile to R3
+x"10F00008", --MOV RF 8
+x"3840F000", --LSL R4 R0 RF
+x"34441000", --ADD R4 R4 R1 //Index for vmem in R4
+x"43034000", --STRVR R3 R4 //Write tile to vmem
+x"10F00001", --MOV RF 1
+x"3411F000", --ADD R1 R1 RF //x++
+x"3422F000", --ADD R2 R2 RF //D-mem adress ++
+x"10F00014", --MOV RF 20
+x"6001F000", --CMP R1 RF //Check if x==20
+x"52000004", --BRZ VMEM_MOVE_RST_X
+x"00000000", --NOP
+x"5000fff4", --JMP VMEM_MOVE_LOOP
+x"00000000", --NOP
+x"10F02c60", --MOV RF 11360 //End of screen in Dmem
+x"6002F000", --CMP R2 RF
+x"52000007", --BRZ PLACE_PLAYER //Done with moving data to dmem
+x"00000000", --NOP
+x"10F00001", --MOV RF 1
+x"3400F000", --ADD R0 R0 RF //y++
+x"10100000", --MOV R1 0 //x = 0
+x"5000ffeb", --JMP VMEM_MOVE_LOOP
 x"00000000", --NOP
 x"1000000D", --MOV R0 x0D //Player down tile
 x"4100070A", --STRV R0 x070A
@@ -119,6 +177,8 @@ x"10000001", --MOV R0 1
 x"21000003", --STR R0 3 //Drill level
 x"10000000", --MOV R0 0
 x"21000004", --STR R0 4 //Score
+x"50000002", --JMP MAIN_LOOP
+x"00000000", --NOP
 x"10F00000", --MOV RF 0
 x"5900000e", --BRJU JOY_UP
 x"00000000", --NOP
