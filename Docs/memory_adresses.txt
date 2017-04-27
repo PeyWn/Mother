@@ -8,6 +8,9 @@ DECIMAL NOTATION
 3 - Drill level [0-4]
 4 - Player score
 
+10 - cur room x
+11 - cur room y
+
 100 - BTN1 last state
 101 - BTN2 last state
 102 - JOY_UP last state
