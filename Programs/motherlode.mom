@@ -46,9 +46,44 @@ TOP_ROW_DONE
     MOV R1 xD  	//screen addres for symbol
     STRVR RF R1	//Put 1 icon
     
-    
 
-    MOV R0 1 //Row
+INIT_ROOM_LOOP //R4: screen X, R5: Screen Y,R6: current room start  address 
+    MOV	R4 0
+    MOV R5 0
+    JMP INNER_LOOP
+    NOP
+
+Y_SCREEN
+    MOV R4 0 //sets x to 0
+    MOV RF 1 
+    ADD R5 R5 RF //y++
+    MOV RF 8 
+    CMP R5 RF	//all rooms generated check
+    BRZ LOAD_VM
+    NOP
+    JMP INNER_LOOP
+    NOP
+
+X_SCREEN
+    MOV RF 1
+    ADD R4 R4 RF //x++
+    MOV RF 8
+    CMP R4 RF //all rooms in row generated check
+    BRZ Y_SCREEN
+    NOP
+    JMP INNER_LOOP
+    NOP
+
+INNER_LOOP
+    MOV R6 1000 //START VALUE IS 1000 IN MEM
+    MOV RF 2240 //NEXT 5 LINES CALCULATES START ADDRESS OF CURRENT ROOM
+    MUL RF R5 RF
+    ADD R6 R6 RF
+    MOV RF 280
+    MUL RF R4 RF
+    ADD R6 R6 RF //R6 is now correct address
+    
+    MOV R0 0 //Row
     MOV R1 0 //Col
     MOV RE x00FF //For masking
 VMEM_FILL_LOOP
@@ -92,14 +127,17 @@ VMEM_FILL_RUBY
     NOP
 
 VMEM_FILL_END_LOOP
-    MOV RD 8
-    LSL R4 R0 RD
-    ADD R4 R4 R1 //R4 contains indexing for vmem
-    STRVR R3 R4 //Write tile address
+    MOV RF 20
+    MUL R7 RF R0  //20*y
+    ADD R7 R7 R6  //START ADDRESS + 20y
+    ADD R7 R1 R7  //START AFFRESS + 20y + x, R7 now contains current address for tile
+    
+    STRR R3 R7 //WRITE TO VMEM FROM DMEM
+    
     MOV RD 1
     ADD R1 R1 RD
-    MOV RD 21
-    CMP R1 RD //Check if col has reached 21
+    MOV RD 20
+    CMP R1 RD //Check if col has reached 20
     BRZ VMEM_FILL_RST_X
     NOP
     JMP VMEM_FILL_LOOP
@@ -108,11 +146,51 @@ VMEM_FILL_RST_X
     MOV R1 0 //Reset col
     MOV RD 1
     ADD R0 RD R0 //add one to row
-    MOV RD 17
-    CMP R0 RD //Check if row is 17
-    BRZ PLACE_PLAYER
+    MOV RD 14
+    CMP R0 RD //Check if row is 14
+    BRZ X_SCREEN
     NOP
     JMP VMEM_FILL_LOOP
+    NOP
+
+
+LOAD_VM
+    MOV RF 4
+    STR RF 10  //ROOM X = 4
+    STR RF 11  //ROOM Y = 4
+    
+    MOV R2 11080 // START ADDRESS FOR ROOM AT 4,4
+   
+    MOV R0 1 //y
+    MOV R1 0 //x
+    
+VMEM_MOVE_LOOP
+    LDAR R3 R2 //Load tile to R3
+
+    MOV RF 8
+    LSL R4 R0 RF
+    ADD R4 R4 R1 //Index for vmem in R4
+    STRVR R3 R4 //Write tile to vmem
+    
+    MOV RF 1
+    ADD R1 R1 RF //x++
+    ADD R2 R2 RF //D-mem adress ++
+    MOV RF 20
+    CMP R1 RF //Check if x==20
+    BRZ VMEM_MOVE_RST_X
+    NOP
+    JMP VMEM_MOVE_LOOP
+    NOP
+
+VMEM_MOVE_RST_X
+    MOV RF 11360 //End of screen in Dmem
+    CMP R2 RF
+    BRZ PLACE_PLAYER //Done with moving data to dmem
+    NOP
+    MOV RF 1
+    ADD R0 R0 RF //y++
+    MOV R1 0 //x = 0
+    JMP VMEM_MOVE_LOOP
     NOP
 
 PLACE_PLAYER
@@ -126,8 +204,8 @@ PLACE_PLAYER
     STR R0 3 //Drill level
     MOV R0 0
     STR R0 4 //Score
-
-GAMEPLAY_START
+    JMP MAIN_LOOP
+    NOP
 
 MAIN_LOOP
     MOV RF 0
