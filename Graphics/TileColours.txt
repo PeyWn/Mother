@@ -1,0 +1,37 @@
+Part			Hex-Colour
+--Numbers--
+Background		00
+Number			FF
+--Player Sprite--
+Background Floor	88
+Background Border	60
+Backgorund Rock		77
+Drill Border		FF
+Drill Light		9F
+Drill Dark		93
+Treadmill		94
+Wheel			40
+Treadmill BG		AC
+Body			CC
+Cockpit			17
+Cockpit Border		02
+--Ground--
+Base			88
+Border			60
+Rock			77
+--Rocks--
+Border			60
+Rock			73
+Border			43
+Silver			7B
+Gold			DD
+Ruby			C0
+Ruby Border		E4
+--Icons--
+Icon Border		00
+Drill Light		9F
+Drill Dark		93
+Drill Border		FF
+Drill Background	EC
+Peng BackGround		FC
+Peng Symbol		1C
