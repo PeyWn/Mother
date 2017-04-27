@@ -11,7 +11,44 @@ GAME_BOOT
     STR R0 0 //X
     STR R1 1 //Y
 
-    MOV R0 0 //Row
+    MOV R1 0 //X-index
+TOP_ROW_LOOP
+    MOV RF 0
+    STRVR RF R1
+    MOV RF 1
+    ADD R1 R1 RF
+    MOV RF 20
+    CMP R1 RF
+    BRZ TOP_ROW_DONE
+    NOP
+    JMP TOP_ROW_LOOP
+    NOP
+TOP_ROW_DONE
+    MOV RF 1 //Number 0 tile
+    MOV R1 x0013 // left on top row
+    STRVR RF R1 //Score 0
+    MOV R1 x0012 
+    STRVR RF R1 //Score 0
+    MOV R1 x0011 
+    STRVR RF R1 //Score 0
+    MOV R1 x0010 
+    STRVR RF R1 //Score 0
+    
+    MOV RF x15 //Peng symbol
+    MOV R1 x000F //Where money symbol should be
+    STRVR RF R1 //Put money symbol
+    
+    MOV RF x14	//Drill symbol
+    MOV R1 xC  	//screen addres for symbol
+    STRVR RF R1	//Put drill icon
+    
+    MOV RF x2	//1 symbol
+    MOV R1 xD  	//screen addres for symbol
+    STRVR RF R1	//Put 1 icon
+    
+    
+
+    MOV R0 1 //Row
     MOV R1 0 //Col
     MOV RE x00FF //For masking
 VMEM_FILL_LOOP
@@ -198,7 +235,7 @@ CONT_MOVE
 
     STRVR RF RB //Write over new tile
 
-    JMP MAIN_LOOP
+    JMP UPDATE_SCORE
     NOP
 
 TURN //R0 - direction, R1 - x-pos, R2 - y-pos
@@ -244,6 +281,74 @@ ADD_LEVEL
     JMP CONT_MOVE
     NOP
     
-    
-    
+UPDATE_SCORE
+    LDA R0 4 //Score to R0
+    JMP GET_BCD
+    NOP
+BCD_RETURN
+    MOV RF 1
+    ADD R3 R3 RF //Add one to get to correct number tile
+    ADD R4 R4 RF
+    ADD R5 R5 RF
+    ADD R6 R6 RF
+
+    STRV R3 X10
+    STRV R4 X11
+    STRV R5 X12
+    STRV R6 X13
+
+    LDA RF 3 // LOAD DRILL LVL
+    MOV RE 1
+    ADD RF RF RE //RF IS NOW TILE ADDERSS
+    STRV RF XD // Put drill lvl on D tile 
+
+    JMP MAIN_LOOP
+    NOP
+
+GET_BCD //Number to BCD should be in R0, returns BCD digits in R3,R4,R5,R6
+    MOV R3 0 //Dest for 1000
+    MOV R4 0 //Dest for 100
+    MOV R5 0 //Dest for 10
+    MOV R6 0 //Dest for 1
+    MOV RF 1
+THOUSAND
+    MOV R1 0 //Loop counter
+    MOV R2 1000
+THOUSAND_LOOP
+    CMP R0 R2
+    BRN HUNDRED
+    NOP
+    SUB R0 R0 R2
+    ADD R1 R1 RF
+    JMP THOUSAND_LOOP
+    NOP
+HUNDRED
+    ADD R3 R3 R1
+    MOV R1 0 //Loop counter
+    MOV R2 100
+HUNDRED_LOOP
+    CMP R0 R2
+    BRN TEN
+    NOP
+    SUB R0 R0 R2
+    ADD R1 R1 RF
+    JMP HUNDRED_LOOP
+    NOP
+TEN
+    ADD R4 R4 R1
+    MOV R1 0 //Loop counter
+    MOV R2 10
+TEN_LOOP
+    CMP R0 R2
+    BRN ONE
+    NOP
+    SUB R0 R0 R2
+    ADD R1 R1 RF
+    JMP TEN_LOOP
+    NOP
+ONE
+    ADD R5 R5 R1
+    ADD R6 R6 R0
+    JMP BCD_RETURN
+    NOP 
     

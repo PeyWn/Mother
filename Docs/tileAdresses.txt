@@ -22,3 +22,6 @@ Hex	Tile
 11	Silver Rock
 12	Gold Rock
 13	Ruby Rock
+-- Menu --
+14 	Drill icon
+15 	Peng icon

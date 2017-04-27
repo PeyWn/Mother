@@ -23,7 +23,36 @@ x"1000000a", --MOV R0 10 //Set player default coordinates
 x"10100008", --MOV R1 8
 x"21000000", --STR R0 0 //X
 x"21010001", --STR R1 1 //Y
-x"10000000", --MOV R0 0 //Row
+x"10100000", --MOV R1 0 //X-index
+x"10F00000", --MOV RF 0
+x"430F1000", --STRVR RF R1
+x"10F00001", --MOV RF 1
+x"3411F000", --ADD R1 R1 RF
+x"10F00014", --MOV RF 20
+x"6001F000", --CMP R1 RF
+x"52000004", --BRZ TOP_ROW_DONE
+x"00000000", --NOP
+x"5000fff8", --JMP TOP_ROW_LOOP
+x"00000000", --NOP
+x"10F00001", --MOV RF 1 //Number 0 tile
+x"10100013", --MOV R1 x0013 // left on top row
+x"430F1000", --STRVR RF R1 //Score 0
+x"10100012", --MOV R1 x0012
+x"430F1000", --STRVR RF R1 //Score 0
+x"10100011", --MOV R1 x0011
+x"430F1000", --STRVR RF R1 //Score 0
+x"10100010", --MOV R1 x0010
+x"430F1000", --STRVR RF R1 //Score 0
+x"10F00015", --MOV RF x15 //Peng symbol
+x"1010000F", --MOV R1 x000F //Where money symbol should be
+x"430F1000", --STRVR RF R1 //Put money symbol
+x"10F00014", --MOV RF x14	//Drill symbol
+x"1010000C", --MOV R1 xC  	//screen addres for symbol
+x"430F1000", --STRVR RF R1	//Put drill icon
+x"10F00002", --MOV RF x2	//1 symbol
+x"1010000D", --MOV R1 xD  	//screen addres for symbol
+x"430F1000", --STRVR RF R1	//Put 1 icon
+x"10000001", --MOV R0 1 //Row
 x"10100000", --MOV R1 0 //Col
 x"10E000FF", --MOV RE x00FF //For masking
 x"11200000", --LFSR R2 //Move random number to R2
@@ -177,7 +206,7 @@ x"21080001", --STR R8 1
 x"10F0000B", --MOV RF x0B //Start for player sprites
 x"34F0F000", --ADD RF R0 RF
 x"430FB000", --STRVR RF RB //Write over new tile
-x"5000ffa9", --JMP MAIN_LOOP
+x"50000027", --JMP UPDATE_SCORE
 x"00000000", --NOP
 x"10F00008", --MOV RF 8
 x"3832F000", --LSL R3 R2 RF //Shift up y
@@ -215,6 +244,62 @@ x"10F00001", --MOV RF 1
 x"34EEF000", --ADD RE RE RF
 x"210E0003", --STR RE 3
 x"5000ffd1", --JMP CONT_MOVE
+x"00000000", --NOP
+x"20000004", --LDA R0 4 //Score to R0
+x"50000011", --JMP GET_BCD
+x"00000000", --NOP
+x"10F00001", --MOV RF 1
+x"3433F000", --ADD R3 R3 RF //Add one to get to correct number tile
+x"3444F000", --ADD R4 R4 RF
+x"3455F000", --ADD R5 R5 RF
+x"3466F000", --ADD R6 R6 RF
+x"41030010", --STRV R3 X10
+x"41040011", --STRV R4 X11
+x"41050012", --STRV R5 X12
+x"41060013", --STRV R6 X13
+x"20F00003", --LDA RF 3 // LOAD DRILL LVL
+x"10E00001", --MOV RE 1
+x"34FFE000", --ADD RF RF RE //RF IS NOW TILE ADDERSS
+x"410F000D", --STRV RF XD // Put drill lvl on D tile
+x"5000ff72", --JMP MAIN_LOOP
+x"00000000", --NOP
+x"10300000", --MOV R3 0 //Dest for 1000
+x"10400000", --MOV R4 0 //Dest for 100
+x"10500000", --MOV R5 0 //Dest for 10
+x"10600000", --MOV R6 0 //Dest for 1
+x"10F00001", --MOV RF 1
+x"10100000", --MOV R1 0 //Loop counter
+x"102003e8", --MOV R2 1000
+x"60002000", --CMP R0 R2
+x"51000006", --BRN HUNDRED
+x"00000000", --NOP
+x"35002000", --SUB R0 R0 R2
+x"3411F000", --ADD R1 R1 RF
+x"5000fffb", --JMP THOUSAND_LOOP
+x"00000000", --NOP
+x"34331000", --ADD R3 R3 R1
+x"10100000", --MOV R1 0 //Loop counter
+x"10200064", --MOV R2 100
+x"60002000", --CMP R0 R2
+x"51000006", --BRN TEN
+x"00000000", --NOP
+x"35002000", --SUB R0 R0 R2
+x"3411F000", --ADD R1 R1 RF
+x"5000fffb", --JMP HUNDRED_LOOP
+x"00000000", --NOP
+x"34441000", --ADD R4 R4 R1
+x"10100000", --MOV R1 0 //Loop counter
+x"1020000a", --MOV R2 10
+x"60002000", --CMP R0 R2
+x"51000006", --BRN ONE
+x"00000000", --NOP
+x"35002000", --SUB R0 R0 R2
+x"3411F000", --ADD R1 R1 RF
+x"5000fffb", --JMP TEN_LOOP
+x"00000000", --NOP
+x"34551000", --ADD R5 R5 R1
+x"34660000", --ADD R6 R6 R0
+x"5000ffcd", --JMP BCD_RETURN
 x"00000000", --NOP
 others=>(others=>'0')
 );

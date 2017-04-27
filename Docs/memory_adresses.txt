@@ -6,9 +6,7 @@ DECIMAL NOTATION
 1 - Player y [0-15]
 2 - Player direction [0:left, 1:right, 2:down, 3:up]
 3 - Drill level [0-4]
-4 - Player score 1
-5 - Player score 10
-6 - Player score 100
+4 - Player score
 
 100 - BTN1 last state
 101 - BTN2 last state
