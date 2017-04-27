@@ -87,6 +87,8 @@ PLACE_PLAYER
     STR R0 0 //x-pos
     MOV R0 1
     STR R0 3 //Drill level
+    MOV R0 0
+    STR R0 4 //Score
 
 GAMEPLAY_START
 
@@ -179,7 +181,9 @@ MOVE //R4 should contain delta-x, R5 should contain delta-y, R0 should contain d
     CMP RA R9
     BRN TURN
     NOP
-
+    JMP AWARD_SCORE
+    NOP
+CONT_MOVE
     MOV RF 8
     LSL R3 R2 RF //Shift old y
     ADD R3 R3 R1 //Vmem old pos in R3
@@ -206,3 +210,40 @@ TURN //R0 - direction, R1 - x-pos, R2 - y-pos
     STRVR RF R3 //Write over new tile
     JMP MAIN_LOOP
     NOP
+
+AWARD_SCORE // R9 - GroundTile - 0F DONT FUCK UP REGs FROM MOVE!!!
+    MOV RF 0
+    CMP R9 RF //Check if ground
+    BRZ CONT_MOVE
+    NOP
+    MOV RF 1
+    SUB R9 R9 RF
+    LDA RF 4 //Load score to RF
+    MOV RE 1
+    LSL RE RE R9
+    ADD RF RF RE //New score in RF
+    STR RF 4
+    MOV RE 4
+    LDA RD 3 //Drill level in RD
+    CMP RE RD
+    BRZ CONT_MOVE //go back if max drill level
+    NOP
+    MOV RE 10
+    MUL RD RD RE
+    CMP RD RF
+    BRN ADD_LEVEL
+    NOP
+    JMP CONT_MOVE
+    NOP
+
+ADD_LEVEL
+    LDA RE 3
+    MOV RF 1
+    ADD RE RE RF
+    STR RE 3
+    JMP CONT_MOVE
+    NOP
+    
+    
+    
+    

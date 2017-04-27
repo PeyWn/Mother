@@ -1,5 +1,6 @@
 Hex	Tile
 -- Numbers --
+00 	Black
 01	Number 0
 02	Number 1
 03	Number 2

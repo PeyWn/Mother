@@ -88,6 +88,8 @@ x"1000000A", --MOV R0 xA
 x"21000000", --STR R0 0 //x-pos
 x"10000001", --MOV R0 1
 x"21000003", --STR R0 3 //Drill level
+x"10000000", --MOV R0 0
+x"21000004", --STR R0 4 //Score
 x"10F00000", --MOV RF 0
 x"5900000e", --BRJU JOY_UP
 x"00000000", --NOP
@@ -161,7 +163,9 @@ x"20A00003", --LDA RA 3 //Drill level in RA
 x"10F0000F", --MOV RF x0F
 x"3599F000", --SUB R9 R9 RF
 x"600A9000", --CMP RA R9
-x"5100000e", --BRN TURN
+x"51000010", --BRN TURN
+x"00000000", --NOP
+x"50000016", --JMP AWARD_SCORE
 x"00000000", --NOP
 x"10F00008", --MOV RF 8
 x"3832F000", --LSL R3 R2 RF //Shift old y
@@ -173,7 +177,7 @@ x"21080001", --STR R8 1
 x"10F0000B", --MOV RF x0B //Start for player sprites
 x"34F0F000", --ADD RF R0 RF
 x"430FB000", --STRVR RF RB //Write over new tile
-x"5000ffab", --JMP MAIN_LOOP
+x"5000ffa9", --JMP MAIN_LOOP
 x"00000000", --NOP
 x"10F00008", --MOV RF 8
 x"3832F000", --LSL R3 R2 RF //Shift up y
@@ -181,7 +185,36 @@ x"34331000", --ADD R3 R3 R1 //Vmem pos in R3
 x"10F0000B", --MOV RF x0B //Start for player tiles
 x"34F0F000", --ADD RF R0 RF
 x"430F3000", --STRVR RF R3 //Write over new tile
-x"5000ffa3", --JMP MAIN_LOOP
+x"5000ffa1", --JMP MAIN_LOOP
+x"00000000", --NOP
+x"10F00000", --MOV RF 0
+x"6009F000", --CMP R9 RF //Check if ground
+x"5200ffea", --BRZ CONT_MOVE
+x"00000000", --NOP
+x"10F00001", --MOV RF 1
+x"3599F000", --SUB R9 R9 RF
+x"20F00004", --LDA RF 4 //Load score to RF
+x"10E00001", --MOV RE 1
+x"38EE9000", --LSL RE RE R9
+x"34FFE000", --ADD RF RF RE //New score in RF
+x"210F0004", --STR RF 4
+x"10E00004", --MOV RE 4
+x"20D00003", --LDA RD 3 //Drill level in RD
+x"600ED000", --CMP RE RD
+x"5200ffde", --BRZ CONT_MOVE //go back if max drill level
+x"00000000", --NOP
+x"10E0000a", --MOV RE 10
+x"36DDE000", --MUL RD RD RE
+x"600DF000", --CMP RD RF
+x"51000004", --BRN ADD_LEVEL
+x"00000000", --NOP
+x"5000ffd7", --JMP CONT_MOVE
+x"00000000", --NOP
+x"20E00003", --LDA RE 3
+x"10F00001", --MOV RF 1
+x"34EEF000", --ADD RE RE RF
+x"210E0003", --STR RE 3
+x"5000ffd1", --JMP CONT_MOVE
 x"00000000", --NOP
 others=>(others=>'0')
 );

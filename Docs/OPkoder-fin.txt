@@ -82,12 +82,12 @@
 		            --> Rk tilldelas aritmetisk multiplikation av Rn och Rm.
    ----------------------------------------------------------------
    00110111 LSR	--> LSR Rk Rn Rm
-     #37 	--> LSR<Rm>(Rk)
+     #37 	--> Rk <= LSR<Rm>(Rn)
 		--> Rk tilldelas Rn skiftad Rm steg åt höger. MSB fylls på med 0.
 		--> 0 < const < 17
    ----------------------------------------------------------------
    00111000 LSL	--> LSL Rk Rn Rm
-     #38 	--> LSL<Rm>(Rk)
+     #38 	--> Rk <= LSL<Rm>(Rn)
 		--> Rk tilldelas Rn skiftad Rm steg åt vänster. LSB fylls på med 0.
 		--> 0 < const < 17
    ----------------------------------------------------------------
