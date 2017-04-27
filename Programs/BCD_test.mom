@@ -1,0 +1,46 @@
+START
+    MOV R0 0
+    MOV R3 0 //Dest for 1000
+    MOV R4 0 //Dest for 100
+    MOV R5 0 //Dest for 10
+    MOV R6 0 //Dest for 1
+    MOV RF 1
+THOUSAND
+    MOV R1 0 //Loop counter
+    MOV R2 1000
+THOUSAND_LOOP
+    CMP R0 R2
+    BRN HUNDRED
+    NOP
+    SUB R0 R0 R2
+    ADD R1 R1 RF
+    JMP THOUSAND_LOOP
+    NOP
+HUNDRED
+    ADD R3 R3 R1
+    MOV R1 0 //Loop counter
+    MOV R2 100
+HUNDRED_LOOP
+    CMP R0 R2
+    BRN TEN
+    NOP
+    SUB R0 R0 R2
+    ADD R1 R1 RF
+    JMP HUNDRED_LOOP
+    NOP
+TEN
+    ADD R4 R4 R1
+    MOV R1 0 //Loop counter
+    MOV R2 10
+TEN_LOOP
+    CMP R0 R2
+    BRN ONE
+    NOP
+    SUB R0 R0 R2
+    ADD R1 R1 RF
+    JMP TEN_LOOP
+    NOP
+ONE
+    ADD R5 R5 R1
+    ADD R6 R6 R0
+    NOP 
