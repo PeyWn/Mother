@@ -286,25 +286,28 @@ MOVE //R4 should contain delta-x, R5 should contain delta-y, R0 should contain d
     ADD R7 R1 R4 //New x-pos
     ADD R8 R2 R5 //New y-pos
 
-    MOV RF 20 //Check if too far right
-    CMP RF R7
+    MOV RE 20 //Check if too far right
+    CMP RE R7
     BRZ NEXT_SCREEN
     NOP
-    MOV RF -1 //Check too far left
-    CMP RF R7
+    MOV RE -1 //Check too far left
+    CMP RE R7
     BRZ NEXT_SCREEN
     NOP
-    MOV RF 0 //Check too far up
+    MOV RE 0 //Check too far up
+    CMP RE R8
     BRZ NEXT_SCREEN
     NOP
-    MOV RF 15 //Check too far down
+    MOV RE 15 //Check too far down
+    CMP RE R8
     BRZ NEXT_SCREEN
     NOP
     JMP NO_BORDER_WRAP
+    NOP
 
-NEXT_SCREEN //R2 = Y POS, R1 = X POS FROM EARLIER
-    MOV RF 0
-    CMP R1 RF
+NEXT_SCREEN //R4 is delta X, R5 is delta Y  (R2 = Y POS, R1 = X POS FROM EARLIER)
+    MOV RE 0
+    CMP R4 RE
     BRZ Y_BORDER_WRAP //No X-movement
     NOP
     BRN X_WRAP_LEFT // delta X < 0
@@ -313,7 +316,7 @@ NEXT_SCREEN //R2 = Y POS, R1 = X POS FROM EARLIER
     NOP
 
 Y_BORDER_WRAP
-    CMP R2 RF
+    CMP R5 RE
     BRZ NO_BORDER_WRAP //No Y-movement
     NOP
     BRN Y_WRAP_UP  // delta Y < 0
@@ -322,7 +325,7 @@ Y_BORDER_WRAP
     NOP
 
 X_WRAP_LEFT
-    MOV RF 1000		// Calculate what tile is where we try to move on new screen all according to formula
+    MOV RA 1000		// Calculate what tile is where we try to move on new screen all according to formula
     LDA RE 10  		 // X coord for room
     LDA RD 11 		 // Y coord for room
     MOV RC 8
@@ -330,7 +333,9 @@ X_WRAP_LEFT
     ADD RE RE RD 	 // X + Y*8
     MOV RC 280
     MUL RE RE RC 	 // 280(X + Y*8)
-    ADD RF RF RE 	 // 1000 + 280(X + Y *8) , start adress for tiles in new room
+    ADD RA RA RE 	 // 1000 + 280(X + Y *8) , start adress for tiles in new room
+    MOV RE 0
+    ADD R9 RA RE	//SAVE STARTADRESS FOR NEW ROOM FOR LATER
 
     MOV RE 20		 //Calculate tile adress in room according to formula of tile we want to move to
     MOV RD 1		 //Top row is not in the dMem, need to adjust for that
@@ -338,13 +343,13 @@ X_WRAP_LEFT
     MUL RE RE RD         //20*Y
     MOV RD 19 	       	 //When wrapping left, new X is 19
     ADD RE RE RD         //20*Y + X
-    ADD RB RF RD       	 //Room_adress + 20*Y + X = Tile_adress
+    ADD RB RA RE       	 //Room_adress + 20*Y + X = Tile_adress
 
-    LDAR RF RB		 //New tile in RF
+    LDAR RA RB		 //New tile in RF
     LDA RE 3  		 //Drill level
     MOV RD x0F		 //Start adress for breakable rocks
     ADD RE RE RD	 //Highest tile that can be broken
-    CMP RE RF 		 //Can i breakz?
+    CMP RE RA 		 //Can i breakz?
     BRN TURN 		 //NO BREAK ROCK CANCEL
     NOP
     MOV R5 19		//UPDATE PLAYER X, Y IS SAME
@@ -354,32 +359,32 @@ X_WRAP_LEFT
     JMP CHANGE_SCREEN
     NOP
 
-CHANGE_SCREEN //RF is tile that was broken, RD is start adress for breakable blocks, R1 is OLD player X, R2 is OLD player Y, R5 is new player X, R6 is new player Y, RB is start adress for new room tiles in data
-    MOV RE 0 //Before that calculate the new score
-    SUB RF RF RD
-    CMP RF RE //Check if ground
+CHANGE_SCREEN //RA is tile that was broken, RD is start adress for breakable blocks, R1 is OLD player X, R2 is OLD player Y, R5 is new player X, R6 is new player Y, R9 is start adress for new room tiles in dMem
+    MOV RE 0 //Before that calculate the new score	
+    SUB RA RA RD
+    CMP RA RE //Check if ground
     BRZ CONT_CHANGE_SCREEN
     NOP
     MOV RE 1
-    SUB RF RF RE
+    SUB RA RA RE
     LDA RD 4 //Load score to RD
-    LSL RE RE RF
-    ADD RD RD RE //New score in RD
+    LSL RE RE RA
+    ADD RD RD RA //New score in RD
     STR RD 4
     MOV RE 4
-    LDA RF 3 //Drill level in RF
-    CMP RE RF
+    LDA RA 3 //Drill level in RF
+    CMP RE RA
     BRZ CONT_CHANGE_SCREEN //go back if max drill level
     NOP
     MOV RE 10
-    MUL RF RF RE
-    CMP RD RF
+    MUL RA RA RE
+    CMP RD RA
     BRN CONT_CHANGE_SCREEN //Not enough score to level up
     NOP
 
     LDA RE 3 //Level up the drill
-    MOV RF 1
-    ADD RE RE RF
+    MOV RA 1
+    ADD RE RE RA
     STR RE 3
    
 
@@ -387,7 +392,8 @@ CONT_CHANGE_SCREEN //Here we want to store the current room to data memory, and 
     MOV RE 8
     LSL R2 R2 RE
     ADD R2 R2 R1 //CURRENT ADRESS FOR PLAYER IN VMEM
-    STRVR R2 RD //OVERWRITE PLAYAH WITH GROUND BEFORE STORING/LOADING FROM MEMORY
+    MOV RD x0F
+    STRVR RD R2 //OVERWRITE PLAYAH WITH GROUND BEFORE STORING/LOADING FROM MEMORY
 
     STR R5 0 	//Store new player X
     STR R6 1	//Store new player Y
@@ -397,43 +403,45 @@ CONT_CHANGE_SCREEN //Here we want to store the current room to data memory, and 
     MUL R4 R4 RE	  //Calc start adress for current room in dMem
     ADD R4 R4 R3
     MOV R3 280
-    ADD R4 R4 R3
+    MUL R4 R4 R3
     MOV R3 1000
-    ADD R4 R3 R3	//It is in R4
+    ADD R4 R4 R3 //It is in R4
 
     
-
-    MOV RF 0	   //Loop X
+    MOV RC 8	//For shifting 8 bits
+    MOV RA 0	   //Loop X
     MOV RE 0	   //Loop Y
     MOV RD 1	   //For inc/dec 1
 
-CHANGE_SCREEN_LOOP //Needs RF for loop X, RE for loop Y, R4 for start adress old room, RB start adress new room, RD is inc/dec 1 register, RC is 8 for shifting to adress vMem
+CHANGE_SCREEN_LOOP //Needs RA for loop X, RE for loop Y, R4 for start adress old room, R9 start adress new room, RD is inc/dec 1 register, RC is 8 for shifting to adress vMem
     MOV R0 20
     MUL R1 RE R0
-    ADD R1 RE RF	//OFFSETT FOR CURRENT TILE IN THE ROOM IN R1
+    ADD R1 R1 RA	//OFFSETT FOR CURRENT TILE IN THE ROOM IN R1
     ADD R3 R1 R4	//ADRESS TO STORE TILE X Y IN DMEM IN R3
+
     ADD R2 RE RD
     LSL R2 R2 RC
-    ADD R2 RF R2		//ADRESS TO CURRENT TILE IN VMEM IN R2
+    ADD R2 RA R2		//ADRESS TO CURRENT TILE IN VMEM IN R2
     LDAVR R5 R2		//Current tile in R5
-    STRR R3 R5		//STR CURRENT TILE IN dMEM
-    ADD RA RB R1
-    LDAR R5 RA		//R5 IS TILE THAT IS NEWLY LOADED
-    STRVR R3 R5
+    STRR R5 R3		//STR CURRENT TILE IN dMEM
+
+    ADD RF R9 R1
+    LDAR R5 RF		//R5 IS TILE THAT IS NEWLY LOADED
+    STRVR R5 R2
     MOV R0 19
-    CMP RF R0
-    BRZ SCREEN_INC_X
+    CMP RA R0
+    BRN SCREEN_INC_X
     NOP
-    MOV RF 0
+    MOV RA 0 //x is 19
     MOV R0 13
     CMP RE R0
-    BRZ SCREEN_PLACE_PLAYER
+    BRZ SCREEN_PLACE_PLAYER //All rows are changed
     NOP
     ADD RE RE RD
     JMP CHANGE_SCREEN_LOOP
     NOP
 SCREEN_INC_X
-    ADD RF RF RD
+    ADD RA RA RD
     JMP CHANGE_SCREEN_LOOP
     NOP
 
@@ -452,7 +460,7 @@ SCREEN_PLACE_PLAYER
 	
 
 X_WRAP_RIGHT
-    MOV RF 1000		// Calculate what tile is where we try to move on new screen all according to formula
+    MOV RA 1000		// Calculate what tile is where we try to move on new screen all according to formula
     LDA RE 10  		 // X coord for room
     LDA RD 11 		 // Y coord for room
     MOV RC 8
@@ -460,7 +468,9 @@ X_WRAP_RIGHT
     ADD RE RE RD 	 // X + Y*8
     MOV RC 280
     MUL RE RE RC 	 // 280(X + Y*8)
-    ADD RF RF RE 	 // 1000 + 280(X + Y *8) , start adress for tiles in new room
+    ADD RA RA RE 	 // 1000 + 280(X + Y *8) , start adress forTiles in new room
+    MOV RE 0
+    ADD R9 RA RE	//SAVE STARTADRESS FOR NEW ROOM FOR LATER
 
     MOV RE 20		 //Calculate tile adress in room according to formula of tile we want to move to
     MOV RD 1		 //Top row is not in the dMem, need to adjust for that
@@ -468,13 +478,13 @@ X_WRAP_RIGHT
     MUL RE RE RD         //20*Y
     MOV RD 0 	       	 //When wrapping RIGHT, new X is 19
     ADD RE RE RD         //20*Y + X
-    ADD RB RF RD       	 //Room_adress + 20*Y + X = Tile_adress
+    ADD RB RA RE       	 //Room_adress + 20*Y + X = Tile_adress
 
-    LDAR RF RB		 //New tile in RF
+    LDAR RA RB		 //New tile in RA
     LDA RE 3  		 //Drill level
     MOV RD x0F		 //Start adress for breakable rocks
     ADD RE RE RD	 //Highest tile that can be broken
-    CMP RE RF 		 //Can i breakz?
+    CMP RE RA 		 //Can i breakz?
     BRN TURN 		 //NO BREAK ROCK CANCEL
     NOP
     MOV R5 0		//UPDATE PLAYER X, Y IS SAME
@@ -484,7 +494,7 @@ X_WRAP_RIGHT
     NOP
 
 Y_WRAP_UP
-    MOV RF 1000		// Calculate what tile is where we try to move on new screen all according to formula
+    MOV RA 1000		// Calculate what tile is where we try to move on new screen all according to formula
     LDA RE 10  		 // X coord for room
     LDA RD 11 		 // Y coord for room
     MOV RC 8
@@ -492,20 +502,22 @@ Y_WRAP_UP
     ADD RE RE RD 	 // X + Y*8
     MOV RC 280
     MUL RE RE RC 	 // 280(X + Y*8)
-    ADD RF RF RE 	 // 1000 + 280(X + Y *8) , start adress for tiles in new room
+    ADD RA RA RE 	 // 1000 + 280(X + Y *8) , start adress for tiles in new room
+    MOV RE 0
+    ADD R9 RA RE	//SAVE STARTADRESS FOR NEW ROOM FOR LATER
 
     MOV RE 20		 //Calculate tile adress in room according to formula of tile we want to move to
     MOV RD 15 	       	 //When wrapping UP, new Y is 14
     MUL RE RD RE         //20*Y
 
     ADD RE RE R1         //20*Y + X
-    ADD RB RF RD       	 //Room_adress + 20*Y + X = Tile_adress
+    ADD RB RA RE       	 //Room_adress + 20*Y + X = Tile_adress
 
-    LDAR RF RB		 //New tile in RF
+    LDAR RA RB		 //New tile in RA
     LDA RE 3  		 //Drill level
     MOV RD x0F		 //Start adress for breakable rocks
     ADD RE RE RD	 //Highest tile that can be broken
-    CMP RE RF 		 //Can i breakz?
+    CMP RE RA 		 //Can i breakz?
     BRN TURN 		 //NO BREAK ROCK CANCEL
     NOP
     MOV R6 14		//UPDATE PLAYER Y, X IS SAME
@@ -515,7 +527,7 @@ Y_WRAP_UP
     NOP
 
 Y_WRAP_DOWN
-    MOV RF 1000		// Calculate what tile is where we try to move on new screen all according to formula
+    MOV RA 1000		// Calculate what tile is where we try to move on new screen all according to formula
     LDA RE 10  		 // X coord for room
     LDA RD 11 		 // Y coord for room
     MOV RC 8
@@ -523,20 +535,22 @@ Y_WRAP_DOWN
     ADD RE RE RD 	 // X + Y*8
     MOV RC 280
     MUL RE RE RC 	 // 280(X + Y*8)
-    ADD RF RF RE 	 // 1000 + 280(X + Y *8) , start adress for tiles in new room
+    ADD RA RA RE 	 // 1000 + 280(X + Y *8) , start adress for tiles in new room
+    MOV RE 0
+    ADD R9 RA RE	//SAVE STARTADRESS FOR NEW ROOM FOR LATER
 
     MOV RE 20		 //Calculate tile adress in room according to formula of tile we want to move to
     MOV RD 1 	       	 //When wrapping DOWN, new Y is 1
     MUL RE RD RE         //20*Y
 
     ADD RE RE R1         //20*Y + X
-    ADD RB RF RD       	 //Room_adress + 20*Y + X = Tile_adress
+    ADD RB RA RE       	 //Room_adress + 20*Y + X = Tile_adress
 
-    LDAR RF RB		 //New tile in RF
+    LDAR RA RB		 //New tile in RA
     LDA RE 3  		 //Drill level
     MOV RD x0F		 //Start adress for breakable rocks
     ADD RE RE RD	 //Highest tile that can be broken
-    CMP RE RF 		 //Can i breakz?
+    CMP RE RA 		 //Can i breakz?
     BRN TURN 		 //NO BREAK ROCK CANCEL
     NOP
     MOV R6 1		//UPDATE PLAYER Y, X IS SAME

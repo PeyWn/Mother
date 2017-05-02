@@ -244,37 +244,40 @@ x"20200001", --LDA R2 1 //Y pos
 x"20600003", --LDA R6 3 //Drill level
 x"34714000", --ADD R7 R1 R4 //New x-pos
 x"34825000", --ADD R8 R2 R5 //New y-pos
-x"10F00014", --MOV RF 20 //Check if too far right
-x"600F7000", --CMP RF R7
-x"5200000d", --BRZ NEXT_SCREEN
+x"10E00014", --MOV RE 20 //Check if too far right
+x"600E7000", --CMP RE R7
+x"52000010", --BRZ NEXT_SCREEN
 x"00000000", --NOP
-x"10F0ffff", --MOV RF -1 //Check too far left
-x"600F7000", --CMP RF R7
-x"52000009", --BRZ NEXT_SCREEN
+x"10E0ffff", --MOV RE -1 //Check too far left
+x"600E7000", --CMP RE R7
+x"5200000c", --BRZ NEXT_SCREEN
 x"00000000", --NOP
-x"10F00000", --MOV RF 0 //Check too far up
-x"52000006", --BRZ NEXT_SCREEN
+x"10E00000", --MOV RE 0 //Check too far up
+x"600E8000", --CMP RE R8
+x"52000008", --BRZ NEXT_SCREEN
 x"00000000", --NOP
-x"10F0000f", --MOV RF 15 //Check too far down
-x"52000003", --BRZ NEXT_SCREEN
+x"10E0000f", --MOV RE 15 //Check too far down
+x"600E8000", --CMP RE R8
+x"52000004", --BRZ NEXT_SCREEN
 x"00000000", --NOP
-x"500000cc", --JMP NO_BORDER_WRAP
-x"10F00000", --MOV RF 0
-x"6001F000", --CMP R1 RF
+x"500000d7", --JMP NO_BORDER_WRAP
+x"00000000", --NOP
+x"10E00000", --MOV RE 0
+x"6004E000", --CMP R4 RE
 x"52000006", --BRZ Y_BORDER_WRAP //No X-movement
 x"00000000", --NOP
 x"5100000b", --BRN X_WRAP_LEFT // delta X < 0
 x"00000000", --NOP
-x"50000075", --JMP X_WRAP_RIGHT // delta X > 0
+x"50000079", --JMP X_WRAP_RIGHT // delta X > 0
 x"00000000", --NOP
-x"6002F000", --CMP R2 RF
-x"520000c2", --BRZ NO_BORDER_WRAP //No Y-movement
+x"6005E000", --CMP R5 RE
+x"520000cc", --BRZ NO_BORDER_WRAP //No Y-movement
 x"00000000", --NOP
-x"5100008c", --BRN Y_WRAP_UP  // delta Y < 0
+x"51000092", --BRN Y_WRAP_UP  // delta Y < 0
 x"00000000", --NOP
-x"500000a4", --JMP Y_WRAP_DOWN // delta Y > 0
+x"500000ac", --JMP Y_WRAP_DOWN // delta Y > 0
 x"00000000", --NOP
-x"10F003e8", --MOV RF 1000		// Calculate what tile is where we try to move on new screen all according to formula
+x"10A003e8", --MOV RA 1000		// Calculate what tile is where we try to move on new screen all according to formula
 x"20E0000a", --LDA RE 10  		 // X coord for room
 x"20D0000b", --LDA RD 11 		 // Y coord for room
 x"10C00008", --MOV RC 8
@@ -282,20 +285,22 @@ x"36DDC000", --MUL RD RD RC 	 // Y * 8
 x"34EED000", --ADD RE RE RD 	 // X + Y*8
 x"10C00118", --MOV RC 280
 x"36EEC000", --MUL RE RE RC 	 // 280(X + Y*8)
-x"34FFE000", --ADD RF RF RE 	 // 1000 + 280(X + Y *8) , start adress for tiles in new room
+x"34AAE000", --ADD RA RA RE 	 // 1000 + 280(X + Y *8) , start adress for tiles in new room
+x"10E00000", --MOV RE 0
+x"349AE000", --ADD R9 RA RE	//SAVE STARTADRESS FOR NEW ROOM FOR LATER
 x"10E00014", --MOV RE 20		 //Calculate tile adress in room according to formula of tile we want to move to
 x"10D00001", --MOV RD 1		 //Top row is not in the dMem, need to adjust for that
 x"35D2D000", --SUB RD R2 RD
 x"36EED000", --MUL RE RE RD         //20*Y
 x"10D00013", --MOV RD 19 	       	 //When wrapping left, new X is 19
 x"34EED000", --ADD RE RE RD         //20*Y + X
-x"34BFD000", --ADD RB RF RD       	 //Room_adress + 20*Y + X = Tile_adress
-x"22FB0000", --LDAR RF RB		 //New tile in RF
+x"34BAE000", --ADD RB RA RE       	 //Room_adress + 20*Y + X = Tile_adress
+x"22AB0000", --LDAR RA RB		 //New tile in RF
 x"20E00003", --LDA RE 3  		 //Drill level
 x"10D0000F", --MOV RD x0F		 //Start adress for breakable rocks
 x"34EED000", --ADD RE RE RD	 //Highest tile that can be broken
-x"600EF000", --CMP RE RF 		 //Can i breakz?
-x"510000bf", --BRN TURN 		 //NO BREAK ROCK CANCEL
+x"600EA000", --CMP RE RA 		 //Can i breakz?
+x"510000c7", --BRN TURN 		 //NO BREAK ROCK CANCEL
 x"00000000", --NOP
 x"10500013", --MOV R5 19		//UPDATE PLAYER X, Y IS SAME
 x"10600000", --MOV R6 0
@@ -303,34 +308,35 @@ x"34662000", --ADD R6 R6 R2
 x"50000002", --JMP CHANGE_SCREEN
 x"00000000", --NOP
 x"10E00000", --MOV RE 0 //Before that calculate the new score
-x"35FFD000", --SUB RF RF RD
-x"600FE000", --CMP RF RE //Check if ground
+x"35AAD000", --SUB RA RA RD
+x"600AE000", --CMP RA RE //Check if ground
 x"52000016", --BRZ CONT_CHANGE_SCREEN
 x"00000000", --NOP
 x"10E00001", --MOV RE 1
-x"35FFE000", --SUB RF RF RE
+x"35AAE000", --SUB RA RA RE
 x"20D00004", --LDA RD 4 //Load score to RD
-x"38EEF000", --LSL RE RE RF
-x"34DDE000", --ADD RD RD RE //New score in RD
+x"38EEA000", --LSL RE RE RA
+x"34DDA000", --ADD RD RD RA //New score in RD
 x"210D0004", --STR RD 4
 x"10E00004", --MOV RE 4
-x"20F00003", --LDA RF 3 //Drill level in RF
-x"600EF000", --CMP RE RF
+x"20A00003", --LDA RA 3 //Drill level in RF
+x"600EA000", --CMP RE RA
 x"5200000b", --BRZ CONT_CHANGE_SCREEN //go back if max drill level
 x"00000000", --NOP
 x"10E0000a", --MOV RE 10
-x"36FFE000", --MUL RF RF RE
-x"600DF000", --CMP RD RF
+x"36AAE000", --MUL RA RA RE
+x"600DA000", --CMP RD RA
 x"51000006", --BRN CONT_CHANGE_SCREEN //Not enough score to level up
 x"00000000", --NOP
 x"20E00003", --LDA RE 3 //Level up the drill
-x"10F00001", --MOV RF 1
-x"34EEF000", --ADD RE RE RF
+x"10A00001", --MOV RA 1
+x"34EEA000", --ADD RE RE RA
 x"210E0003", --STR RE 3
 x"10E00008", --MOV RE 8
 x"3822E000", --LSL R2 R2 RE
 x"34221000", --ADD R2 R2 R1 //CURRENT ADRESS FOR PLAYER IN VMEM
-x"4302D000", --STRVR R2 RD //OVERWRITE PLAYAH WITH GROUND BEFORE STORING/LOADING FROM MEMORY
+x"10D0000F", --MOV RD x0F
+x"430D2000", --STRVR RD R2 //OVERWRITE PLAYAH WITH GROUND BEFORE STORING/LOADING FROM MEMORY
 x"21050000", --STR R5 0 	//Store new player X
 x"21060001", --STR R6 1	//Store new player Y
 x"2040000b", --LDA R4 11	//Current room Y
@@ -338,37 +344,38 @@ x"2030000a", --LDA R3 10	//Current room X
 x"3644E000", --MUL R4 R4 RE	  //Calc start adress for current room in dMem
 x"34443000", --ADD R4 R4 R3
 x"10300118", --MOV R3 280
-x"34443000", --ADD R4 R4 R3
+x"36443000", --MUL R4 R4 R3
 x"103003e8", --MOV R3 1000
-x"34433000", --ADD R4 R3 R3	//It is in R4
-x"10F00000", --MOV RF 0	   //Loop X
+x"34443000", --ADD R4 R4 R3 //It is in R4
+x"10C00008", --MOV RC 8	//For shifting 8 bits
+x"10A00000", --MOV RA 0	   //Loop X
 x"10E00000", --MOV RE 0	   //Loop Y
 x"10D00001", --MOV RD 1	   //For inc/dec 1
 x"10000014", --MOV R0 20
 x"361E0000", --MUL R1 RE R0
-x"341EF000", --ADD R1 RE RF	//OFFSETT FOR CURRENT TILE IN THE ROOM IN R1
+x"3411A000", --ADD R1 R1 RA	//OFFSETT FOR CURRENT TILE IN THE ROOM IN R1
 x"34314000", --ADD R3 R1 R4	//ADRESS TO STORE TILE X Y IN DMEM IN R3
 x"342ED000", --ADD R2 RE RD
 x"3822C000", --LSL R2 R2 RC
-x"342F2000", --ADD R2 RF R2		//ADRESS TO CURRENT TILE IN VMEM IN R2
+x"342A2000", --ADD R2 RA R2		//ADRESS TO CURRENT TILE IN VMEM IN R2
 x"42520000", --LDAVR R5 R2		//Current tile in R5
-x"23035000", --STRR R3 R5		//STR CURRENT TILE IN dMEM
-x"34AB1000", --ADD RA RB R1
-x"225A0000", --LDAR R5 RA		//R5 IS TILE THAT IS NEWLY LOADED
-x"43035000", --STRVR R3 R5
+x"23053000", --STRR R5 R3		//STR CURRENT TILE IN dMEM
+x"34F91000", --ADD RF R9 R1
+x"225F0000", --LDAR R5 RF		//R5 IS TILE THAT IS NEWLY LOADED
+x"43052000", --STRVR R5 R2
 x"10000013", --MOV R0 19
-x"600F0000", --CMP RF R0
-x"5200000a", --BRZ SCREEN_INC_X
+x"600A0000", --CMP RA R0
+x"5100000a", --BRN SCREEN_INC_X
 x"00000000", --NOP
-x"10F00000", --MOV RF 0
+x"10A00000", --MOV RA 0 //x is 19
 x"1000000d", --MOV R0 13
 x"600E0000", --CMP RE R0
-x"52000008", --BRZ SCREEN_PLACE_PLAYER
+x"52000008", --BRZ SCREEN_PLACE_PLAYER //All rows are changed
 x"00000000", --NOP
 x"34EED000", --ADD RE RE RD
 x"5000ffea", --JMP CHANGE_SCREEN_LOOP
 x"00000000", --NOP
-x"34FFD000", --ADD RF RF RD
+x"34AAD000", --ADD RA RA RD
 x"5000ffe7", --JMP CHANGE_SCREEN_LOOP
 x"00000000", --NOP
 x"20000000", --LDA R0 0	//PLAYER X
@@ -380,9 +387,9 @@ x"20300002", --LDA R3 2	//PLAYER DIRECTION
 x"1040000B", --MOV R4 x0B
 x"34334000", --ADD R3 R3 R4
 x"43031000", --STRVR R3 R1
-x"5000008f", --JMP UPDATE_SCORE
+x"50000095", --JMP UPDATE_SCORE
 x"00000000", --NOP
-x"10F003e8", --MOV RF 1000		// Calculate what tile is where we try to move on new screen all according to formula
+x"10A003e8", --MOV RA 1000		// Calculate what tile is where we try to move on new screen all according to formula
 x"20E0000a", --LDA RE 10  		 // X coord for room
 x"20D0000b", --LDA RD 11 		 // Y coord for room
 x"10C00008", --MOV RC 8
@@ -390,27 +397,29 @@ x"36DDC000", --MUL RD RD RC 	 // Y * 8
 x"34EED000", --ADD RE RE RD 	 // X + Y*8
 x"10C00118", --MOV RC 280
 x"36EEC000", --MUL RE RE RC 	 // 280(X + Y*8)
-x"34FFE000", --ADD RF RF RE 	 // 1000 + 280(X + Y *8) , start adress for tiles in new room
+x"34AAE000", --ADD RA RA RE 	 // 1000 + 280(X + Y *8) , start adress forTiles in new room
+x"10E00000", --MOV RE 0
+x"349AE000", --ADD R9 RA RE	//SAVE STARTADRESS FOR NEW ROOM FOR LATER
 x"10E00014", --MOV RE 20		 //Calculate tile adress in room according to formula of tile we want to move to
 x"10D00001", --MOV RD 1		 //Top row is not in the dMem, need to adjust for that
 x"35D2D000", --SUB RD R2 RD
 x"36EED000", --MUL RE RE RD         //20*Y
 x"10D00000", --MOV RD 0 	       	 //When wrapping RIGHT, new X is 19
 x"34EED000", --ADD RE RE RD         //20*Y + X
-x"34BFD000", --ADD RB RF RD       	 //Room_adress + 20*Y + X = Tile_adress
-x"22FB0000", --LDAR RF RB		 //New tile in RF
+x"34BAE000", --ADD RB RA RE       	 //Room_adress + 20*Y + X = Tile_adress
+x"22AB0000", --LDAR RA RB		 //New tile in RA
 x"20E00003", --LDA RE 3  		 //Drill level
 x"10D0000F", --MOV RD x0F		 //Start adress for breakable rocks
 x"34EED000", --ADD RE RE RD	 //Highest tile that can be broken
-x"600EF000", --CMP RE RF 		 //Can i breakz?
-x"51000053", --BRN TURN 		 //NO BREAK ROCK CANCEL
+x"600EA000", --CMP RE RA 		 //Can i breakz?
+x"51000057", --BRN TURN 		 //NO BREAK ROCK CANCEL
 x"00000000", --NOP
 x"10500000", --MOV R5 0		//UPDATE PLAYER X, Y IS SAME
 x"10600000", --MOV R6 0
 x"34662000", --ADD R6 R6 R2
-x"5000ff96", --JMP CHANGE_SCREEN
+x"5000ff92", --JMP CHANGE_SCREEN
 x"00000000", --NOP
-x"10F003e8", --MOV RF 1000		// Calculate what tile is where we try to move on new screen all according to formula
+x"10A003e8", --MOV RA 1000		// Calculate what tile is where we try to move on new screen all according to formula
 x"20E0000a", --LDA RE 10  		 // X coord for room
 x"20D0000b", --LDA RD 11 		 // Y coord for room
 x"10C00008", --MOV RC 8
@@ -418,25 +427,27 @@ x"36DDC000", --MUL RD RD RC 	 // Y * 8
 x"34EED000", --ADD RE RE RD 	 // X + Y*8
 x"10C00118", --MOV RC 280
 x"36EEC000", --MUL RE RE RC 	 // 280(X + Y*8)
-x"34FFE000", --ADD RF RF RE 	 // 1000 + 280(X + Y *8) , start adress for tiles in new room
+x"34AAE000", --ADD RA RA RE 	 // 1000 + 280(X + Y *8) , start adress for tiles in new room
+x"10E00000", --MOV RE 0
+x"349AE000", --ADD R9 RA RE	//SAVE STARTADRESS FOR NEW ROOM FOR LATER
 x"10E00014", --MOV RE 20		 //Calculate tile adress in room according to formula of tile we want to move to
 x"10D0000f", --MOV RD 15 	       	 //When wrapping UP, new Y is 14
 x"36EDE000", --MUL RE RD RE         //20*Y
 x"34EE1000", --ADD RE RE R1         //20*Y + X
-x"34BFD000", --ADD RB RF RD       	 //Room_adress + 20*Y + X = Tile_adress
-x"22FB0000", --LDAR RF RB		 //New tile in RF
+x"34BAE000", --ADD RB RA RE       	 //Room_adress + 20*Y + X = Tile_adress
+x"22AB0000", --LDAR RA RB		 //New tile in RA
 x"20E00003", --LDA RE 3  		 //Drill level
 x"10D0000F", --MOV RD x0F		 //Start adress for breakable rocks
 x"34EED000", --ADD RE RE RD	 //Highest tile that can be broken
-x"600EF000", --CMP RE RF 		 //Can i breakz?
-x"51000039", --BRN TURN 		 //NO BREAK ROCK CANCEL
+x"600EA000", --CMP RE RA 		 //Can i breakz?
+x"5100003b", --BRN TURN 		 //NO BREAK ROCK CANCEL
 x"00000000", --NOP
 x"1060000e", --MOV R6 14		//UPDATE PLAYER Y, X IS SAME
 x"10500000", --MOV R5 0
 x"34551000", --ADD R5 R5 R1
-x"5000ff7c", --JMP CHANGE_SCREEN
+x"5000ff76", --JMP CHANGE_SCREEN
 x"00000000", --NOP
-x"10F003e8", --MOV RF 1000		// Calculate what tile is where we try to move on new screen all according to formula
+x"10A003e8", --MOV RA 1000		// Calculate what tile is where we try to move on new screen all according to formula
 x"20E0000a", --LDA RE 10  		 // X coord for room
 x"20D0000b", --LDA RD 11 		 // Y coord for room
 x"10C00008", --MOV RC 8
@@ -444,23 +455,25 @@ x"36DDC000", --MUL RD RD RC 	 // Y * 8
 x"34EED000", --ADD RE RE RD 	 // X + Y*8
 x"10C00118", --MOV RC 280
 x"36EEC000", --MUL RE RE RC 	 // 280(X + Y*8)
-x"34FFE000", --ADD RF RF RE 	 // 1000 + 280(X + Y *8) , start adress for tiles in new room
+x"34AAE000", --ADD RA RA RE 	 // 1000 + 280(X + Y *8) , start adress for tiles in new room
+x"10E00000", --MOV RE 0
+x"349AE000", --ADD R9 RA RE	//SAVE STARTADRESS FOR NEW ROOM FOR LATER
 x"10E00014", --MOV RE 20		 //Calculate tile adress in room according to formula of tile we want to move to
 x"10D00001", --MOV RD 1 	       	 //When wrapping DOWN, new Y is 1
 x"36EDE000", --MUL RE RD RE         //20*Y
 x"34EE1000", --ADD RE RE R1         //20*Y + X
-x"34BFD000", --ADD RB RF RD       	 //Room_adress + 20*Y + X = Tile_adress
-x"22FB0000", --LDAR RF RB		 //New tile in RF
+x"34BAE000", --ADD RB RA RE       	 //Room_adress + 20*Y + X = Tile_adress
+x"22AB0000", --LDAR RA RB		 //New tile in RA
 x"20E00003", --LDA RE 3  		 //Drill level
 x"10D0000F", --MOV RD x0F		 //Start adress for breakable rocks
 x"34EED000", --ADD RE RE RD	 //Highest tile that can be broken
-x"600EF000", --CMP RE RF 		 //Can i breakz?
+x"600EA000", --CMP RE RA 		 //Can i breakz?
 x"5100001f", --BRN TURN 		 //NO BREAK ROCK CANCEL
 x"00000000", --NOP
 x"10600001", --MOV R6 1		//UPDATE PLAYER Y, X IS SAME
 x"10500000", --MOV R5 0
 x"34551000", --ADD R5 R5 R1
-x"5000ff62", --JMP CHANGE_SCREEN
+x"5000ff5a", --JMP CHANGE_SCREEN
 x"00000000", --NOP
 x"10F00008", --MOV RF 8 //No out of bounds, check if can drill/move
 x"38B8F000", --LSL RB R8 RF //Shift new y
@@ -492,7 +505,7 @@ x"34331000", --ADD R3 R3 R1 //Vmem pos in R3
 x"10F0000B", --MOV RF x0B //Start for player tiles
 x"34F0F000", --ADD RF R0 RF
 x"430F3000", --STRVR RF R3 //Write over new tile
-x"5000fec7", --JMP MAIN_LOOP
+x"5000feba", --JMP MAIN_LOOP
 x"00000000", --NOP
 x"10F00000", --MOV RF 0
 x"6009F000", --CMP R9 RF //Check if ground
@@ -539,7 +552,7 @@ x"20F00003", --LDA RF 3 // LOAD DRILL LVL
 x"10E00001", --MOV RE 1
 x"34FFE000", --ADD RF RF RE //RF IS NOW TILE ADDERSS
 x"410F000D", --STRV RF XD // Put drill lvl on D tile
-x"5000fe98", --JMP MAIN_LOOP
+x"5000fe8b", --JMP MAIN_LOOP
 x"00000000", --NOP
 x"10300000", --MOV R3 0 //Dest for 1000
 x"10400000", --MOV R4 0 //Dest for 100
