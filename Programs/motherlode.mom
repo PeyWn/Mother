@@ -46,7 +46,6 @@ TOP_ROW_DONE
     MOV R1 xD  	//screen addres for symbol
     STRVR RF R1	//Put 1 icon
     
-
 INIT_ROOM_LOOP //R4: screen X, R5: Screen Y,R6: current room start  address 
     MOV	R4 0
     MOV R5 0
@@ -225,7 +224,7 @@ MAIN_LOOP
     NOP
 
 JOY_UP
-    MOV RF 1
+    MOV RF 1 
     LDA R0 102
     CMP RF R0
     BRZ MAIN_LOOP
@@ -304,6 +303,154 @@ MOVE //R4 should contain delta-x, R5 should contain delta-y, R0 should contain d
     NOP
     JMP NO_BORDER_WRAP
     NOP
+
+
+NO_BORDER_WRAP
+    MOV RF 8 //No out of bounds, check if can drill/move
+    LSL RB R8 RF //Shift new y
+    ADD RB RB R7 //Vmem new pos in RB
+
+    LDAVR R9 RB //Tile where player tries to move in R9
+    LDA RA 3 //Drill level in RA
+    MOV RF x0F
+    SUB R9 R9 RF
+    CMP RA R9
+    BRN TURN
+    NOP
+    JMP AWARD_SCORE
+    NOP
+CONT_MOVE
+    MOV RF 8
+    LSL R3 R2 RF //Shift old y
+    ADD R3 R3 R1 //Vmem old pos in R3
+    MOV RF x0F
+    STRVR RF R3 //Write over old tile
+
+    STR R7 0
+    STR R8 1
+
+    MOV RF x0B //Start for player sprites
+    ADD RF R0 RF
+
+    STRVR RF RB //Write over new tile
+
+    JMP UPDATE_SCORE
+    NOP
+
+TURN //R0 - direction, R1 - x-pos, R2 - y-pos
+    MOV RF 8
+    LSL R3 R2 RF //Shift up y
+    ADD R3 R3 R1 //Vmem pos in R3
+    MOV RF x0B //Start for player tiles
+    ADD RF R0 RF
+    STRVR RF R3 //Write over new tile
+    JMP MAIN_LOOP
+    NOP
+
+AWARD_SCORE // R9 - GroundTile - 0F DONT FUCK UP REGs FROM MOVE!!!
+    MOV RF 0
+    CMP R9 RF //Check if ground
+    BRZ CONT_MOVE
+    NOP
+    MOV RF 1
+    SUB R9 R9 RF
+    LDA RF 4 //Load score to RF
+    MOV RE 1
+    LSL RE RE R9
+    ADD RF RF RE //New score in RF
+    STR RF 4
+    MOV RE 4
+    LDA RD 3 //Drill level in RD
+    CMP RE RD
+    BRZ CONT_MOVE //go back if max drill level
+    NOP
+    MOV RE 10
+    MUL RD RD RE
+    CMP RD RF
+    BRN ADD_LEVEL
+    NOP
+    JMP CONT_MOVE
+    NOP
+
+ADD_LEVEL
+    LDA RE 3
+    MOV RF 1
+    ADD RE RE RF
+    STR RE 3
+    JMP CONT_MOVE
+    NOP
+    
+UPDATE_SCORE
+    LDA R0 4 //Score to R0
+    JMP GET_BCD
+    NOP
+BCD_RETURN
+    MOV RF 1
+    ADD R3 R3 RF //Add one to get to correct number tile
+    ADD R4 R4 RF
+    ADD R5 R5 RF
+    ADD R6 R6 RF
+
+    STRV R3 X10
+    STRV R4 X11
+    STRV R5 X12
+    STRV R6 X13
+
+    LDA RF 3 // LOAD DRILL LVL
+    MOV RE 1
+    ADD RF RF RE //RF IS NOW TILE ADDERSS
+    STRV RF XD // Put drill lvl on D tile 
+
+    JMP MAIN_LOOP
+    NOP
+
+GET_BCD //Number to BCD should be in R0, returns BCD digits in R3,R4,R5,R6
+    MOV R3 0 //Dest for 1000
+    MOV R4 0 //Dest for 100
+    MOV R5 0 //Dest for 10
+    MOV R6 0 //Dest for 1
+    MOV RF 1
+THOUSAND
+    MOV R1 0 //Loop counter
+    MOV R2 1000
+THOUSAND_LOOP
+    CMP R0 R2
+    BRN HUNDRED
+    NOP
+    SUB R0 R0 R2
+    ADD R1 R1 RF
+    JMP THOUSAND_LOOP
+    NOP
+HUNDRED
+    ADD R3 R3 R1
+    MOV R1 0 //Loop counter
+    MOV R2 100
+HUNDRED_LOOP
+    CMP R0 R2
+    BRN TEN
+    NOP
+    SUB R0 R0 R2
+    ADD R1 R1 RF
+    JMP HUNDRED_LOOP
+    NOP
+TEN
+    ADD R4 R4 R1
+    MOV R1 0 //Loop counter
+    MOV R2 10
+TEN_LOOP
+    CMP R0 R2
+    BRN ONE
+    NOP
+    SUB R0 R0 R2
+    ADD R1 R1 RF
+    JMP TEN_LOOP
+    NOP
+ONE
+    ADD R5 R5 R1
+    ADD R6 R6 R0
+    JMP BCD_RETURN
+    NOP 
+    
 
 NEXT_SCREEN //R4 is delta X, R5 is delta Y  (R2 = Y POS, R1 = X POS FROM EARLIER)
     MOV RE 0
@@ -558,151 +705,3 @@ Y_WRAP_DOWN
     ADD R5 R5 R1
     JMP CHANGE_SCREEN
     NOP
-
-
-NO_BORDER_WRAP
-    MOV RF 8 //No out of bounds, check if can drill/move
-    LSL RB R8 RF //Shift new y
-    ADD RB RB R7 //Vmem new pos in RB
-
-    LDAVR R9 RB //Tile where player tries to move in R9
-    LDA RA 3 //Drill level in RA
-    MOV RF x0F
-    SUB R9 R9 RF
-    CMP RA R9
-    BRN TURN
-    NOP
-    JMP AWARD_SCORE
-    NOP
-CONT_MOVE
-    MOV RF 8
-    LSL R3 R2 RF //Shift old y
-    ADD R3 R3 R1 //Vmem old pos in R3
-    MOV RF x0F
-    STRVR RF R3 //Write over old tile
-
-    STR R7 0
-    STR R8 1
-
-    MOV RF x0B //Start for player sprites
-    ADD RF R0 RF
-
-    STRVR RF RB //Write over new tile
-
-    JMP UPDATE_SCORE
-    NOP
-
-TURN //R0 - direction, R1 - x-pos, R2 - y-pos
-    MOV RF 8
-    LSL R3 R2 RF //Shift up y
-    ADD R3 R3 R1 //Vmem pos in R3
-    MOV RF x0B //Start for player tiles
-    ADD RF R0 RF
-    STRVR RF R3 //Write over new tile
-    JMP MAIN_LOOP
-    NOP
-
-AWARD_SCORE // R9 - GroundTile - 0F DONT FUCK UP REGs FROM MOVE!!!
-    MOV RF 0
-    CMP R9 RF //Check if ground
-    BRZ CONT_MOVE
-    NOP
-    MOV RF 1
-    SUB R9 R9 RF
-    LDA RF 4 //Load score to RF
-    MOV RE 1
-    LSL RE RE R9
-    ADD RF RF RE //New score in RF
-    STR RF 4
-    MOV RE 4
-    LDA RD 3 //Drill level in RD
-    CMP RE RD
-    BRZ CONT_MOVE //go back if max drill level
-    NOP
-    MOV RE 10
-    MUL RD RD RE
-    CMP RD RF
-    BRN ADD_LEVEL
-    NOP
-    JMP CONT_MOVE
-    NOP
-
-ADD_LEVEL
-    LDA RE 3
-    MOV RF 1
-    ADD RE RE RF
-    STR RE 3
-    JMP CONT_MOVE
-    NOP
-    
-UPDATE_SCORE
-    LDA R0 4 //Score to R0
-    JMP GET_BCD
-    NOP
-BCD_RETURN
-    MOV RF 1
-    ADD R3 R3 RF //Add one to get to correct number tile
-    ADD R4 R4 RF
-    ADD R5 R5 RF
-    ADD R6 R6 RF
-
-    STRV R3 X10
-    STRV R4 X11
-    STRV R5 X12
-    STRV R6 X13
-
-    LDA RF 3 // LOAD DRILL LVL
-    MOV RE 1
-    ADD RF RF RE //RF IS NOW TILE ADDERSS
-    STRV RF XD // Put drill lvl on D tile 
-
-    JMP MAIN_LOOP
-    NOP
-
-GET_BCD //Number to BCD should be in R0, returns BCD digits in R3,R4,R5,R6
-    MOV R3 0 //Dest for 1000
-    MOV R4 0 //Dest for 100
-    MOV R5 0 //Dest for 10
-    MOV R6 0 //Dest for 1
-    MOV RF 1
-THOUSAND
-    MOV R1 0 //Loop counter
-    MOV R2 1000
-THOUSAND_LOOP
-    CMP R0 R2
-    BRN HUNDRED
-    NOP
-    SUB R0 R0 R2
-    ADD R1 R1 RF
-    JMP THOUSAND_LOOP
-    NOP
-HUNDRED
-    ADD R3 R3 R1
-    MOV R1 0 //Loop counter
-    MOV R2 100
-HUNDRED_LOOP
-    CMP R0 R2
-    BRN TEN
-    NOP
-    SUB R0 R0 R2
-    ADD R1 R1 RF
-    JMP HUNDRED_LOOP
-    NOP
-TEN
-    ADD R4 R4 R1
-    MOV R1 0 //Loop counter
-    MOV R2 10
-TEN_LOOP
-    CMP R0 R2
-    BRN ONE
-    NOP
-    SUB R0 R0 R2
-    ADD R1 R1 RF
-    JMP TEN_LOOP
-    NOP
-ONE
-    ADD R5 R5 R1
-    ADD R6 R6 R0
-    JMP BCD_RETURN
-    NOP 
-    

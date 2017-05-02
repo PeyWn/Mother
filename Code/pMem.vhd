@@ -246,21 +246,138 @@ x"34714000", --ADD R7 R1 R4 //New x-pos
 x"34825000", --ADD R8 R2 R5 //New y-pos
 x"10E00014", --MOV RE 20 //Check if too far right
 x"600E7000", --CMP RE R7
-x"52000010", --BRZ NEXT_SCREEN
+x"52000085", --BRZ NEXT_SCREEN
 x"00000000", --NOP
 x"10E0ffff", --MOV RE -1 //Check too far left
 x"600E7000", --CMP RE R7
-x"5200000c", --BRZ NEXT_SCREEN
+x"52000081", --BRZ NEXT_SCREEN
 x"00000000", --NOP
 x"10E00000", --MOV RE 0 //Check too far up
 x"600E8000", --CMP RE R8
-x"52000008", --BRZ NEXT_SCREEN
+x"5200007d", --BRZ NEXT_SCREEN
 x"00000000", --NOP
 x"10E0000f", --MOV RE 15 //Check too far down
 x"600E8000", --CMP RE R8
-x"52000004", --BRZ NEXT_SCREEN
+x"52000079", --BRZ NEXT_SCREEN
 x"00000000", --NOP
-x"500000d7", --JMP NO_BORDER_WRAP
+x"50000002", --JMP NO_BORDER_WRAP
+x"00000000", --NOP
+x"10F00008", --MOV RF 8 //No out of bounds, check if can drill/move
+x"38B8F000", --LSL RB R8 RF //Shift new y
+x"34BB7000", --ADD RB RB R7 //Vmem new pos in RB
+x"429B0000", --LDAVR R9 RB //Tile where player tries to move in R9
+x"20A00003", --LDA RA 3 //Drill level in RA
+x"10F0000F", --MOV RF x0F
+x"3599F000", --SUB R9 R9 RF
+x"600A9000", --CMP RA R9
+x"51000010", --BRN TURN
+x"00000000", --NOP
+x"50000016", --JMP AWARD_SCORE
+x"00000000", --NOP
+x"10F00008", --MOV RF 8
+x"3832F000", --LSL R3 R2 RF //Shift old y
+x"34331000", --ADD R3 R3 R1 //Vmem old pos in R3
+x"10F0000F", --MOV RF x0F
+x"430F3000", --STRVR RF R3 //Write over old tile
+x"21070000", --STR R7 0
+x"21080001", --STR R8 1
+x"10F0000B", --MOV RF x0B //Start for player sprites
+x"34F0F000", --ADD RF R0 RF
+x"430FB000", --STRVR RF RB //Write over new tile
+x"50000027", --JMP UPDATE_SCORE
+x"00000000", --NOP
+x"10F00008", --MOV RF 8
+x"3832F000", --LSL R3 R2 RF //Shift up y
+x"34331000", --ADD R3 R3 R1 //Vmem pos in R3
+x"10F0000B", --MOV RF x0B //Start for player tiles
+x"34F0F000", --ADD RF R0 RF
+x"430F3000", --STRVR RF R3 //Write over new tile
+x"5000ff8f", --JMP MAIN_LOOP
+x"00000000", --NOP
+x"10F00000", --MOV RF 0
+x"6009F000", --CMP R9 RF //Check if ground
+x"5200ffea", --BRZ CONT_MOVE
+x"00000000", --NOP
+x"10F00001", --MOV RF 1
+x"3599F000", --SUB R9 R9 RF
+x"20F00004", --LDA RF 4 //Load score to RF
+x"10E00001", --MOV RE 1
+x"38EE9000", --LSL RE RE R9
+x"34FFE000", --ADD RF RF RE //New score in RF
+x"210F0004", --STR RF 4
+x"10E00004", --MOV RE 4
+x"20D00003", --LDA RD 3 //Drill level in RD
+x"600ED000", --CMP RE RD
+x"5200ffde", --BRZ CONT_MOVE //go back if max drill level
+x"00000000", --NOP
+x"10E0000a", --MOV RE 10
+x"36DDE000", --MUL RD RD RE
+x"600DF000", --CMP RD RF
+x"51000004", --BRN ADD_LEVEL
+x"00000000", --NOP
+x"5000ffd7", --JMP CONT_MOVE
+x"00000000", --NOP
+x"20E00003", --LDA RE 3
+x"10F00001", --MOV RF 1
+x"34EEF000", --ADD RE RE RF
+x"210E0003", --STR RE 3
+x"5000ffd1", --JMP CONT_MOVE
+x"00000000", --NOP
+x"20000004", --LDA R0 4 //Score to R0
+x"50000011", --JMP GET_BCD
+x"00000000", --NOP
+x"10F00001", --MOV RF 1
+x"3433F000", --ADD R3 R3 RF //Add one to get to correct number tile
+x"3444F000", --ADD R4 R4 RF
+x"3455F000", --ADD R5 R5 RF
+x"3466F000", --ADD R6 R6 RF
+x"41030010", --STRV R3 X10
+x"41040011", --STRV R4 X11
+x"41050012", --STRV R5 X12
+x"41060013", --STRV R6 X13
+x"20F00003", --LDA RF 3 // LOAD DRILL LVL
+x"10E00001", --MOV RE 1
+x"34FFE000", --ADD RF RF RE //RF IS NOW TILE ADDERSS
+x"410F000D", --STRV RF XD // Put drill lvl on D tile
+x"5000ff60", --JMP MAIN_LOOP
+x"00000000", --NOP
+x"10300000", --MOV R3 0 //Dest for 1000
+x"10400000", --MOV R4 0 //Dest for 100
+x"10500000", --MOV R5 0 //Dest for 10
+x"10600000", --MOV R6 0 //Dest for 1
+x"10F00001", --MOV RF 1
+x"10100000", --MOV R1 0 //Loop counter
+x"102003e8", --MOV R2 1000
+x"60002000", --CMP R0 R2
+x"51000006", --BRN HUNDRED
+x"00000000", --NOP
+x"35002000", --SUB R0 R0 R2
+x"3411F000", --ADD R1 R1 RF
+x"5000fffb", --JMP THOUSAND_LOOP
+x"00000000", --NOP
+x"34331000", --ADD R3 R3 R1
+x"10100000", --MOV R1 0 //Loop counter
+x"10200064", --MOV R2 100
+x"60002000", --CMP R0 R2
+x"51000006", --BRN TEN
+x"00000000", --NOP
+x"35002000", --SUB R0 R0 R2
+x"3411F000", --ADD R1 R1 RF
+x"5000fffb", --JMP HUNDRED_LOOP
+x"00000000", --NOP
+x"34441000", --ADD R4 R4 R1
+x"10100000", --MOV R1 0 //Loop counter
+x"1020000a", --MOV R2 10
+x"60002000", --CMP R0 R2
+x"51000006", --BRN ONE
+x"00000000", --NOP
+x"35002000", --SUB R0 R0 R2
+x"3411F000", --ADD R1 R1 RF
+x"5000fffb", --JMP TEN_LOOP
+x"00000000", --NOP
+x"34551000", --ADD R5 R5 R1
+x"34660000", --ADD R6 R6 R0
+x"5000ffcd", --JMP BCD_RETURN
 x"00000000", --NOP
 x"10E00000", --MOV RE 0
 x"6004E000", --CMP R4 RE
@@ -271,7 +388,7 @@ x"00000000", --NOP
 x"50000079", --JMP X_WRAP_RIGHT // delta X > 0
 x"00000000", --NOP
 x"6005E000", --CMP R5 RE
-x"520000cc", --BRZ NO_BORDER_WRAP //No Y-movement
+x"5200ff82", --BRZ NO_BORDER_WRAP //No Y-movement
 x"00000000", --NOP
 x"51000092", --BRN Y_WRAP_UP  // delta Y < 0
 x"00000000", --NOP
@@ -300,7 +417,7 @@ x"20E00003", --LDA RE 3  		 //Drill level
 x"10D0000F", --MOV RD x0F		 //Start adress for breakable rocks
 x"34EED000", --ADD RE RE RD	 //Highest tile that can be broken
 x"600EA000", --CMP RE RA 		 //Can i breakz?
-x"510000c7", --BRN TURN 		 //NO BREAK ROCK CANCEL
+x"5100ff7d", --BRN TURN 		 //NO BREAK ROCK CANCEL
 x"00000000", --NOP
 x"10500013", --MOV R5 19		//UPDATE PLAYER X, Y IS SAME
 x"10600000", --MOV R6 0
@@ -387,7 +504,7 @@ x"20300002", --LDA R3 2	//PLAYER DIRECTION
 x"1040000B", --MOV R4 x0B
 x"34334000", --ADD R3 R3 R4
 x"43031000", --STRVR R3 R1
-x"50000095", --JMP UPDATE_SCORE
+x"5000ff4b", --JMP UPDATE_SCORE
 x"00000000", --NOP
 x"10A003e8", --MOV RA 1000		// Calculate what tile is where we try to move on new screen all according to formula
 x"20E0000a", --LDA RE 10  		 // X coord for room
@@ -412,7 +529,7 @@ x"20E00003", --LDA RE 3  		 //Drill level
 x"10D0000F", --MOV RD x0F		 //Start adress for breakable rocks
 x"34EED000", --ADD RE RE RD	 //Highest tile that can be broken
 x"600EA000", --CMP RE RA 		 //Can i breakz?
-x"51000057", --BRN TURN 		 //NO BREAK ROCK CANCEL
+x"5100ff0d", --BRN TURN 		 //NO BREAK ROCK CANCEL
 x"00000000", --NOP
 x"10500000", --MOV R5 0		//UPDATE PLAYER X, Y IS SAME
 x"10600000", --MOV R6 0
@@ -440,7 +557,7 @@ x"20E00003", --LDA RE 3  		 //Drill level
 x"10D0000F", --MOV RD x0F		 //Start adress for breakable rocks
 x"34EED000", --ADD RE RE RD	 //Highest tile that can be broken
 x"600EA000", --CMP RE RA 		 //Can i breakz?
-x"5100003b", --BRN TURN 		 //NO BREAK ROCK CANCEL
+x"5100fef1", --BRN TURN 		 //NO BREAK ROCK CANCEL
 x"00000000", --NOP
 x"1060000e", --MOV R6 14		//UPDATE PLAYER Y, X IS SAME
 x"10500000", --MOV R5 0
@@ -468,129 +585,12 @@ x"20E00003", --LDA RE 3  		 //Drill level
 x"10D0000F", --MOV RD x0F		 //Start adress for breakable rocks
 x"34EED000", --ADD RE RE RD	 //Highest tile that can be broken
 x"600EA000", --CMP RE RA 		 //Can i breakz?
-x"5100001f", --BRN TURN 		 //NO BREAK ROCK CANCEL
+x"5100fed5", --BRN TURN 		 //NO BREAK ROCK CANCEL
 x"00000000", --NOP
 x"10600001", --MOV R6 1		//UPDATE PLAYER Y, X IS SAME
 x"10500000", --MOV R5 0
 x"34551000", --ADD R5 R5 R1
 x"5000ff5a", --JMP CHANGE_SCREEN
-x"00000000", --NOP
-x"10F00008", --MOV RF 8 //No out of bounds, check if can drill/move
-x"38B8F000", --LSL RB R8 RF //Shift new y
-x"34BB7000", --ADD RB RB R7 //Vmem new pos in RB
-x"429B0000", --LDAVR R9 RB //Tile where player tries to move in R9
-x"20A00003", --LDA RA 3 //Drill level in RA
-x"10F0000F", --MOV RF x0F
-x"3599F000", --SUB R9 R9 RF
-x"600A9000", --CMP RA R9
-x"51000010", --BRN TURN
-x"00000000", --NOP
-x"50000016", --JMP AWARD_SCORE
-x"00000000", --NOP
-x"10F00008", --MOV RF 8
-x"3832F000", --LSL R3 R2 RF //Shift old y
-x"34331000", --ADD R3 R3 R1 //Vmem old pos in R3
-x"10F0000F", --MOV RF x0F
-x"430F3000", --STRVR RF R3 //Write over old tile
-x"21070000", --STR R7 0
-x"21080001", --STR R8 1
-x"10F0000B", --MOV RF x0B //Start for player sprites
-x"34F0F000", --ADD RF R0 RF
-x"430FB000", --STRVR RF RB //Write over new tile
-x"50000027", --JMP UPDATE_SCORE
-x"00000000", --NOP
-x"10F00008", --MOV RF 8
-x"3832F000", --LSL R3 R2 RF //Shift up y
-x"34331000", --ADD R3 R3 R1 //Vmem pos in R3
-x"10F0000B", --MOV RF x0B //Start for player tiles
-x"34F0F000", --ADD RF R0 RF
-x"430F3000", --STRVR RF R3 //Write over new tile
-x"5000feba", --JMP MAIN_LOOP
-x"00000000", --NOP
-x"10F00000", --MOV RF 0
-x"6009F000", --CMP R9 RF //Check if ground
-x"5200ffea", --BRZ CONT_MOVE
-x"00000000", --NOP
-x"10F00001", --MOV RF 1
-x"3599F000", --SUB R9 R9 RF
-x"20F00004", --LDA RF 4 //Load score to RF
-x"10E00001", --MOV RE 1
-x"38EE9000", --LSL RE RE R9
-x"34FFE000", --ADD RF RF RE //New score in RF
-x"210F0004", --STR RF 4
-x"10E00004", --MOV RE 4
-x"20D00003", --LDA RD 3 //Drill level in RD
-x"600ED000", --CMP RE RD
-x"5200ffde", --BRZ CONT_MOVE //go back if max drill level
-x"00000000", --NOP
-x"10E0000a", --MOV RE 10
-x"36DDE000", --MUL RD RD RE
-x"600DF000", --CMP RD RF
-x"51000004", --BRN ADD_LEVEL
-x"00000000", --NOP
-x"5000ffd7", --JMP CONT_MOVE
-x"00000000", --NOP
-x"20E00003", --LDA RE 3
-x"10F00001", --MOV RF 1
-x"34EEF000", --ADD RE RE RF
-x"210E0003", --STR RE 3
-x"5000ffd1", --JMP CONT_MOVE
-x"00000000", --NOP
-x"20000004", --LDA R0 4 //Score to R0
-x"50000011", --JMP GET_BCD
-x"00000000", --NOP
-x"10F00001", --MOV RF 1
-x"3433F000", --ADD R3 R3 RF //Add one to get to correct number tile
-x"3444F000", --ADD R4 R4 RF
-x"3455F000", --ADD R5 R5 RF
-x"3466F000", --ADD R6 R6 RF
-x"41030010", --STRV R3 X10
-x"41040011", --STRV R4 X11
-x"41050012", --STRV R5 X12
-x"41060013", --STRV R6 X13
-x"20F00003", --LDA RF 3 // LOAD DRILL LVL
-x"10E00001", --MOV RE 1
-x"34FFE000", --ADD RF RF RE //RF IS NOW TILE ADDERSS
-x"410F000D", --STRV RF XD // Put drill lvl on D tile
-x"5000fe8b", --JMP MAIN_LOOP
-x"00000000", --NOP
-x"10300000", --MOV R3 0 //Dest for 1000
-x"10400000", --MOV R4 0 //Dest for 100
-x"10500000", --MOV R5 0 //Dest for 10
-x"10600000", --MOV R6 0 //Dest for 1
-x"10F00001", --MOV RF 1
-x"10100000", --MOV R1 0 //Loop counter
-x"102003e8", --MOV R2 1000
-x"60002000", --CMP R0 R2
-x"51000006", --BRN HUNDRED
-x"00000000", --NOP
-x"35002000", --SUB R0 R0 R2
-x"3411F000", --ADD R1 R1 RF
-x"5000fffb", --JMP THOUSAND_LOOP
-x"00000000", --NOP
-x"34331000", --ADD R3 R3 R1
-x"10100000", --MOV R1 0 //Loop counter
-x"10200064", --MOV R2 100
-x"60002000", --CMP R0 R2
-x"51000006", --BRN TEN
-x"00000000", --NOP
-x"35002000", --SUB R0 R0 R2
-x"3411F000", --ADD R1 R1 RF
-x"5000fffb", --JMP HUNDRED_LOOP
-x"00000000", --NOP
-x"34441000", --ADD R4 R4 R1
-x"10100000", --MOV R1 0 //Loop counter
-x"1020000a", --MOV R2 10
-x"60002000", --CMP R0 R2
-x"51000006", --BRN ONE
-x"00000000", --NOP
-x"35002000", --SUB R0 R0 R2
-x"3411F000", --ADD R1 R1 RF
-x"5000fffb", --JMP TEN_LOOP
-x"00000000", --NOP
-x"34551000", --ADD R5 R5 R1
-x"34660000", --ADD R6 R6 R0
-x"5000ffcd", --JMP BCD_RETURN
 x"00000000", --NOP
 others=>(others=>'0')
 );

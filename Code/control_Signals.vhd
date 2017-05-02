@@ -58,7 +58,7 @@ begin
                   ir0(31 downto 24) = x"38" or      -- LSL
                   ir0(31 downto 24) = x"41" or      -- STRV
                   ir0(31 downto 24) = x"43" or      -- STRVR
-                  ir0(31 downto 24) = x"42" or      -- LDRVR                  
+                  ir0(31 downto 24) = x"42" or      -- LDAVR                  
                   ir0(31 downto 24) = x"60" else    -- CMP
                   '0';
 
@@ -112,7 +112,9 @@ begin
   --mem_access
   mem_access <= '1' when
                  ir1(31 downto 24) = x"20" or   --LDA
+                ir1(31 downto 24) = x"22" or --LDAR 
                  ir1(31 downto 24) = x"40" or --LDAV
+                ir1(31 downto 24) = x"42" or --LDAVR
                  ir1(31 downto 24) = x"11" else  --LFSR (Not memory access, but
                                                  --data is still only available in
                                                  --last step.
