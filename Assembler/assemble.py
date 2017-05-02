@@ -92,7 +92,7 @@ valid_instr = {
     'CMP' : ('0RR','60')
     }
 
-#List of symbloic adresses, formar is {SYMBOLIC_ADRESS:(PROGRAM_LINE, FILE_LINE)} to generate good error message"
+#List of symbloic adresses, format is {SYMBOLIC_ADRESS:[PROGRAM_LINE, USED]} to generate good error message"
 sym_addr = {}
 
 #Counter to know what program line the assembler is at, used for relative jumps and similar
@@ -227,7 +227,8 @@ def get_jmp(sym_address):
     global prog_line
 
     try:
-        jmp_line = sym_addr[sym_address]
+        jmp_line = sym_addr[sym_address][0]
+        sym_addr[sym_address][1] = True
     except KeyError:
         raise AssemblerError("Symbolic adress " + sym_address + " not found.");
 
@@ -251,7 +252,7 @@ def find_sym_adresses(rows):
             cur_row += 1
         except KeyError:
             #Is symbolic adress
-            sym_addr[operation] = cur_row
+            sym_addr[operation] = [cur_row, False]
             del rows[cur_row]
 
 # ============================================================================#
@@ -328,3 +329,12 @@ output_file.write(POST_TEXT)
 prog_file.close
 
 print("Assembly Succesfull")
+
+#==============================================================================
+# Display unused jump adresses
+#==============================================================================
+print("--- Unused Symbolic Adresses ---")
+
+for symbolic in sym_addr:
+    if not sym_addr[symbolic][1]:
+        print(symbolic)
