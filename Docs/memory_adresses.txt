@@ -11,6 +11,9 @@ DECIMAL NOTATION
 10 - cur room x
 11 - cur room y
 
+12 - new room x
+13 - new room y
+
 100 - BTN1 last state
 101 - BTN2 last state
 102 - JOY_UP last state

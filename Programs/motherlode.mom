@@ -1,5 +1,4 @@
 PROGRAM_START
-    NOP
     BRB1 GAME_BOOT //Start game at button press
     NOP
     JMP PROGRAM_START
@@ -453,6 +452,13 @@ ONE
     
 
 NEXT_SCREEN //R4 is delta X, R5 is delta Y  (R2 = Y POS, R1 = X POS FROM EARLIER)
+    LDA RE 10 //old x
+    LDA RF 11 //old y
+    ADD RE RE R4
+    ADD RF RF R5
+    STR RE 12 //Store new x
+    STR RF 13 //Store new y
+
     MOV RE 0
     CMP R4 RE
     BRZ Y_BORDER_WRAP //No X-movement
@@ -473,8 +479,8 @@ Y_BORDER_WRAP
 
 X_WRAP_LEFT
     MOV RA 1000		// Calculate what tile is where we try to move on new screen all according to formula
-    LDA RE 10  		 // X coord for room
-    LDA RD 11 		 // Y coord for room
+    LDA RE 12  		 // X coord for room
+    LDA RD 13 		 // Y coord for room
     MOV RC 8
     MUL RD RD RC 	 // Y * 8 
     ADD RE RE RD 	 // X + Y*8
@@ -568,11 +574,11 @@ CHANGE_SCREEN_LOOP //Needs RA for loop X, RE for loop Y, R4 for start adress old
 
     ADD R2 RE RD
     LSL R2 R2 RC
-    ADD R2 RA R2		//ADRESS TO CURRENT TILE IN VMEM IN R2
+    ADD R2 RA R2	//ADRESS TO CURRENT TILE IN VMEM IN R2
     LDAVR R5 R2		//Current tile in R5
     STRR R5 R3		//STR CURRENT TILE IN dMEM
 
-    ADD RF R9 R1
+    ADD RF R9 R1 	//RF adress of tile to load from new room
     LDAR R5 RF		//R5 IS TILE THAT IS NEWLY LOADED
     STRVR R5 R2
     MOV R0 19
@@ -602,14 +608,20 @@ SCREEN_PLACE_PLAYER
     MOV R4 x0B
     ADD R3 R3 R4
     STRVR R3 R1
+
+    LDA RE 12 //Copy over new screen x and y
+    STR RE 10
+    LDA RE 13
+    STR RE 11
+
     JMP UPDATE_SCORE
     NOP   
 	
 
 X_WRAP_RIGHT
     MOV RA 1000		// Calculate what tile is where we try to move on new screen all according to formula
-    LDA RE 10  		 // X coord for room
-    LDA RD 11 		 // Y coord for room
+    LDA RE 12  		 // X coord for room
+    LDA RD 13 		 // Y coord for room
     MOV RC 8
     MUL RD RD RC 	 // Y * 8 
     ADD RE RE RD 	 // X + Y*8
@@ -642,8 +654,8 @@ X_WRAP_RIGHT
 
 Y_WRAP_UP
     MOV RA 1000		// Calculate what tile is where we try to move on new screen all according to formula
-    LDA RE 10  		 // X coord for room
-    LDA RD 11 		 // Y coord for room
+    LDA RE 12  		 // X coord for room
+    LDA RD 13 		 // Y coord for room
     MOV RC 8
     MUL RD RD RC 	 // Y * 8 
     ADD RE RE RD 	 // X + Y*8
@@ -675,8 +687,8 @@ Y_WRAP_UP
 
 Y_WRAP_DOWN
     MOV RA 1000		// Calculate what tile is where we try to move on new screen all according to formula
-    LDA RE 10  		 // X coord for room
-    LDA RD 11 		 // Y coord for room
+    LDA RE 12  		 // X coord for room
+    LDA RD 13 		 // Y coord for room
     MOV RC 8
     MUL RD RD RC 	 // Y * 8 
     ADD RE RE RD 	 // X + Y*8

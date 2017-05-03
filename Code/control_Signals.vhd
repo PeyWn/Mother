@@ -58,7 +58,8 @@ begin
                   ir0(31 downto 24) = x"38" or      -- LSL
                   ir0(31 downto 24) = x"41" or      -- STRV
                   ir0(31 downto 24) = x"43" or      -- STRVR
-                  ir0(31 downto 24) = x"42" or      -- LDAVR                  
+                  ir0(31 downto 24) = x"42" or      -- LDAVR
+                  ir0(31 downto 24) = x"22" or      -- LDAR
                   ir0(31 downto 24) = x"60" else    -- CMP
                   '0';
 
