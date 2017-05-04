@@ -1,0 +1,12 @@
+START
+    BEEP
+    MOV R0 xFFFF
+    MOV R1 0
+LOOP
+    MOV RF 1
+    SUB R0 R0 RF
+    CMP R0 R1
+    BRZ START
+    NOP
+    JMP LOOP
+    NOP

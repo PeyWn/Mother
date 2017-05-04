@@ -225,7 +225,7 @@ Net "SCLK" LOC = P11 | IOSTANDARD = LVCMOS33; #Bank = 2, pin name = IO_L20N, Sch
 #Net "JC<7>" LOC = F2 | IOSTANDARD = LVCMOS33; #Bank = 3, pin name = IO_L48P_M3BA0, Sch name = JC10
 
 ##JD, LX16 Die only
-#Net "JD<0>" LOC = G11 | IOSTANDARD = LVCMOS33; #Bank = 3, pin name = IO_L40P, Sch name = JD1
+Net "sound_out" LOC = G11 | IOSTANDARD = LVCMOS33; #Bank = 3, pin name = IO_L40P, Sch name = JD1
 #Net "JD<1>" LOC = F10 | IOSTANDARD = LVCMOS33; #Bank = 3, pin name = IO_L40N, Sch name = JD2
 #Net "JD<2>" LOC = F11 | IOSTANDARD = LVCMOS33; #Bank = 3, pin name = IO_L42P, Sch name = JD3
 #Net "JD<3>" LOC = E11 | IOSTANDARD = LVCMOS33; #Bank = 3, pin name = IO_L42N, Sch name = JD4

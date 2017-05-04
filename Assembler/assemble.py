@@ -89,7 +89,8 @@ valid_instr = {
     'BRJD' : ('00S','5A'),
     'BRJR' : ('00S','5B'),
     'BRJL' : ('00S','5C'),
-    'CMP' : ('0RR','60')
+    'CMP' : ('0RR','60'),
+    'BEEP' : ('000','70')
     }
 
 #List of symbloic adresses, format is {SYMBOLIC_ADRESS:[PROGRAM_LINE, USED]} to generate good error message"
