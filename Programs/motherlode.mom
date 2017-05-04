@@ -453,11 +453,16 @@ ONE
 
 NEXT_SCREEN //R4 is delta X, R5 is delta Y  (R2 = Y POS, R1 = X POS FROM EARLIER)
     LDA RE 10 //old x
-    LDA RF 11 //old y
     ADD RE RE R4
-    ADD RF RF R5
+    MOV RF x0007
+    AND RE RE RF //mod 8
     STR RE 12 //Store new x
-    STR RF 13 //Store new y
+
+    LDA RE 11 //old y
+    ADD RE RE R5
+    MOV RF x0007
+    AND RE RE RF
+    STR RE 13 //Store new y
 
     MOV RE 0
     CMP R4 RE

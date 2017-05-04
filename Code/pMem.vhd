@@ -379,11 +379,15 @@ x"34660000", --ADD R6 R6 R0
 x"5000ffcd", --JMP BCD_RETURN
 x"00000000", --NOP
 x"20E0000a", --LDA RE 10 //old x
-x"20F0000b", --LDA RF 11 //old y
 x"34EE4000", --ADD RE RE R4
-x"34FF5000", --ADD RF RF R5
+x"10F00007", --MOV RF x0007
+x"32EEF000", --AND RE RE RF //mod 8
 x"210E000c", --STR RE 12 //Store new x
-x"210F000d", --STR RF 13 //Store new y
+x"20E0000b", --LDA RE 11 //old y
+x"34EE5000", --ADD RE RE R5
+x"10F00007", --MOV RF x0007
+x"32EEF000", --AND RE RE RF
+x"210E000d", --STR RE 13 //Store new y
 x"10E00000", --MOV RE 0
 x"6004E000", --CMP R4 RE
 x"52000006", --BRZ Y_BORDER_WRAP //No X-movement
@@ -393,7 +397,7 @@ x"00000000", --NOP
 x"5000007d", --JMP X_WRAP_RIGHT // delta X > 0
 x"00000000", --NOP
 x"6005E000", --CMP R5 RE
-x"5200ff7c", --BRZ NO_BORDER_WRAP //No Y-movement
+x"5200ff78", --BRZ NO_BORDER_WRAP //No Y-movement
 x"00000000", --NOP
 x"51000096", --BRN Y_WRAP_UP  // delta Y < 0
 x"00000000", --NOP
@@ -422,7 +426,7 @@ x"20E00003", --LDA RE 3  		 //Drill level
 x"10D0000F", --MOV RD x0F		 //Start adress for breakable rocks
 x"34EED000", --ADD RE RE RD	 //Highest tile that can be broken
 x"600EA000", --CMP RE RA 		 //Can i breakz?
-x"5100ff77", --BRN TURN 		 //NO BREAK ROCK CANCEL
+x"5100ff73", --BRN TURN 		 //NO BREAK ROCK CANCEL
 x"00000000", --NOP
 x"10500013", --MOV R5 19		//UPDATE PLAYER X, Y IS SAME
 x"10600000", --MOV R6 0
@@ -513,7 +517,7 @@ x"20E0000c", --LDA RE 12 //Copy over new screen x and y
 x"210E000a", --STR RE 10
 x"20E0000d", --LDA RE 13
 x"210E000b", --STR RE 11
-x"5000ff41", --JMP UPDATE_SCORE
+x"5000ff3d", --JMP UPDATE_SCORE
 x"00000000", --NOP
 x"10A003e8", --MOV RA 1000		// Calculate what tile is where we try to move on new screen all according to formula
 x"20E0000c", --LDA RE 12  		 // X coord for room
@@ -538,7 +542,7 @@ x"20E00003", --LDA RE 3  		 //Drill level
 x"10D0000F", --MOV RD x0F		 //Start adress for breakable rocks
 x"34EED000", --ADD RE RE RD	 //Highest tile that can be broken
 x"600EA000", --CMP RE RA 		 //Can i breakz?
-x"5100ff03", --BRN TURN 		 //NO BREAK ROCK CANCEL
+x"5100feff", --BRN TURN 		 //NO BREAK ROCK CANCEL
 x"00000000", --NOP
 x"10500000", --MOV R5 0		//UPDATE PLAYER X, Y IS SAME
 x"10600000", --MOV R6 0
@@ -564,7 +568,7 @@ x"20E00003", --LDA RE 3  		 //Drill level
 x"10D0000F", --MOV RD x0F		 //Start adress for breakable rocks
 x"34EED000", --ADD RE RE RD	 //Highest tile that can be broken
 x"600EA000", --CMP RE RA 		 //Can i breakz?
-x"5100fee9", --BRN TURN 		 //NO BREAK ROCK CANCEL
+x"5100fee5", --BRN TURN 		 //NO BREAK ROCK CANCEL
 x"00000000", --NOP
 x"1060000e", --MOV R6 14		//UPDATE PLAYER Y, X IS SAME
 x"10500000", --MOV R5 0
@@ -590,7 +594,7 @@ x"20E00003", --LDA RE 3  		 //Drill level
 x"10D0000F", --MOV RD x0F		 //Start adress for breakable rocks
 x"34EED000", --ADD RE RE RD	 //Highest tile that can be broken
 x"600EA000", --CMP RE RA 		 //Can i breakz?
-x"5100fecf", --BRN TURN 		 //NO BREAK ROCK CANCEL
+x"5100fecb", --BRN TURN 		 //NO BREAK ROCK CANCEL
 x"00000000", --NOP
 x"10600001", --MOV R6 1		//UPDATE PLAYER Y, X IS SAME
 x"10500000", --MOV R5 0
