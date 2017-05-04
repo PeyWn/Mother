@@ -111,7 +111,7 @@ architecture Behavioral of mother is
   component soundModule
       port(
           clk : in std_logic;
-          data_out : std_logic := '0';
+          data_out : out std_logic := '0';
           send : in std_logic
       );
   end component;

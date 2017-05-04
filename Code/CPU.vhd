@@ -223,7 +223,7 @@ begin
                                     jmp => jmp, stall => stall,
 
                                     ALU_operation => ALU_operation,
-                                    flag_update=>flag_update
+                                    flag_update=>flag_update,
                                     play_sound=>send_sound);
 
 

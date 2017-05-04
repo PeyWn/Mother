@@ -5,7 +5,7 @@ use IEEE.NUMERIC_STD.ALL;
 entity soundModule is
     port(
         clk : in std_logic;
-        data_out : std_logic := '0';
+        data_out : out std_logic := '0';
         send : in std_logic
     );
 end soundModule;
@@ -14,10 +14,10 @@ end soundModule;
 
 architecture Behavioral of soundModule is
     signal counter : unsigned(7 downto 0);
-    signal clk_c : unsigned(17 downto 0); -- enough to count to 250000
+    signal clk_c : unsigned(17 downto 0) := to_unsigned(0, 18); -- enough to count to 250000
     signal low_clk : std_logic := '0';
 
-    constant SOUND_TIME : unsigned(7 downto 0);
+    --constant SOUND_TIME : unsigned(7 downto 0) := to_unsigned(200, 8);
 
     begin
 
@@ -26,9 +26,9 @@ architecture Behavioral of soundModule is
         if rising_edge(clk) then
             if clk_c = 250000 then
                 low_clk <= not low_clk;
-                clk_c <= 0;
+                clk_c <= to_unsigned(0, 18);
             else
-                low_clk <= low_clk + 1;
+                clk_c <= clk_c + 1;
             end if;
         end if;
     end process;
@@ -36,10 +36,10 @@ architecture Behavioral of soundModule is
     -- counter
     process(clk) begin
         if rising_edge(clk) then
-            if send = 1 then
-                counter <= SOUND_TIME;
-            elsif low_clk = 1 and clk_c = 0 and not counter = 0 then
-                counter <= counter - 1;
+            if send = '1' then
+                counter <= to_unsigned(200,8);
+            elsif (low_clk = '1') and (clk_c = to_unsigned(0, 18)) and (not counter = to_unsigned(0, 8)) then
+                counter <= counter - to_unsigned(1, 8);
             end if;
         end if;
     end process;

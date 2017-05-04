@@ -188,7 +188,7 @@ begin
   --wants to read from register file and the register file that ir1 wants to
   --store to is one of the registers ir0 wants to read from
 
-  send_sound <= '1' when ir3((31 downto 24)) = "01110000" else --only for BEEP
+  play_sound <= '1' when ir3(31 downto 24) = "01110000" else --only for BEEP
                 '0';
 
 end net;
