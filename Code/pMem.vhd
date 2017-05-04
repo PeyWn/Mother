@@ -397,7 +397,7 @@ x"5200ff7c", --BRZ NO_BORDER_WRAP //No Y-movement
 x"00000000", --NOP
 x"51000096", --BRN Y_WRAP_UP  // delta Y < 0
 x"00000000", --NOP
-x"500000b0", --JMP Y_WRAP_DOWN // delta Y > 0
+x"500000ae", --JMP Y_WRAP_DOWN // delta Y > 0
 x"00000000", --NOP
 x"10A003e8", --MOV RA 1000		// Calculate what tile is where we try to move on new screen all according to formula
 x"20E0000c", --LDA RE 12  		 // X coord for room
@@ -438,7 +438,7 @@ x"10E00001", --MOV RE 1
 x"35AAE000", --SUB RA RA RE
 x"20D00004", --LDA RD 4 //Load score to RD
 x"38EEA000", --LSL RE RE RA
-x"34DDA000", --ADD RD RD RA //New score in RD
+x"34DDE000", --ADD RD RD RE //New score in RD
 x"210D0004", --STR RD 4
 x"10E00004", --MOV RE 4
 x"20A00003", --LDA RA 3 //Drill level in RF
@@ -556,9 +556,7 @@ x"36EEC000", --MUL RE RE RC 	 // 280(X + Y*8)
 x"34AAE000", --ADD RA RA RE 	 // 1000 + 280(X + Y *8) , start adress for tiles in new room
 x"10E00000", --MOV RE 0
 x"349AE000", --ADD R9 RA RE	//SAVE STARTADRESS FOR NEW ROOM FOR LATER
-x"10E00014", --MOV RE 20		 //Calculate tile adress in room according to formula of tile we want to move to
-x"10D0000f", --MOV RD 15 	       	 //When wrapping UP, new Y is 14
-x"36EDE000", --MUL RE RD RE         //20*Y
+x"10E00104", --MOV RE 260		 //Calculate tile adress in room according to formula of tile we want to move to when wrapping up new Y is 13 and 20 * Y is 260
 x"34EE1000", --ADD RE RE R1         //20*Y + X
 x"34BAE000", --ADD RB RA RE       	 //Room_adress + 20*Y + X = Tile_adress
 x"22AB0000", --LDAR RA RB		 //New tile in RA
@@ -566,12 +564,12 @@ x"20E00003", --LDA RE 3  		 //Drill level
 x"10D0000F", --MOV RD x0F		 //Start adress for breakable rocks
 x"34EED000", --ADD RE RE RD	 //Highest tile that can be broken
 x"600EA000", --CMP RE RA 		 //Can i breakz?
-x"5100fee7", --BRN TURN 		 //NO BREAK ROCK CANCEL
+x"5100fee9", --BRN TURN 		 //NO BREAK ROCK CANCEL
 x"00000000", --NOP
 x"1060000e", --MOV R6 14		//UPDATE PLAYER Y, X IS SAME
 x"10500000", --MOV R5 0
 x"34551000", --ADD R5 R5 R1
-x"5000ff72", --JMP CHANGE_SCREEN
+x"5000ff74", --JMP CHANGE_SCREEN
 x"00000000", --NOP
 x"10A003e8", --MOV RA 1000		// Calculate what tile is where we try to move on new screen all according to formula
 x"20E0000c", --LDA RE 12  		 // X coord for room
@@ -584,9 +582,7 @@ x"36EEC000", --MUL RE RE RC 	 // 280(X + Y*8)
 x"34AAE000", --ADD RA RA RE 	 // 1000 + 280(X + Y *8) , start adress for tiles in new room
 x"10E00000", --MOV RE 0
 x"349AE000", --ADD R9 RA RE	//SAVE STARTADRESS FOR NEW ROOM FOR LATER
-x"10E00014", --MOV RE 20		 //Calculate tile adress in room according to formula of tile we want to move to
-x"10D00001", --MOV RD 1 	       	 //When wrapping DOWN, new Y is 1
-x"36EDE000", --MUL RE RD RE         //20*Y
+x"10E00000", --MOV RE 0 	       	 //When wrapping DOWN, new Y is 0 and 20*Y = 0	 //Calculate tile adress in room according to formula of tile we want to move to
 x"34EE1000", --ADD RE RE R1         //20*Y + X
 x"34BAE000", --ADD RB RA RE       	 //Room_adress + 20*Y + X = Tile_adress
 x"22AB0000", --LDAR RA RB		 //New tile in RA
@@ -594,12 +590,12 @@ x"20E00003", --LDA RE 3  		 //Drill level
 x"10D0000F", --MOV RD x0F		 //Start adress for breakable rocks
 x"34EED000", --ADD RE RE RD	 //Highest tile that can be broken
 x"600EA000", --CMP RE RA 		 //Can i breakz?
-x"5100fecb", --BRN TURN 		 //NO BREAK ROCK CANCEL
+x"5100fecf", --BRN TURN 		 //NO BREAK ROCK CANCEL
 x"00000000", --NOP
 x"10600001", --MOV R6 1		//UPDATE PLAYER Y, X IS SAME
 x"10500000", --MOV R5 0
 x"34551000", --ADD R5 R5 R1
-x"5000ff56", --JMP CHANGE_SCREEN
+x"5000ff5a", --JMP CHANGE_SCREEN
 x"00000000", --NOP
 others=>(others=>'0')
 );

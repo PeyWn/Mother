@@ -522,7 +522,7 @@ CHANGE_SCREEN //RA is tile that was broken, RD is start adress for breakable blo
     SUB RA RA RE
     LDA RD 4 //Load score to RD
     LSL RE RE RA
-    ADD RD RD RA //New score in RD
+    ADD RD RD RE //New score in RD
     STR RD 4
     MOV RE 4
     LDA RA 3 //Drill level in RF
@@ -665,9 +665,7 @@ Y_WRAP_UP
     MOV RE 0
     ADD R9 RA RE	//SAVE STARTADRESS FOR NEW ROOM FOR LATER
 
-    MOV RE 20		 //Calculate tile adress in room according to formula of tile we want to move to
-    MOV RD 15 	       	 //When wrapping UP, new Y is 14
-    MUL RE RD RE         //20*Y
+    MOV RE 260		 //Calculate tile adress in room according to formula of tile we want to move to when wrapping up new Y is 13 and 20 * Y is 260
 
     ADD RE RE R1         //20*Y + X
     ADD RB RA RE       	 //Room_adress + 20*Y + X = Tile_adress
@@ -698,9 +696,7 @@ Y_WRAP_DOWN
     MOV RE 0
     ADD R9 RA RE	//SAVE STARTADRESS FOR NEW ROOM FOR LATER
 
-    MOV RE 20		 //Calculate tile adress in room according to formula of tile we want to move to
-    MOV RD 1 	       	 //When wrapping DOWN, new Y is 1
-    MUL RE RD RE         //20*Y
+    MOV RE 0 	       	 //When wrapping DOWN, new Y is 0 and 20*Y = 0	 //Calculate tile adress in room according to formula of tile we want to move to
 
     ADD RE RE R1         //20*Y + X
     ADD RB RA RE       	 //Room_adress + 20*Y + X = Tile_adress
