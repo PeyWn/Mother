@@ -245,19 +245,19 @@ x"34714000", --ADD R7 R1 R4 //New x-pos
 x"34825000", --ADD R8 R2 R5 //New y-pos
 x"10E00014", --MOV RE 20 //Check if too far right
 x"600E7000", --CMP RE R7
-x"52000085", --BRZ NEXT_SCREEN
+x"5200008e", --BRZ NEXT_SCREEN
 x"00000000", --NOP
 x"10E0ffff", --MOV RE -1 //Check too far left
 x"600E7000", --CMP RE R7
-x"52000081", --BRZ NEXT_SCREEN
+x"5200008a", --BRZ NEXT_SCREEN
 x"00000000", --NOP
 x"10E00000", --MOV RE 0 //Check too far up
 x"600E8000", --CMP RE R8
-x"5200007d", --BRZ NEXT_SCREEN
+x"52000086", --BRZ NEXT_SCREEN
 x"00000000", --NOP
 x"10E0000f", --MOV RE 15 //Check too far down
 x"600E8000", --CMP RE R8
-x"52000079", --BRZ NEXT_SCREEN
+x"52000082", --BRZ NEXT_SCREEN
 x"00000000", --NOP
 x"50000002", --JMP NO_BORDER_WRAP
 x"00000000", --NOP
@@ -266,12 +266,12 @@ x"38B8F000", --LSL RB R8 RF //Shift new y
 x"34BB7000", --ADD RB RB R7 //Vmem new pos in RB
 x"429B0000", --LDAVR R9 RB //Tile where player tries to move in R9
 x"20A00003", --LDA RA 3 //Drill level in RA
-x"10F0000F", --MOV RF x0F
+x"10F0003B", --MOV RF x3B
 x"3599F000", --SUB R9 R9 RF
 x"600A9000", --CMP RA R9
-x"51000010", --BRN TURN
+x"51000018", --BRN CRACK
 x"00000000", --NOP
-x"50000016", --JMP AWARD_SCORE
+x"5000001f", --JMP AWARD_SCORE
 x"00000000", --NOP
 x"10F00008", --MOV RF 8
 x"3832F000", --LSL R3 R2 RF //Shift old y
@@ -283,7 +283,7 @@ x"21080001", --STR R8 1
 x"10F0000B", --MOV RF x0B //Start for player sprites
 x"34F0F000", --ADD RF R0 RF
 x"430FB000", --STRVR RF RB //Write over new tile
-x"50000027", --JMP UPDATE_SCORE
+x"50000030", --JMP UPDATE_SCORE
 x"00000000", --NOP
 x"10F00008", --MOV RF 8
 x"3832F000", --LSL R3 R2 RF //Shift up y
@@ -293,9 +293,18 @@ x"34F0F000", --ADD RF R0 RF
 x"430F3000", --STRVR RF R3 //Write over new tile
 x"5000ff8f", --JMP MAIN_LOOP
 x"00000000", --NOP
+x"10F0000d", --MOV RF 13
+x"600FA000", --CMP RF RA
+x"5100fff6", --BRN TURN
+x"00000000", --NOP
+x"10F0003B", --MOV RF x3B //cracked rocks are 3B addresses after uncracked rocks
+x"34FFA000", --ADD RF RF RA
+x"430FB000", --STRVR RF RB // Write over tile
+x"5000fff1", --JMP TURN
+x"00000000", --NOP
 x"10F00000", --MOV RF 0
 x"6009F000", --CMP R9 RF //Check if ground
-x"5200ffea", --BRZ CONT_MOVE
+x"5200ffe1", --BRZ CONT_MOVE
 x"00000000", --NOP
 x"10F00001", --MOV RF 1
 x"3599F000", --SUB R9 R9 RF
@@ -307,20 +316,20 @@ x"210F0004", --STR RF 4
 x"10E00004", --MOV RE 4
 x"20D00003", --LDA RD 3 //Drill level in RD
 x"600ED000", --CMP RE RD
-x"5200ffde", --BRZ CONT_MOVE //go back if max drill level
+x"5200ffd5", --BRZ CONT_MOVE //go back if max drill level
 x"00000000", --NOP
 x"10E0000a", --MOV RE 10
 x"36DDE000", --MUL RD RD RE
 x"600DF000", --CMP RD RF
 x"51000004", --BRN ADD_LEVEL
 x"00000000", --NOP
-x"5000ffd7", --JMP CONT_MOVE
+x"5000ffce", --JMP CONT_MOVE
 x"00000000", --NOP
 x"20E00003", --LDA RE 3
 x"10F00001", --MOV RF 1
 x"34EEF000", --ADD RE RE RF
 x"210E0003", --STR RE 3
-x"5000ffd1", --JMP CONT_MOVE
+x"5000ffc8", --JMP CONT_MOVE
 x"00000000", --NOP
 x"20000004", --LDA R0 4 //Score to R0
 x"50000011", --JMP GET_BCD
@@ -338,7 +347,7 @@ x"20F00003", --LDA RF 3 // LOAD DRILL LVL
 x"10E00001", --MOV RE 1
 x"34FFE000", --ADD RF RF RE //RF IS NOW TILE ADDERSS
 x"410F000D", --STRV RF XD // Put drill lvl on D tile
-x"5000ff60", --JMP MAIN_LOOP
+x"5000ff57", --JMP MAIN_LOOP
 x"00000000", --NOP
 x"10300000", --MOV R3 0 //Dest for 1000
 x"10400000", --MOV R4 0 //Dest for 100
@@ -397,7 +406,7 @@ x"00000000", --NOP
 x"5000007d", --JMP X_WRAP_RIGHT // delta X > 0
 x"00000000", --NOP
 x"6005E000", --CMP R5 RE
-x"5200ff78", --BRZ NO_BORDER_WRAP //No Y-movement
+x"5200ff6f", --BRZ NO_BORDER_WRAP //No Y-movement
 x"00000000", --NOP
 x"51000096", --BRN Y_WRAP_UP  // delta Y < 0
 x"00000000", --NOP
@@ -426,7 +435,7 @@ x"20E00003", --LDA RE 3  		 //Drill level
 x"10D0000F", --MOV RD x0F		 //Start adress for breakable rocks
 x"34EED000", --ADD RE RE RD	 //Highest tile that can be broken
 x"600EA000", --CMP RE RA 		 //Can i breakz?
-x"5100ff73", --BRN TURN 		 //NO BREAK ROCK CANCEL
+x"5100ff6a", --BRN TURN 		 //NO BREAK ROCK CANCEL
 x"00000000", --NOP
 x"10500013", --MOV R5 19		//UPDATE PLAYER X, Y IS SAME
 x"10600000", --MOV R6 0
@@ -542,7 +551,7 @@ x"20E00003", --LDA RE 3  		 //Drill level
 x"10D0000F", --MOV RD x0F		 //Start adress for breakable rocks
 x"34EED000", --ADD RE RE RD	 //Highest tile that can be broken
 x"600EA000", --CMP RE RA 		 //Can i breakz?
-x"5100feff", --BRN TURN 		 //NO BREAK ROCK CANCEL
+x"5100fef6", --BRN TURN 		 //NO BREAK ROCK CANCEL
 x"00000000", --NOP
 x"10500000", --MOV R5 0		//UPDATE PLAYER X, Y IS SAME
 x"10600000", --MOV R6 0
@@ -568,7 +577,7 @@ x"20E00003", --LDA RE 3  		 //Drill level
 x"10D0000F", --MOV RD x0F		 //Start adress for breakable rocks
 x"34EED000", --ADD RE RE RD	 //Highest tile that can be broken
 x"600EA000", --CMP RE RA 		 //Can i breakz?
-x"5100fee5", --BRN TURN 		 //NO BREAK ROCK CANCEL
+x"5100fedc", --BRN TURN 		 //NO BREAK ROCK CANCEL
 x"00000000", --NOP
 x"1060000e", --MOV R6 14		//UPDATE PLAYER Y, X IS SAME
 x"10500000", --MOV R5 0
@@ -594,7 +603,7 @@ x"20E00003", --LDA RE 3  		 //Drill level
 x"10D0000F", --MOV RD x0F		 //Start adress for breakable rocks
 x"34EED000", --ADD RE RE RD	 //Highest tile that can be broken
 x"600EA000", --CMP RE RA 		 //Can i breakz?
-x"5100fecb", --BRN TURN 		 //NO BREAK ROCK CANCEL
+x"5100fec2", --BRN TURN 		 //NO BREAK ROCK CANCEL
 x"00000000", --NOP
 x"10600001", --MOV R6 1		//UPDATE PLAYER Y, X IS SAME
 x"10500000", --MOV R5 0
