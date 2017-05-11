@@ -15,7 +15,7 @@ end soundModule;
 architecture Behavioral of soundModule is
     signal counter : unsigned(7 downto 0);
     signal clk_c : unsigned(17 downto 0) := to_unsigned(0, 18); -- enough to count to 250000
-    signal low_clk : std_logic := '0';
+    signal low_clk : std_logic := '1';
 
     --constant SOUND_TIME : unsigned(7 downto 0) := to_unsigned(200, 8);
 
@@ -37,9 +37,9 @@ architecture Behavioral of soundModule is
     process(clk) begin
         if rising_edge(clk) then
             if send = '1' then
-                counter <= to_unsigned(200,8);
-            elsif (low_clk = '1') and (clk_c = to_unsigned(0, 18)) and (not counter = to_unsigned(0, 8)) then
-                counter <= counter - to_unsigned(1, 8);
+                counter <= to_unsigned(40,8);
+            elsif (low_clk = '1') and (clk_c = 0) and (not (counter = 0)) then
+                counter <= counter - 1;
             end if;
         end if;
     end process;
