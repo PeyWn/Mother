@@ -49,24 +49,26 @@ architecture Behavioral of JSTK is
     -- Operate counter and shift register
     process(clk, MISO)
     begin
-      if rising_edge(clk) and low_clk = '1' and clk_div_counter = 0 then
-        --Shift in 40 bits from JOYSTK into shift_reg
-        if counter = 40 then
-          counter <= (others => '0');
-          CS <= '0';
+      if rising_edge(clk) then
+        if low_clk = '1' and clk_div_counter = 0 then
+          --Shift in 40 bits from JOYSTK into shift_reg
+          if counter = 40 then
+            counter <= (others => '0');
+            CS <= '0';
 
-          x_pos   <= shift_reg(25 downto 24) & shift_reg(39 downto 32);
-          y_pos   <= shift_reg(9 downto 8) & shift_reg(23 downto 16);
-          buttons <= shift_reg(2 downto 0);
-        else
-          counter <= counter + 1;
+            x_pos   <= shift_reg(25 downto 24) & shift_reg(39 downto 32);
+            y_pos   <= shift_reg(9 downto 8) & shift_reg(23 downto 16);
+            buttons <= shift_reg(2 downto 0);
+          else
+            counter <= counter + 1;
 
-          --Shift
-          shift_reg(39 downto 1) <= shift_reg(38 downto 0);
-          shift_reg(0) <= MISO;
+            --Shift
+            shift_reg(39 downto 1) <= shift_reg(38 downto 0);
+            shift_reg(0) <= MISO;
 
-          if counter = 39 then
-            cs <= '1';
+            if counter = 39 then
+              cs <= '1';
+            end if;
           end if;
         end if;
       end if;
