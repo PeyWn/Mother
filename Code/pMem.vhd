@@ -16,7 +16,7 @@ type p_mem_t is array (0 to 1023) of unsigned(31 downto 0);
   signal p_mem : p_mem_t := (
 x"57000004", --BRB1 GAME_BOOT //Start game at button press
 x"00000000", --NOP
-x"50000002", --JMP GAME_BOOT
+x"5000fffe", --JMP PROGRAM_START
 x"00000000", --NOP
 x"1000000a", --MOV R0 10 //Set player default coordinates
 x"10100008", --MOV R1 8
