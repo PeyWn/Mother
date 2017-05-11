@@ -253,6 +253,10 @@ def find_sym_adresses(rows):
             cur_row += 1
         except KeyError:
             #Is symbolic adress
+            
+            if operation in sym_addr:
+                raise AssemblerError(operation + " already exists.");
+
             sym_addr[operation] = [cur_row, False]
             del rows[cur_row]
 
@@ -289,7 +293,12 @@ for line in prog_file:
 #==============================================================================
 # Pre Process symbolic adresses
 #==============================================================================
-find_sym_adresses(rows)
+try:
+    find_sym_adresses(rows)
+except AssemblerError as e:
+     print("Symbolic Address Error")
+     print(e.value)
+     sys.exit(0);
 
 #==============================================================================
 #Add instructions

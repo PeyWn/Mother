@@ -313,7 +313,7 @@ NO_BORDER_WRAP
     MOV RF x0F
     SUB R9 R9 RF
 
-    MOVE RF x2C
+    MOV RF x2C
     CMP RF R9
     BRN	AWARD_SCORE
     NOP  
@@ -324,7 +324,6 @@ NO_BORDER_WRAP
     NOP
 
     JMP CRACK
-    BEEP
     NOP
 CONT_MOVE
     MOV RF 8
@@ -372,9 +371,10 @@ AWARD_SCORE // R9 = (GroundTile - x0F), DONT FUCK UP REGs FROM MOVE!!!
     MOV RF 0
     CMP R9 RF //Check if ground
     BRZ CONT_MOVE
-    NOP //BEEP //Make sound
+    NOP 
+    BEEP //Make sound
     
-    MOV RF 1
+    MOV RF x2D
     SUB R9 R9 RF
     LDA RF 4 //Load score to RF
     MOV RE 1
