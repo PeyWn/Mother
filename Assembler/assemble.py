@@ -89,7 +89,8 @@ valid_instr = {
     'BRJD' : ('00S','5A'),
     'BRJR' : ('00S','5B'),
     'BRJL' : ('00S','5C'),
-    'CMP' : ('0RR','60')
+    'CMP' : ('0RR','60'),
+    'BEEP' : ('000','70')
     }
 
 #List of symbloic adresses, format is {SYMBOLIC_ADRESS:[PROGRAM_LINE, USED]} to generate good error message"
@@ -329,7 +330,7 @@ output_file.write(POST_TEXT)
 prog_file.close
 
 print("Assembly Succesfull")
-
+print("")
 #==============================================================================
 # Display unused jump adresses
 #==============================================================================
@@ -338,3 +339,9 @@ print("--- Unused Symbolic Adresses ---")
 for symbolic in sym_addr:
     if not sym_addr[symbolic][1]:
         print(symbolic)
+
+print("")
+#==============================================================================
+# Display assembled row
+#==============================================================================
+print("Created " + str(len(program_hexes)) + " instructions")

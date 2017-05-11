@@ -36,3 +36,8 @@ Drill Border		FF
 Drill Background	EC
 Peng BackGround		FC
 Peng Symbol		1C
+--Shop--
+Brick Border		00			
+Bricks			
+Wall Border		
+Wall Top		

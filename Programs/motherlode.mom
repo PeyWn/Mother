@@ -365,6 +365,7 @@ AWARD_SCORE // R9 - GroundTile - 0F DONT FUCK UP REGs FROM MOVE!!!
     CMP R9 RF //Check if ground
     BRZ CONT_MOVE
     NOP
+    BEEP //Make sound
     MOV RF 1
     SUB R9 R9 RF
     LDA RF 4 //Load score to RF
@@ -531,12 +532,13 @@ X_WRAP_LEFT
     JMP CHANGE_SCREEN
     NOP
 
-CHANGE_SCREEN //RA is tile that was broken, RD is start adress for breakable blocks, R1 is OLD player X, R2 is OLD player Y, R5 is new player X, R6 is new player Y, R9 is start adress for new room tiles in dMem
+CHANGE_SCREEN //RA is tile that was broken, RD is start adress for breakable blocks, R1 is OLD player X, R2 is OLD player Y, R5 is new player X, R6 is new player Y, R9 is start adress for new room tiles indMem
     MOV RE 0 //Before that calculate the new score	
     SUB RA RA RD
     CMP RA RE //Check if ground
     BRZ CONT_CHANGE_SCREEN
     NOP
+    BEEP //Make sound
     MOV RE 1
     SUB RA RA RE
     LDA RD 4 //Load score to RD

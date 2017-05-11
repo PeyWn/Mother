@@ -21,7 +21,10 @@ entity CPU is
         v_mem_col : out unsigned(7 downto 0);
         v_mem_operation : out std_logic;
         v_mem_data_read : in unsigned(7 downto 0);
-        v_mem_data_write : out unsigned(7 downto 0)
+        v_mem_data_write : out unsigned(7 downto 0);
+
+        --Sound out
+        send_sound : out std_logic
     );
 end CPU;
 
@@ -71,7 +74,8 @@ architecture Behavioral of CPU is
        --11     --               båda
 
        ALU_operation : out unsigned(3 downto 0);
-       flag_update : out std_logic);
+       flag_update : out std_logic;
+       play_sound : out std_logic);
     end component;
 
     component dMem
@@ -219,7 +223,8 @@ begin
                                     jmp => jmp, stall => stall,
 
                                     ALU_operation => ALU_operation,
-                                    flag_update=>flag_update);
+                                    flag_update=>flag_update,
+                                    play_sound=>send_sound);
 
 
   --Process for forwarding of the DF and read_reg values from one ir step to
@@ -326,10 +331,11 @@ begin
     if rising_edge(clk) then
       instr_const_reg <= instr_reg0(15 downto 0);
 
-      reg_a <= regFile_output1;
-      reg_b <= regFile_output2;
     end if;
   end process;
+
+  reg_a <= regFile_output1;
+  reg_b <= regFile_output2;
 
   --Muxes above ALU
   constant_mux <= instr_const_reg when ALU_mux = '1' else
@@ -361,10 +367,12 @@ begin
     --Update status flags
     process(clk)
       begin
-        if rising_edge(clk) and flag_update = '1' then
-          Z <= ALU_Z;
-          N <= ALU_N;
-          O <= ALU_O;
+        if rising_edge(clk) then
+          if flag_update = '1' then
+            Z <= ALU_Z;
+            N <= ALU_N;
+            O <= ALU_O;
+          end if;
         end if;
       end process;
 
@@ -389,6 +397,5 @@ begin
     joy_down <= decoded_joy_down;
     joy_right <= decoded_joy_right;
     joy_left <= decoded_joy_left;
-
 
 end Behavioral;

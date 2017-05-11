@@ -1,0 +1,9 @@
+START
+    BRB1 SOUND
+    NOP
+    JMP START
+    NOP
+SOUND
+    BEEP
+    JMP START
+    NOP
