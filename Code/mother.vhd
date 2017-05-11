@@ -6,7 +6,7 @@ use IEEE.NUMERIC_STD.ALL;
 entity mother is
   port(
         clk: in std_logic;
-	    rst: in std_logic;
+        rst: in std_logic;
 
         --VGA connection
         vgaRed : out std_logic_vector(2 downto 0);

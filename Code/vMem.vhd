@@ -21,7 +21,7 @@ entity vMem is
 end vMem;
 
 architecture Behavioral of vMem is
-    type v_mem_data is array (0 to 319) of unsigned(7 downto 0);
+    type v_mem_data is array (0 to 299) of unsigned(7 downto 0);
 
     signal memory : v_mem_data :=
       (
@@ -39,8 +39,7 @@ architecture Behavioral of vMem is
         x"10",x"10",x"10",x"0F",x"0F",x"0F",x"0F",x"11",x"0F",x"0F",x"0F",x"11",x"0F",x"12",x"0F",x"13",x"0F",x"0F",x"13",x"0F",
         x"10",x"0F",x"0F",x"10",x"0F",x"0F",x"0F",x"0E",x"0F",x"0F",x"0F",x"11",x"0F",x"12",x"0F",x"13",x"0F",x"0F",x"13",x"0F",
         x"10",x"0F",x"0F",x"10",x"0F",x"0F",x"0F",x"10",x"0F",x"0F",x"0F",x"11",x"0F",x"0F",x"12",x"13",x"0F",x"0F",x"0E",x"0F",
-        x"10",x"10",x"10",x"0F",x"0F",x"0F",x"0F",x"10",x"0F",x"0F",x"0F",x"11",x"0F",x"0F",x"0F",x"13",x"0F",x"13",x"13",x"13",
-        x"0F",x"0F",x"0F",x"0F",x"0F",x"0F",x"0F",x"0F",x"0F",x"0F",x"0F",x"0F",x"0F",x"0F",x"0F",x"0F",x"0F",x"0F",x"0F",x"0F"
+        x"10",x"10",x"10",x"0F",x"0F",x"0F",x"0F",x"10",x"0F",x"0F",x"0F",x"11",x"0F",x"0F",x"0F",x"13",x"0F",x"13",x"13",x"13"
       );
 
     signal VGA_addr : unsigned(8 downto 0);
@@ -56,14 +55,16 @@ begin
 
     --Read operations
     VGA_out <= memory(to_integer(VGA_addr));
-    CPU_out <= memory(to_integer(CPU_addr)) when CPU_operation = '0' and CPU_addr < 320 else
+    CPU_out <= memory(to_integer(CPU_addr)) when CPU_operation = '0' and CPU_addr < 300 else
                    x"0F";
 
     --CPU writing to memory
     process(clk)
     begin
-        if rising_edge(clk) AND CPU_operation = '1' then
+        if rising_edge(clk) then
+          if CPU_operation = '1' then
             memory(to_integer(CPU_addr)) <= CPU_in;
+          end if;
         end if;
     end process;
 end Behavioral;

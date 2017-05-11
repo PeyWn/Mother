@@ -331,10 +331,11 @@ begin
     if rising_edge(clk) then
       instr_const_reg <= instr_reg0(15 downto 0);
 
-      reg_a <= regFile_output1;
-      reg_b <= regFile_output2;
     end if;
   end process;
+
+  reg_a <= regFile_output1;
+  reg_b <= regFile_output2;
 
   --Muxes above ALU
   constant_mux <= instr_const_reg when ALU_mux = '1' else
@@ -366,10 +367,12 @@ begin
     --Update status flags
     process(clk)
       begin
-        if rising_edge(clk) and flag_update = '1' then
-          Z <= ALU_Z;
-          N <= ALU_N;
-          O <= ALU_O;
+        if rising_edge(clk) then
+          if flag_update = '1' then
+            Z <= ALU_Z;
+            N <= ALU_N;
+            O <= ALU_O;
+          end if;
         end if;
       end process;
 

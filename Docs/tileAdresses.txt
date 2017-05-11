@@ -25,10 +25,14 @@ Hex	Tile
 -- Menu --
 14 	Drill icon
 15 	Peng icon
+16 	Icon template
+
+-- Shop --
+1A 	Shop floor
 
 
 -- Cracked Rocks --
-1D 	Cracked rock
-1E 	Cracked Silver
-1F 	Cracked Gold
-20 	Cracked Ruby
+3C 	Cracked rock
+3D 	Cracked Silver
+3E 	Cracked Gold
+3F 	Cracked Ruby
