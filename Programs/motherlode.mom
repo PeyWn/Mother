@@ -192,6 +192,8 @@ VMEM_MOVE_RST_X
     NOP
 
 PLACE_PLAYER
+    JMP BUILD_SHOP
+SHOP_BUILT
     MOV R0 x0D //Player down tile
     STRV R0 x070A
     MOV R0 x7
@@ -203,6 +205,85 @@ PLACE_PLAYER
     MOV R0 0
     STR R0 4 //Score
     JMP MAIN_LOOP
+    NOP
+
+BUILD_SHOP
+    MOV R0 x1B	//VERTICAL WALL
+    STRV R0 x0406 //LEFT WALL
+    STRV R0 x0506
+    STRV R0 x0606
+    STRV R0 x0706
+    STRV R0 x0806
+    STRV R0 x040C //RIGHT WALL
+    STRV R0 x050C
+    STRV R0 x060C
+    STRV R0 x070C
+    STRV R0 x080C
+    MOV R0 x1C	//BOTTOM WALL
+    STRV R0 x0407
+    STRV R0 x0408
+    STRV R0 x0409
+    STRV R0 x040A
+    STRV R0 x040B
+    STRV R0 x0A07
+    STRV R0 x0A0B
+    MOV R0 x1D	//BOTTOM RIGHT EDGE
+    STRV R0 x0A08
+    STRV R0 x0A0C
+    MOV R0 x1E //BOTTOM LEFT EDGE
+    STRV R0 x0A06
+    STRV R0 x0A0A
+    MOV R0 x1F //TOP WALL 
+    STRV R0 x0307
+    STRV R0 x0308
+    STRV R0 x0309
+    STRV R0 x030A
+    STRV R0 x030B
+    STRV R0 x0907
+    STRV R0 x090B
+    MOV R0 x20 //WALL TOP RIGHT EDGE
+    STRV R0 x0908
+    MOV R0 x21 //WALL TOP LEFT EDGE
+    STRV R0 x090A
+    MOV R0 x22 //CORNER WALL BOTTOM LEFT
+    STRV R0 x0906
+    MOV R0 x23 //CORNER WALL BOTTOM RIGHT
+    STRV R0 x090C
+    MOV R0 x24 //CORNER WALL TOP LEFT
+    STRV R0 x0306
+    MOV R0 x25 //CORNER WALL TOP RIGHT
+    STRV R0 x030C
+    MOV R0 x0F //STANDARD GROUND INSIDE AND AROUND ENTRANCE
+    STRV R0 x0507
+    STRV R0 x0508
+    STRV R0 x0509
+    STRV R0 x050A
+    STRV R0 x050B
+    STRV R0 x0607
+    STRV R0 x0608
+    STRV R0 x060A
+    STRV R0 x060B
+    STRV R0 x0707
+    STRV R0 x0708
+    STRV R0 x0709
+    STRV R0 x070A
+    STRV R0 x070B
+    STRV R0 x0807
+    STRV R0 x0808
+    STRV R0 x0809
+    STRV R0 x080A
+    STRV R0 x080B
+    STRV R0 x0909
+    STRV R0 x0C08
+    STRV R0 x0A09
+    STRV R0 x0C0A
+    STRV R0 x0C09
+    STRV R0 x0B08
+    STRV R0 x0B09
+    STRV R0 x0B0A
+    MOV R0 x16
+    STRV R0 x0609	
+    JMP SHOP_BUILT
     NOP
 
 MAIN_LOOP
@@ -219,6 +300,9 @@ MAIN_LOOP
     BRJL JOY_LEFT
     NOP
     STR RF 104
+    BRB1 JOY_BTN1
+    NOP
+    STR RF 106
     JMP MAIN_LOOP //Restart loop
     NOP
 
@@ -274,6 +358,59 @@ JOY_LEFT
     MOV R5 0
     JMP MOVE
     NOP
+
+JOY_BTN1
+    MOV RF 1 
+    LDA R0 106
+    CMP RF R0
+    BRZ MAIN_LOOP
+    NOP
+    STR RF 106
+    
+    LDA R2 3 //Check if drill level is maxed
+    MOV RF 4
+    CMP RF R2
+    BRZ MAIN_LOOP
+    NOP
+    
+    LDA R0 0	//Player X
+    LDA R1 1	//Player Y
+    
+    MOV RF 1	//Check if tile above player is buyable tile
+    ADD R1 R1 RF
+    
+    MOV RF 8
+    LSL R1 R1 RF
+    ADD R3 R1 R2	//vMem adress for tile above player in R3
+    LDAVR R5 R3
+    
+    MOV RF x17		//Drill up icon
+    CMP RF R5
+    BRZ TRY_BUY
+    NOP    
+
+    JMP MAIN_LOOP
+    NOP
+
+TRY_BUY
+    LDA R0 4	//Player score
+    LDA R1 3	//Drill level
+    
+    MOV R2 10
+    MUL R3 R1 R2
+    CMP R0 R3
+    BRN MAIN_LOOP
+    NOP
+    MOV R4 1
+    ADD R1 R1 R4
+    SUB R0 R0 R3
+    STR R0 4
+    STR R1 3
+    JMP MAIN_LOOP
+    NOP
+
+
+
 
 MOVE //R4 should contain delta-x, R5 should contain delta-y, R0 should contain direction
     STR R0 2
@@ -359,24 +496,6 @@ AWARD_SCORE // R9 - GroundTile - 0F DONT FUCK UP REGs FROM MOVE!!!
     LSL RE RE R9
     ADD RF RF RE //New score in RF
     STR RF 4
-    MOV RE 4
-    LDA RD 3 //Drill level in RD
-    CMP RE RD
-    BRZ CONT_MOVE //go back if max drill level
-    NOP
-    MOV RE 10
-    MUL RD RD RE
-    CMP RD RF
-    BRN ADD_LEVEL
-    NOP
-    JMP CONT_MOVE
-    NOP
-
-ADD_LEVEL
-    LDA RE 3
-    MOV RF 1
-    ADD RE RE RF
-    STR RE 3
     JMP CONT_MOVE
     NOP
     
@@ -530,23 +649,7 @@ CHANGE_SCREEN //RA is tile that was broken, RD is start adress for breakable blo
     LDA RD 4 //Load score to RD
     LSL RE RE RA
     ADD RD RD RE //New score in RD
-    STR RD 4
-    MOV RE 4
-    LDA RA 3 //Drill level in RF
-    CMP RE RA
-    BRZ CONT_CHANGE_SCREEN //go back if max drill level
-    NOP
-    MOV RE 10
-    MUL RA RA RE
-    CMP RD RA
-    BRN CONT_CHANGE_SCREEN //Not enough score to level up
-    NOP
-
-    LDA RE 3 //Level up the drill
-    MOV RA 1
-    ADD RE RE RA
-    STR RE 3
-   
+    STR RD 4  
 
 CONT_CHANGE_SCREEN //Here we want to store the current room to data memory, and load the new room to video memory
     MOV RE 8

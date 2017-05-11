@@ -25,11 +25,22 @@ Hex	Tile
 -- Menu --
 14 	Drill icon
 15 	Peng icon
-16 	Icon template
+16 	Drill UP icon
+17 	Icon template
 
 -- Shop --
-1A 	Shop floor
-
+1A 	Shop floor		UNUSED
+1B	Vertical wall
+1C	Horziontal wall bottom
+1D	Horizontal wall bottom right edge
+1E	Horizontal wall bottom left edge
+1F	Horizontal wall top
+20	Horizontal wall top right edge
+21	Horizontal wall top left edge
+22	Corner wall bottom left
+23	Corner wall bottom right
+24	Corner wall top left
+25	Corner wall top right
 
 -- Cracked Rocks --
 3C 	Cracked rock
