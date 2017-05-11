@@ -330,7 +330,7 @@ output_file.write(POST_TEXT)
 prog_file.close
 
 print("Assembly Succesfull")
-
+print("")
 #==============================================================================
 # Display unused jump adresses
 #==============================================================================
@@ -339,3 +339,9 @@ print("--- Unused Symbolic Adresses ---")
 for symbolic in sym_addr:
     if not sym_addr[symbolic][1]:
         print(symbolic)
+
+print("")
+#==============================================================================
+# Display assembled row
+#==============================================================================
+print("Created " + str(len(program_hexes)) + " instructions")
