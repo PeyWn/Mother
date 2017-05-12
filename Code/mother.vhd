@@ -52,7 +52,8 @@ architecture Behavioral of mother is
          v_mem_data_read : in unsigned(7 downto 0);
 
          --Sound out
-         send_sound : out std_logic
+         send_sound : out std_logic;
+         sound_select : out unsigned(1 downto 0)
          );
   end component;
 
@@ -112,7 +113,8 @@ architecture Behavioral of mother is
       port(
           clk : in std_logic;
           data_out : out std_logic := '0';
-          send : in std_logic
+          send : in std_logic;
+          sound_select : in unsigned(1 downto 0)
       );
   end component;
 
@@ -135,6 +137,7 @@ architecture Behavioral of mother is
   signal vMem_operation : std_logic;
 
   signal send_sound_signal : std_logic;
+  signal sound_select_signal : unsigned(1 downto 0);
 begin
 
 
@@ -152,7 +155,7 @@ begin
 
                     decoded_joy_btn1 =>joy_btn1, decoded_joy_btn2 => joy_btn2, decoded_joy_up => joy_up,
                     decoded_joy_down => joy_down, decoded_joy_left => joy_left, decoded_joy_right => joy_right,
-                    send_sound=> send_sound_signal
+                    send_sound=> send_sound_signal, sound_select => sound_select_signal
                     );
 
   -- Connect video memeory
@@ -172,6 +175,6 @@ begin
                         joy_btn2 => joy_btn2, joy_left => joy_left, joy_right => joy_right,
                         joy_up => joy_up, joy_down => joy_down);
 
-  SOUND_CON : soundModule port map(clk=> clk, data_out=>sound_out, send=>send_sound_signal);
+  SOUND_CON : soundModule port map(clk=> clk, data_out=>sound_out, send=>send_sound_signal, sound_select=>sound_select_signal);
 
 end Behavioral;

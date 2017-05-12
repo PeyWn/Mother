@@ -509,7 +509,7 @@ AWARD_SCORE // R9 = (GroundTile - x0F), DONT FUCK UP REGs FROM MOVE!!!
     CMP R9 RF //Check if ground
     BRZ CONT_MOVE
     NOP 
-    BEEP //Make sound
+    BEEP 0 //Make sound
     
     MOV RF x2D
     SUB R9 R9 RF
@@ -665,7 +665,7 @@ CHANGE_SCREEN //RA is tile that was broken, RD is start adress for breakable blo
     CMP RA RE //Check if ground
     BRZ CONT_CHANGE_SCREEN
     NOP
-    BEEP //Make sound
+    BEEP 0 //Make sound
     MOV RE 1
     SUB RA RA RE
     LDA RD 4 //Load score to RD

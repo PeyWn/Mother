@@ -24,7 +24,8 @@ entity CPU is
         v_mem_data_write : out unsigned(7 downto 0);
 
         --Sound out
-        send_sound : out std_logic
+        send_sound : out std_logic;
+        sound_select: out unsigned(1 downto 0)
     );
 end CPU;
 
@@ -75,7 +76,8 @@ architecture Behavioral of CPU is
 
        ALU_operation : out unsigned(3 downto 0);
        flag_update : out std_logic;
-       play_sound : out std_logic);
+       play_sound : out std_logic;
+       sound_constant : out unsigned(1 downto 0));
     end component;
 
     component dMem
@@ -224,7 +226,8 @@ begin
 
                                     ALU_operation => ALU_operation,
                                     flag_update=>flag_update,
-                                    play_sound=>send_sound);
+                                    play_sound=>send_sound,
+                                    sound_constant=>sound_select);
 
 
   --Process for forwarding of the DF and read_reg values from one ir step to

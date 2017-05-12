@@ -29,7 +29,8 @@ entity CPU_comb_net is
        flag_update : out std_logic;
 
        -- for sound module
-       play_sound : out std_logic
+       play_sound : out std_logic;
+       sound_constant : out unsigned(1 downto 0)
        );
 
 end CPU_comb_net;
@@ -190,5 +191,8 @@ begin
 
   play_sound <= '1' when ir3(31 downto 24) = "01110000" else --only for BEEP
                 '0';
+  
+  sound_constant <= ir3(1 downto 0);    -- Select which sound to play, only
+                                        -- used when play_sound is high
 
 end net;
