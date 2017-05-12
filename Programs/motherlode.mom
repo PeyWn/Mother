@@ -44,6 +44,22 @@ TOP_ROW_DONE
     MOV RF x2	//1 symbol
     MOV R1 xD  	//screen addres for symbol
     STRVR RF R1	//Put 1 icon
+
+    MOV RF x15 //Fuel lvl
+    STRV RF x0000
+    
+    MOV RF x2 //1 symbol
+    STRV RF x0001
+
+    MOV RF x15 //Current fuel symbol
+    STRV RF x0003
+
+    MOV RF x1 //Fuel number
+    STRV RF x0004
+    STRV RF x0005
+    STRV RF x0007
+    MOV RF x6
+    STRV RF x0006
     
 INIT_ROOM_LOOP //R4: screen X, R5: Screen Y,R6: current room start  address 
     MOV	R4 0
@@ -204,6 +220,10 @@ SHOP_BUILT
     STR R0 3 //Drill level
     MOV R0 0
     STR R0 4 //Score
+    MOV R0 100 
+    STR R0 5 //Fuel
+    MOV R0 1
+    STR R0 6 //Fuel lvl
     JMP MAIN_LOOP
     NOP
 
@@ -281,8 +301,11 @@ BUILD_SHOP
     STRV R0 x0B08
     STRV R0 x0B09
     STRV R0 x0B0A
+    STRV R0 x0609
     MOV R0 x16
-    STRV R0 x0609	
+    STRV R0 x0608	
+    MOV R0 x17
+    STRV R0 x060A
     JMP SHOP_BUILT
     NOP
 
@@ -366,13 +389,7 @@ JOY_BTN1
     BRZ MAIN_LOOP
     NOP
     STR RF 106
-    
-    LDA R2 3 //Check if drill level is maxed
-    MOV RF 4
-    CMP RF R2
-    BRZ MAIN_LOOP
-    NOP
-    
+     
     LDA R0 0	//Player X
     LDA R1 1	//Player Y
     
@@ -386,13 +403,24 @@ JOY_BTN1
     
     MOV RF x16		//Drill up icon
     CMP RF R5
-    BRZ TRY_BUY
+    BRZ TRY_BUY_DRILL
+    NOP    
+
+    MOV RF x17		//Refill fuel icon
+    CMP RF R5
+    BRZ TRY_REFILL_FUEL
     NOP    
 
     JMP MAIN_LOOP
     NOP
 
-TRY_BUY
+TRY_BUY_DRILL
+    LDA R2 3 //Check if drill level is maxed
+    MOV RF 4
+    CMP RF R2
+    BRZ MAIN_LOOP
+    NOP
+
     LDA R0 4	//Player score
     LDA R1 3	//Drill level
     
@@ -409,8 +437,20 @@ TRY_BUY
     JMP UPDATE_SCORE
     NOP
 
+TRY_REFILL_FUEL
+    LDA R0 4
+    MOV RF 5 //Cost of refill
+    SUB R0 R0 RF
+    BRN MAIN_LOOP //Not enough peng
+    NOP
 
-
+    STR R0 4 //Refill Fuel
+    MOV RF 100 //Fuel per lvl
+    LDA R1 6
+    MUL RF RF R1 //Max fuel level in RF
+    STR RF 5
+    JMP UPDATE_SCORE
+    NOP
 
 MOVE //R4 should contain delta-x, R5 should contain delta-y, R0 should contain direction
     STR R0 2
@@ -420,6 +460,12 @@ MOVE //R4 should contain delta-x, R5 should contain delta-y, R0 should contain d
 
     ADD R7 R1 R4 //New x-pos
     ADD R8 R2 R5 //New y-pos
+
+    LDA RE 5 //CHECK IF OUT OF FUEL
+    MOV RF 0
+    CMP RE RF
+    BRZ TURN
+    NOP
 
     MOV RE 20 //Check if too far right
     CMP RE R7
@@ -489,7 +535,7 @@ TURN //R0 - direction, R1 - x-pos, R2 - y-pos
     MOV RF x0B //Start for player tiles
     ADD RF R0 RF
     STRVR RF R3 //Write over new tile
-    JMP MAIN_LOOP
+    JMP UPDATE_SCORE
     NOP
 
 CRACK //R9 = Drill level needed to break rock, RB = VMEM new pos
@@ -498,6 +544,11 @@ CRACK //R9 = Drill level needed to break rock, RB = VMEM new pos
     BRZ AWARD_SCORE //branch if ground
     NOP
       
+    MOV RF 1 //Sub 1 from Fuel
+    LDA RA 5
+    SUB RA RA RF
+    STR RA 5
+
     MOV RF x3B //cracked rocks are 3B addresses after uncracked rocks
     ADD RF RF R9
     STRVR RF RB // Write over tile
@@ -505,6 +556,11 @@ CRACK //R9 = Drill level needed to break rock, RB = VMEM new pos
     NOP
 
 AWARD_SCORE // R9 = (GroundTile - x0F), DONT FUCK UP REGs FROM MOVE!!!
+    MOV RF 1 //Sub 1 from Fuel
+    LDA RA 5
+    SUB RA RA RF
+    STR RA 5
+
     MOV RF 0
     CMP R9 RF //Check if ground
     BRZ CONT_MOVE
@@ -522,7 +578,13 @@ AWARD_SCORE // R9 = (GroundTile - x0F), DONT FUCK UP REGs FROM MOVE!!!
     NOP
     
 UPDATE_SCORE
+    MOV RA 0
     LDA R0 4 //Score to R0
+    JMP GET_BCD
+    NOP
+LOAD_FUEL_BCD
+    MOV RA 1
+    LDA R0 5
     JMP GET_BCD
     NOP
 BCD_RETURN
@@ -532,17 +594,40 @@ BCD_RETURN
     ADD R5 R5 RF
     ADD R6 R6 RF
 
+    MOV RF 0
+    CMP RA RF
+    BRZ WRITE_SCORE
+    NOP
+
+    JMP WRITE_FUEL
+    NOP    
+CONT_GUI_UPDATE
+    LDA RF 3 // LOAD DRILL LVL
+    MOV RE 1
+    ADD RF RF RE //RF IS NOW TILE ADDERSS
+    STRV RF xD // Put drill lvl on D tile
+
+    LDA RF 6 //FUEL LVL
+    MOV RE 1
+    ADD RF RF RE
+    STRV RF x1 //Put drill level on tile 1
+
+    JMP MAIN_LOOP
+    NOP
+
+WRITE_SCORE
     STRV R3 X10
     STRV R4 X11
     STRV R5 X12
     STRV R6 X13
-
-    LDA RF 3 // LOAD DRILL LVL
-    MOV RE 1
-    ADD RF RF RE //RF IS NOW TILE ADDERSS
-    STRV RF XD // Put drill lvl on D tile 
-
-    JMP MAIN_LOOP
+    JMP LOAD_FUEL_BCD
+    NOP
+WRITE_FUEL	
+    STRV R3 X4
+    STRV R4 X5
+    STRV R5 X6
+    STRV R6 X7
+    JMP CONT_GUI_UPDATE 
     NOP
 
 GET_BCD //Number to BCD should be in R0, returns BCD digits in R3,R4,R5,R6
@@ -745,6 +830,11 @@ SCREEN_PLACE_PLAYER
     STR RE 10
     LDA RE 13
     STR RE 11
+
+    MOV RF 1 //Sub 1 from Fuel
+    LDA RA 5
+    SUB RA RA RF
+    STR RA 5
 
     JMP UPDATE_SCORE
     NOP   
