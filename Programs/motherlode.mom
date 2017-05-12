@@ -447,13 +447,20 @@ NO_BORDER_WRAP
     ADD RB RB R7 //Vmem new pos in RB
 
     LDAVR R9 RB //Tile where player tries to move in R9
-    LDA RA 3 //Drill level in RA
     MOV RF x0F
     SUB R9 R9 RF
+
+    MOV RF x2C
+    CMP RF R9
+    BRN	AWARD_SCORE
+    NOP  
+
+    LDA RA 3 //Drill level in RA
     CMP RA R9
     BRN TURN
     NOP
-    JMP AWARD_SCORE
+
+    JMP CRACK
     NOP
 CONT_MOVE
     MOV RF 8
@@ -474,6 +481,8 @@ CONT_MOVE
     NOP
 
 TURN //R0 - direction, R1 - x-pos, R2 - y-pos
+    LDA R1 0 //X pos
+    LDA R2 1 //Y pos
     MOV RF 8
     LSL R3 R2 RF //Shift up y
     ADD R3 R3 R1 //Vmem pos in R3
@@ -483,13 +492,26 @@ TURN //R0 - direction, R1 - x-pos, R2 - y-pos
     JMP MAIN_LOOP
     NOP
 
-AWARD_SCORE // R9 - GroundTile - 0F DONT FUCK UP REGs FROM MOVE!!!
+CRACK //R9 = Drill level needed to break rock, RB = VMEM new pos
+    MOV RF 0
+    CMP RF R9
+    BRZ AWARD_SCORE //branch if ground
+    NOP
+      
+    MOV RF x3B //cracked rocks are 3B addresses after uncracked rocks
+    ADD RF RF R9
+    STRVR RF RB // Write over tile
+    JMP TURN
+    NOP
+
+AWARD_SCORE // R9 = (GroundTile - x0F), DONT FUCK UP REGs FROM MOVE!!!
     MOV RF 0
     CMP R9 RF //Check if ground
     BRZ CONT_MOVE
-    NOP
+    NOP 
     BEEP //Make sound
-    MOV RF 1
+    
+    MOV RF x2D
     SUB R9 R9 RF
     LDA RF 4 //Load score to RF
     MOV RE 1

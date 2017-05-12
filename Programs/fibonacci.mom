@@ -1,4 +1,4 @@
-MOV R0 1
+MOV R0 1 //Start of Fibonacci 
 MOV R1 1
 MOV R8 0
 MOV R9 10
