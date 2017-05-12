@@ -45,13 +45,13 @@ TOP_ROW_DONE
     MOV R1 xD  	//screen addres for symbol
     STRVR RF R1	//Put 1 icon
 
-    MOV RF x15 //Fuel lvl
+    MOV RF x19 //Fuel lvl
     STRV RF x0000
     
     MOV RF x2 //1 symbol
     STRV RF x0001
 
-    MOV RF x15 //Current fuel symbol
+    MOV RF x1A //Current fuel symbol
     STRV RF x0003
 
     MOV RF x1 //Fuel number
@@ -229,50 +229,58 @@ SHOP_BUILT
 
 BUILD_SHOP
     MOV R0 x1B	//VERTICAL WALL
-    STRV R0 x0406 //LEFT WALL
-    STRV R0 x0506
-    STRV R0 x0606
-    STRV R0 x0706
-    STRV R0 x0806
-    STRV R0 x040C //RIGHT WALL
-    STRV R0 x050C
-    STRV R0 x060C
-    STRV R0 x070C
-    STRV R0 x080C
+    STRV R0 x0405 //LEFT WALL
+    STRV R0 x0505
+    STRV R0 x0605
+    STRV R0 x0705
+    STRV R0 x0805
+    STRV R0 x040D //RIGHT WALL
+    STRV R0 x050D
+    STRV R0 x060D
+    STRV R0 x070D
+    STRV R0 x080D
     MOV R0 x1C	//BOTTOM WALL
+    STRV R0 x0406
     STRV R0 x0407
     STRV R0 x0408
     STRV R0 x0409
     STRV R0 x040A
     STRV R0 x040B
+    STRV R0 x040C
+    STRV R0 x0A06
     STRV R0 x0A07
     STRV R0 x0A0B
+    STRV R0 x0A0C
     MOV R0 x1D	//BOTTOM RIGHT EDGE
     STRV R0 x0A08
-    STRV R0 x0A0C
+    STRV R0 x0A0D
     MOV R0 x1E //BOTTOM LEFT EDGE
-    STRV R0 x0A06
+    STRV R0 x0A05
     STRV R0 x0A0A
     MOV R0 x1F //TOP WALL 
+    STRV R0 x0306
     STRV R0 x0307
     STRV R0 x0308
     STRV R0 x0309
     STRV R0 x030A
     STRV R0 x030B
+    STRV R0 x030C
+    STRV R0 x0906
     STRV R0 x0907
     STRV R0 x090B
+    STRV R0 x090C
     MOV R0 x20 //WALL TOP RIGHT EDGE
     STRV R0 x0908
     MOV R0 x21 //WALL TOP LEFT EDGE
     STRV R0 x090A
     MOV R0 x22 //CORNER WALL BOTTOM LEFT
-    STRV R0 x0906
+    STRV R0 x0905
     MOV R0 x23 //CORNER WALL BOTTOM RIGHT
-    STRV R0 x090C
+    STRV R0 x090D
     MOV R0 x24 //CORNER WALL TOP LEFT
-    STRV R0 x0306
+    STRV R0 x0305
     MOV R0 x25 //CORNER WALL TOP RIGHT
-    STRV R0 x030C
+    STRV R0 x030D
     MOV R0 x0F //STANDARD GROUND INSIDE AND AROUND ENTRANCE
     STRV R0 x0507
     STRV R0 x0508
@@ -301,11 +309,26 @@ BUILD_SHOP
     STRV R0 x0B08
     STRV R0 x0B09
     STRV R0 x0B0A
-    STRV R0 x0609
-    MOV R0 x16
-    STRV R0 x0608	
-    MOV R0 x17
+
+    STRV R0 x0608
     STRV R0 x060A
+
+    STRV R0 x0506
+    STRV R0 x0606
+    STRV R0 x0706
+    STRV R0 x0806
+
+    STRV R0 x050C
+    STRV R0 x060C
+    STRV R0 x070C
+    STRV R0 x080C
+
+    MOV R0 x16
+    STRV R0 x0607	
+    MOV R0 x17
+    STRV R0 x0609
+    MOV R0 x18
+    STRV R0 x060B
     JMP SHOP_BUILT
     NOP
 
@@ -326,6 +349,8 @@ MAIN_LOOP
     BRB1 JOY_BTN1
     NOP
     STR RF 106
+    BRB2 GAME_BOOT
+    NOP
     JMP MAIN_LOOP //Restart loop
     NOP
 
@@ -411,6 +436,11 @@ JOY_BTN1
     BRZ TRY_REFILL_FUEL
     NOP    
 
+    MOV RF x18		//Upgrade fuel icon
+    CMP RF R5
+    BRZ TRY_UPGRADE_FUEL
+    NOP    
+
     JMP MAIN_LOOP
     NOP
 
@@ -436,6 +466,35 @@ TRY_BUY_DRILL
     STR R1 3
     JMP UPDATE_SCORE
     NOP
+
+TRY_UPGRADE_FUEL
+    LDA R2 6 //Check if fuel level is maxed
+    MOV RF 9
+    CMP RF R2
+    BRZ MAIN_LOOP
+    NOP
+
+    LDA R0 4	//Player score
+    LDA R1 6	//Drill level
+    
+    MOV R2 10
+    MUL R3 R1 R2
+    CMP R0 R3
+    BRN MAIN_LOOP
+    NOP
+    MOV R4 1
+    ADD R1 R1 R4
+    SUB R0 R0 R3
+    STR R0 4
+    STR R1 6
+
+    MOV RF 100 //Fuel per lvl
+    MUL RF RF R1 //Max fuel level in RF
+    STR RF 5    
+
+    JMP UPDATE_SCORE
+    NOP
+
 
 TRY_REFILL_FUEL
     LDA R0 4
