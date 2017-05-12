@@ -26,10 +26,13 @@ Hex	Tile
 14 	Drill icon
 15 	Peng icon
 16 	Drill UP icon
-17 	Icon template
+17	Fuel refill
+18	Fuel upgrade
+19	Fuel Level icon
+1A	Fuel amount icon
+
 
 -- Shop --
-1A 	Shop floor		UNUSED
 1B	Vertical wall
 1C	Horziontal wall bottom
 1D	Horizontal wall bottom right edge
@@ -41,6 +44,9 @@ Hex	Tile
 23	Corner wall bottom right
 24	Corner wall top left
 25	Corner wall top right
+
+--Templates-- //Maybe
+30 	Icon template
 
 -- Cracked Rocks --
 3C 	Cracked rock

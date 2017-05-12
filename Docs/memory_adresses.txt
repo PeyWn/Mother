@@ -8,6 +8,9 @@ DECIMAL NOTATION
 3 - Drill level [1-4]
 4 - Player score
 
+5 - Current Fuel
+6 - Fuel lvl
+
 10 - cur room x
 11 - cur room y
 
