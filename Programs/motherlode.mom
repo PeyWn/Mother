@@ -377,14 +377,14 @@ JOY_BTN1
     LDA R1 1	//Player Y
     
     MOV RF 1	//Check if tile above player is buyable tile
-    ADD R1 R1 RF
+    SUB R1 R1 RF
     
     MOV RF 8
     LSL R1 R1 RF
-    ADD R3 R1 R2	//vMem adress for tile above player in R3
+    ADD R3 R1 R0	//vMem adress for tile above player in R3
     LDAVR R5 R3
     
-    MOV RF x17		//Drill up icon
+    MOV RF x16		//Drill up icon
     CMP RF R5
     BRZ TRY_BUY
     NOP    
@@ -406,7 +406,7 @@ TRY_BUY
     SUB R0 R0 R3
     STR R0 4
     STR R1 3
-    JMP MAIN_LOOP
+    JMP UPDATE_SCORE
     NOP
 
 
