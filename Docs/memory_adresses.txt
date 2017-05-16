@@ -24,3 +24,4 @@ DECIMAL NOTATION
 104 - JOY_LEFT last state
 105 - JOY_RIGHT last state
 106 - JOY_BTN1 last state
+107 - JOY_BTN2 last state

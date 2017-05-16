@@ -46,23 +46,23 @@ x"10F00015", --MOV RF x15 //Peng symbol
 x"1010000F", --MOV R1 x000F //Where money symbol should be
 x"430F1000", --STRVR RF R1 //Put money symbol
 x"10F00014", --MOV RF x14	//Drill symbol
-x"1010000C", --MOV R1 xC  	//screen addres for symbol
+x"10100003", --MOV R1 x3  	//screen addres for symbol
 x"430F1000", --STRVR RF R1	//Put drill icon
 x"10F00002", --MOV RF x2	//1 symbol
-x"1010000D", --MOV R1 xD  	//screen addres for symbol
+x"10100004", --MOV R1 x4  	//screen addres for symbol
 x"430F1000", --STRVR RF R1	//Put 1 icon
 x"10F00019", --MOV RF x19 //Fuel lvl
 x"410F0000", --STRV RF x0000
 x"10F00002", --MOV RF x2 //1 symbol
 x"410F0001", --STRV RF x0001
 x"10F0001A", --MOV RF x1A //Current fuel symbol
-x"410F0003", --STRV RF x0003
+x"410F0009", --STRV RF x09
 x"10F00001", --MOV RF x1 //Fuel number
-x"410F0004", --STRV RF x0004
-x"410F0005", --STRV RF x0005
-x"410F0007", --STRV RF x0007
-x"10F00006", --MOV RF x6
-x"410F0006", --STRV RF x0006
+x"410F000A", --STRV RF x000A
+x"410F000C", --STRV RF x000C
+x"410F000D", --STRV RF x000D
+x"10F00002", --MOV RF x2
+x"410F000B", --STRV RF x000B
 x"10400000", --MOV	R4 0
 x"10500000", --MOV R5 0
 x"50000013", --JMP INNER_LOOP
@@ -180,10 +180,10 @@ x"5000ffeb", --JMP VMEM_MOVE_LOOP
 x"00000000", --NOP
 x"50000011", --JMP BUILD_SHOP
 x"1000000D", --MOV R0 x0D //Player down tile
-x"4100070A", --STRV R0 x070A
+x"41000709", --STRV R0 x0709
 x"10000007", --MOV R0 x7
 x"21000001", --STR R0 1 // y-pos
-x"1000000A", --MOV R0 xA
+x"10000009", --MOV R0 x9
 x"21000000", --STR R0 0 //x-pos
 x"10000001", --MOV R0 1
 x"21000003", --STR R0 3 //Drill level
@@ -295,73 +295,75 @@ x"4100060B", --STRV R0 x060B
 x"5000ff8f", --JMP SHOP_BUILT
 x"00000000", --NOP
 x"10F00000", --MOV RF 0
-x"59000013", --BRJU JOY_UP
+x"59000015", --BRJU JOY_UP
 x"00000000", --NOP
 x"210F0066", --STR RF 102
-x"5A00001b", --BRJD JOY_DOWN
+x"5A00001d", --BRJD JOY_DOWN
 x"00000000", --NOP
 x"210F0067", --STR RF 103
-x"5B000023", --BRJR JOY_RIGHT
+x"5B000025", --BRJR JOY_RIGHT
 x"00000000", --NOP
 x"210F0069", --STR RF 105
-x"5C00002b", --BRJL JOY_LEFT
+x"5C00002d", --BRJL JOY_LEFT
 x"00000000", --NOP
 x"210F0068", --STR RF 104
-x"57000033", --BRB1 JOY_BTN1
+x"57000035", --BRB1 JOY_BTN1
 x"00000000", --NOP
 x"210F006a", --STR RF 106
-x"5800fedc", --BRB2 GAME_BOOT
+x"5800004e", --BRB2 JOY_BTN2
 x"00000000", --NOP
-x"5000ffee", --JMP MAIN_LOOP //Restart loop
+x"210F006b", --STR RF 107
+x"00000000", --NOP
+x"5000ffec", --JMP MAIN_LOOP //Restart loop
 x"00000000", --NOP
 x"10F00001", --MOV RF 1
 x"20000066", --LDA R0 102
 x"600F0000", --CMP RF R0
-x"5200ffe9", --BRZ MAIN_LOOP
+x"5200ffe7", --BRZ MAIN_LOOP
 x"00000000", --NOP
 x"210F0066", --STR RF 102
 x"10000003", --MOV R0 3
 x"10400000", --MOV R4 0
 x"1050ffff", --MOV R5 -1
-x"50000074", --JMP MOVE
+x"50000082", --JMP MOVE
 x"00000000", --NOP
 x"10F00001", --MOV RF 1
 x"20000067", --LDA R0 103
 x"600F0000", --CMP RF R0
-x"5200ffde", --BRZ MAIN_LOOP
+x"5200ffdc", --BRZ MAIN_LOOP
 x"00000000", --NOP
 x"210F0067", --STR RF 103
 x"10000002", --MOV R0 2
 x"10400000", --MOV R4 0
 x"10500001", --MOV R5 1
-x"50000069", --JMP MOVE
+x"50000077", --JMP MOVE
 x"00000000", --NOP
 x"10F00001", --MOV RF 1
 x"20000069", --LDA R0 105
 x"600F0000", --CMP RF R0
-x"5200ffd3", --BRZ MAIN_LOOP
+x"5200ffd1", --BRZ MAIN_LOOP
 x"00000000", --NOP
 x"210F0069", --STR RF 105
 x"10000001", --MOV R0 1
 x"10400001", --MOV R4 1
 x"10500000", --MOV R5 0
-x"5000005e", --JMP MOVE
+x"5000006c", --JMP MOVE
 x"00000000", --NOP
 x"10F00001", --MOV RF 1
 x"20000068", --LDA R0 104
 x"600F0000", --CMP RF R0
-x"5200ffc8", --BRZ MAIN_LOOP
+x"5200ffc6", --BRZ MAIN_LOOP
 x"00000000", --NOP
 x"210F0068", --STR RF 104
 x"10000000", --MOV R0 0
 x"1040ffff", --MOV R4 -1
 x"10500000", --MOV R5 0
-x"50000053", --JMP MOVE
+x"50000061", --JMP MOVE
 x"00000000", --NOP
 x"10F00001", --MOV RF 1
 x"2000006a", --LDA R0 106
 x"600F0000", --CMP RF R0
-x"5200ffbd", --BRZ MAIN_LOOP
+x"5200ffbb", --BRZ MAIN_LOOP
 x"00000000", --NOP
 x"210F006a", --STR RF 106
 x"20000000", --LDA R0 0	//Player X
@@ -374,70 +376,84 @@ x"34310000", --ADD R3 R1 R0	//vMem adress for tile above player in R3
 x"42530000", --LDAVR R5 R3
 x"10F00016", --MOV RF x16		//Drill up icon
 x"600F5000", --CMP RF R5
-x"5200000c", --BRZ TRY_BUY_DRILL
+x"52000014", --BRZ TRY_BUY_DRILL
 x"00000000", --NOP
 x"10F00017", --MOV RF x17		//Refill fuel icon
 x"600F5000", --CMP RF R5
-x"52000031", --BRZ TRY_REFILL_FUEL
+x"5200003b", --BRZ TRY_REFILL_FUEL
 x"00000000", --NOP
 x"10F00018", --MOV RF x18		//Upgrade fuel icon
 x"600F5000", --CMP RF R5
-x"52000017", --BRZ TRY_UPGRADE_FUEL
+x"52000020", --BRZ TRY_UPGRADE_FUEL
 x"00000000", --NOP
-x"5000ffa6", --JMP MAIN_LOOP
+x"5000ffa4", --JMP MAIN_LOOP
+x"00000000", --NOP
+x"10F00001", --MOV RF 1
+x"2000006b", --LDA R0 107
+x"600F0000", --CMP RF R0
+x"5200ff9f", --BRZ MAIN_LOOP
+x"00000000", --NOP
+x"210F006b", --STR RF 107
+x"5000fe88", --JMP GAME_BOOT
 x"00000000", --NOP
 x"20200003", --LDA R2 3 //Check if drill level is maxed
 x"10F00004", --MOV RF 4
 x"600F2000", --CMP RF R2
-x"5200ffa1", --BRZ MAIN_LOOP
+x"5200ff97", --BRZ MAIN_LOOP
 x"00000000", --NOP
 x"20000004", --LDA R0 4	//Player score
 x"20100003", --LDA R1 3	//Drill level
-x"1020000a", --MOV R2 10
+x"10200028", --MOV R2 40 //Multiple of drill level to buy
 x"36312000", --MUL R3 R1 R2
 x"60003000", --CMP R0 R3
-x"5100ff9a", --BRN MAIN_LOOP
+x"5100002e", --BRN DENIED
 x"00000000", --NOP
+x"70000003", --BEEP 3
 x"10400001", --MOV R4 1
 x"34114000", --ADD R1 R1 R4
 x"35003000", --SUB R0 R0 R3
 x"21000004", --STR R0 4
 x"21010003", --STR R1 3
-x"50000086", --JMP UPDATE_SCORE
+x"5000008b", --JMP UPDATE_SCORE
 x"00000000", --NOP
 x"20200006", --LDA R2 6 //Check if fuel level is maxed
 x"10F00009", --MOV RF 9
 x"600F2000", --CMP RF R2
-x"5200ff8e", --BRZ MAIN_LOOP
+x"5200ff83", --BRZ MAIN_LOOP
 x"00000000", --NOP
 x"20000004", --LDA R0 4	//Player score
-x"20100006", --LDA R1 6	//Drill level
-x"1020000a", --MOV R2 10
+x"20100006", --LDA R1 6	//Fuel level
+x"10200014", --MOV R2 20 //Multiple of fuel level to buy
 x"36312000", --MUL R3 R1 R2
 x"60003000", --CMP R0 R3
-x"5100ff87", --BRN MAIN_LOOP
+x"5100001a", --BRN DENIED
 x"00000000", --NOP
 x"10400001", --MOV R4 1
 x"34114000", --ADD R1 R1 R4
 x"35003000", --SUB R0 R0 R3
 x"21000004", --STR R0 4
 x"21010006", --STR R1 6
+x"70000003", --BEEP 3
 x"10F00064", --MOV RF 100 //Fuel per lvl
 x"36FF1000", --MUL RF RF R1 //Max fuel level in RF
 x"210F0005", --STR RF 5
-x"50000070", --JMP UPDATE_SCORE
+x"50000074", --JMP UPDATE_SCORE
 x"00000000", --NOP
 x"20000004", --LDA R0 4
 x"10F00005", --MOV RF 5 //Cost of refill
 x"3500F000", --SUB R0 R0 RF
-x"5100ff78", --BRN MAIN_LOOP //Not enough peng
+x"5100000a", --BRN DENIED //Not enough peng
 x"00000000", --NOP
+x"70000002", --BEEP 2
 x"21000004", --STR R0 4 //Refill Fuel
 x"10F00064", --MOV RF 100 //Fuel per lvl
 x"20100006", --LDA R1 6
 x"36FF1000", --MUL RF RF R1 //Max fuel level in RF
 x"210F0005", --STR RF 5
-x"50000064", --JMP UPDATE_SCORE
+x"50000067", --JMP UPDATE_SCORE
+x"00000000", --NOP
+x"70000001", --BEEP 1
+x"5000ff61", --JMP MAIN_LOOP
 x"00000000", --NOP
 x"21000002", --STR R0 2
 x"20100000", --LDA R1 0 //X pos
@@ -527,7 +543,7 @@ x"10F00000", --MOV RF 0
 x"6009F000", --CMP R9 RF //Check if ground
 x"5200ffd7", --BRZ CONT_MOVE
 x"00000000", --NOP
-x"70000000", --BEEP //Make sound
+x"70000000", --BEEP 0 //Make sound
 x"10F0002D", --MOV RF x2D
 x"3599F000", --SUB R9 R9 RF
 x"20F00004", --LDA RF 4 //Load score to RF
@@ -559,12 +575,12 @@ x"00000000", --NOP
 x"20F00003", --LDA RF 3 // LOAD DRILL LVL
 x"10E00001", --MOV RE 1
 x"34FFE000", --ADD RF RF RE //RF IS NOW TILE ADDERSS
-x"410F000D", --STRV RF xD // Put drill lvl on D tile
+x"410F0004", --STRV RF x4 // Put drill lvl on D tile
 x"20F00006", --LDA RF 6 //FUEL LVL
 x"10E00001", --MOV RE 1
 x"34FFE000", --ADD RF RF RE
 x"410F0001", --STRV RF x1 //Put drill level on tile 1
-x"5000fef2", --JMP MAIN_LOOP
+x"5000fee2", --JMP MAIN_LOOP
 x"00000000", --NOP
 x"41030010", --STRV R3 X10
 x"41040011", --STRV R4 X11
@@ -572,10 +588,10 @@ x"41050012", --STRV R5 X12
 x"41060013", --STRV R6 X13
 x"5000ffe3", --JMP LOAD_FUEL_BCD
 x"00000000", --NOP
-x"41030004", --STRV R3 X4
-x"41040005", --STRV R4 X5
-x"41050006", --STRV R5 X6
-x"41060007", --STRV R6 X7
+x"4103000A", --STRV R3 XA
+x"4104000B", --STRV R4 XB
+x"4105000C", --STRV R5 XC
+x"4106000D", --STRV R6 XD
 x"5000ffec", --JMP CONT_GUI_UPDATE
 x"00000000", --NOP
 x"10300000", --MOV R3 0 //Dest for 1000
@@ -632,14 +648,14 @@ x"52000006", --BRZ Y_BORDER_WRAP //No X-movement
 x"00000000", --NOP
 x"5100000b", --BRN X_WRAP_LEFT // delta X < 0
 x"00000000", --NOP
-x"50000074", --JMP X_WRAP_RIGHT // delta X > 0
+x"5000007a", --JMP X_WRAP_RIGHT // delta X > 0
 x"00000000", --NOP
 x"6005E000", --CMP R5 RE
 x"5200ff59", --BRZ NO_BORDER_WRAP //No Y-movement
 x"00000000", --NOP
-x"5100008d", --BRN Y_WRAP_UP  // delta Y < 0
+x"51000099", --BRN Y_WRAP_UP  // delta Y < 0
 x"00000000", --NOP
-x"500000a5", --JMP Y_WRAP_DOWN // delta Y > 0
+x"500000b7", --JMP Y_WRAP_DOWN // delta Y > 0
 x"00000000", --NOP
 x"10A003e8", --MOV RA 1000		// Calculate what tile is where we try to move on new screen all according to formula
 x"20E0000c", --LDA RE 12  		 // X coord for room
@@ -659,12 +675,18 @@ x"36EED000", --MUL RE RE RD         //20*Y
 x"10D00013", --MOV RD 19 	       	 //When wrapping left, new X is 19
 x"34EED000", --ADD RE RE RD         //20*Y + X
 x"34BAE000", --ADD RB RA RE       	 //Room_adress + 20*Y + X = Tile_adress
-x"22AB0000", --LDAR RA RB		 //New tile in RF
+x"22AB0000", --LDAR RA RB		 //New tile in RA
+x"10E0003B", --MOV RE x3B		 //Check if cracked rock
+x"600AE000", --CMP RA RE
+x"51000004", --BRN NOT_CRACKED_X_LEFT
+x"00000000", --NOP
+x"10E0002C", --MOV RE x2C		//If cracked, "convert" it to regular rock so it can break and score accordingly
+x"35AAE000", --SUB RA RA RE
 x"20E00003", --LDA RE 3  		 //Drill level
 x"10D0000F", --MOV RD x0F		 //Start adress for breakable rocks
 x"34EED000", --ADD RE RE RD	 //Highest tile that can be broken
 x"600EA000", --CMP RE RA 		 //Can i breakz?
-x"5100ff58", --BRN TURN 		 //NO BREAK ROCK CANCEL
+x"5100ff52", --BRN TURN 		 //NO BREAK ROCK CANCEL
 x"00000000", --NOP
 x"10500013", --MOV R5 19		//UPDATE PLAYER X, Y IS SAME
 x"10600000", --MOV R6 0
@@ -676,7 +698,7 @@ x"35AAD000", --SUB RA RA RD
 x"600AE000", --CMP RA RE //Check if ground
 x"52000009", --BRZ CONT_CHANGE_SCREEN
 x"00000000", --NOP
-x"70000000", --BEEP //Make sound
+x"70000000", --BEEP 0 //Make sound
 x"10E00001", --MOV RE 1
 x"35AAE000", --SUB RA RA RE
 x"20D00004", --LDA RD 4 //Load score to RD
@@ -746,7 +768,7 @@ x"10F00001", --MOV RF 1 //Sub 1 from Fuel
 x"20A00005", --LDA RA 5
 x"35AAF000", --SUB RA RA RF
 x"210A0005", --STR RA 5
-x"5000ff2f", --JMP UPDATE_SCORE
+x"5000ff29", --JMP UPDATE_SCORE
 x"00000000", --NOP
 x"10A003e8", --MOV RA 1000		// Calculate what tile is where we try to move on new screen all according to formula
 x"20E0000c", --LDA RE 12  		 // X coord for room
@@ -767,16 +789,22 @@ x"10D00000", --MOV RD 0 	       	 //When wrapping RIGHT, new X is 19
 x"34EED000", --ADD RE RE RD         //20*Y + X
 x"34BAE000", --ADD RB RA RE       	 //Room_adress + 20*Y + X = Tile_adress
 x"22AB0000", --LDAR RA RB		 //New tile in RA
+x"10E0003B", --MOV RE x3B		 //Check if cracked rock
+x"600AE000", --CMP RA RE
+x"51000004", --BRN NOT_CRACKED_X_RIGHT
+x"00000000", --NOP
+x"10E0002C", --MOV RE x2C		//If cracked, "convert" it to regular rock so it can break and score accordingly
+x"35AAE000", --SUB RA RA RE
 x"20E00003", --LDA RE 3  		 //Drill level
 x"10D0000F", --MOV RD x0F		 //Start adress for breakable rocks
 x"34EED000", --ADD RE RE RD	 //Highest tile that can be broken
 x"600EA000", --CMP RE RA 		 //Can i breakz?
-x"5100feed", --BRN TURN 		 //NO BREAK ROCK CANCEL
+x"5100fee1", --BRN TURN 		 //NO BREAK ROCK CANCEL
 x"00000000", --NOP
 x"10500000", --MOV R5 0		//UPDATE PLAYER X, Y IS SAME
 x"10600000", --MOV R6 0
 x"34662000", --ADD R6 R6 R2
-x"5000ff97", --JMP CHANGE_SCREEN
+x"5000ff91", --JMP CHANGE_SCREEN
 x"00000000", --NOP
 x"10A003e8", --MOV RA 1000		// Calculate what tile is where we try to move on new screen all according to formula
 x"20E0000c", --LDA RE 12  		 // X coord for room
@@ -793,16 +821,22 @@ x"10E00104", --MOV RE 260		 //Calculate tile adress in room according to formula
 x"34EE1000", --ADD RE RE R1         //20*Y + X
 x"34BAE000", --ADD RB RA RE       	 //Room_adress + 20*Y + X = Tile_adress
 x"22AB0000", --LDAR RA RB		 //New tile in RA
+x"10E0003B", --MOV RE x3B		 //Check if cracked rock
+x"600AE000", --CMP RA RE
+x"51000004", --BRN NOT_CRACKED_Y_UP
+x"00000000", --NOP
+x"10E0002C", --MOV RE x2C		//If cracked, "convert" it to regular rock so it can break and score accordingly
+x"35AAE000", --SUB RA RA RE
 x"20E00003", --LDA RE 3  		 //Drill level
 x"10D0000F", --MOV RD x0F		 //Start adress for breakable rocks
 x"34EED000", --ADD RE RE RD	 //Highest tile that can be broken
 x"600EA000", --CMP RE RA 		 //Can i breakz?
-x"5100fed3", --BRN TURN 		 //NO BREAK ROCK CANCEL
+x"5100fec1", --BRN TURN 		 //NO BREAK ROCK CANCEL
 x"00000000", --NOP
 x"1060000e", --MOV R6 14		//UPDATE PLAYER Y, X IS SAME
 x"10500000", --MOV R5 0
 x"34551000", --ADD R5 R5 R1
-x"5000ff7d", --JMP CHANGE_SCREEN
+x"5000ff71", --JMP CHANGE_SCREEN
 x"00000000", --NOP
 x"10A003e8", --MOV RA 1000		// Calculate what tile is where we try to move on new screen all according to formula
 x"20E0000c", --LDA RE 12  		 // X coord for room
@@ -819,16 +853,22 @@ x"10E00000", --MOV RE 0 	       	 //When wrapping DOWN, new Y is 0 and 20*Y = 0	
 x"34EE1000", --ADD RE RE R1         //20*Y + X
 x"34BAE000", --ADD RB RA RE       	 //Room_adress + 20*Y + X = Tile_adress
 x"22AB0000", --LDAR RA RB		 //New tile in RA
+x"10E0003B", --MOV RE x3B		 //Check if cracked rock
+x"600AE000", --CMP RA RE
+x"51000004", --BRN NOT_CRACKED_Y_DOWN
+x"00000000", --NOP
+x"10E0002C", --MOV RE x2C		//If cracked, "convert" it to regular rock so it can break and score accordingly
+x"35AAE000", --SUB RA RA RE
 x"20E00003", --LDA RE 3  		 //Drill level
 x"10D0000F", --MOV RD x0F		 //Start adress for breakable rocks
 x"34EED000", --ADD RE RE RD	 //Highest tile that can be broken
 x"600EA000", --CMP RE RA 		 //Can i breakz?
-x"5100feb9", --BRN TURN 		 //NO BREAK ROCK CANCEL
+x"5100fea1", --BRN TURN 		 //NO BREAK ROCK CANCEL
 x"00000000", --NOP
 x"10600001", --MOV R6 1		//UPDATE PLAYER Y, X IS SAME
 x"10500000", --MOV R5 0
 x"34551000", --ADD R5 R5 R1
-x"5000ff63", --JMP CHANGE_SCREEN
+x"5000ff51", --JMP CHANGE_SCREEN
 x"00000000", --NOP
 others=>(others=>'0')
 );

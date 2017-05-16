@@ -38,11 +38,11 @@ TOP_ROW_DONE
     STRVR RF R1 //Put money symbol
     
     MOV RF x14	//Drill symbol
-    MOV R1 xC  	//screen addres for symbol
+    MOV R1 x3  	//screen addres for symbol
     STRVR RF R1	//Put drill icon
     
     MOV RF x2	//1 symbol
-    MOV R1 xD  	//screen addres for symbol
+    MOV R1 x4  	//screen addres for symbol
     STRVR RF R1	//Put 1 icon
 
     MOV RF x19 //Fuel lvl
@@ -52,14 +52,14 @@ TOP_ROW_DONE
     STRV RF x0001
 
     MOV RF x1A //Current fuel symbol
-    STRV RF x0003
+    STRV RF x09
 
     MOV RF x1 //Fuel number
-    STRV RF x0004
-    STRV RF x0005
-    STRV RF x0007
-    MOV RF x6
-    STRV RF x0006
+    STRV RF x000A
+    STRV RF x000C
+    STRV RF x000D
+    MOV RF x2
+    STRV RF x000B
     
 INIT_ROOM_LOOP //R4: screen X, R5: Screen Y,R6: current room start  address 
     MOV	R4 0
@@ -211,10 +211,10 @@ PLACE_PLAYER
     JMP BUILD_SHOP
 SHOP_BUILT
     MOV R0 x0D //Player down tile
-    STRV R0 x070A
+    STRV R0 x0709
     MOV R0 x7
     STR R0 1 // y-pos
-    MOV R0 xA
+    MOV R0 x9
     STR R0 0 //x-pos
     MOV R0 1
     STR R0 3 //Drill level
@@ -349,7 +349,9 @@ MAIN_LOOP
     BRB1 JOY_BTN1
     NOP
     STR RF 106
-    BRB2 GAME_BOOT
+    BRB2 JOY_BTN2
+    NOP
+    STR RF 107
     NOP
     JMP MAIN_LOOP //Restart loop
     NOP
@@ -444,6 +446,17 @@ JOY_BTN1
     JMP MAIN_LOOP
     NOP
 
+JOY_BTN2
+    MOV RF 1 
+    LDA R0 107
+    CMP RF R0
+    BRZ MAIN_LOOP
+    NOP
+    STR RF 107
+    JMP GAME_BOOT
+    NOP
+
+
 TRY_BUY_DRILL
     LDA R2 3 //Check if drill level is maxed
     MOV RF 4
@@ -454,11 +467,14 @@ TRY_BUY_DRILL
     LDA R0 4	//Player score
     LDA R1 3	//Drill level
     
-    MOV R2 10
+    MOV R2 40 //Multiple of drill level to buy
     MUL R3 R1 R2
     CMP R0 R3
-    BRN MAIN_LOOP
+    BRN DENIED
     NOP
+    
+    BEEP 3
+
     MOV R4 1
     ADD R1 R1 R4
     SUB R0 R0 R3
@@ -475,18 +491,20 @@ TRY_UPGRADE_FUEL
     NOP
 
     LDA R0 4	//Player score
-    LDA R1 6	//Drill level
+    LDA R1 6	//Fuel level
     
-    MOV R2 10
+    MOV R2 20 //Multiple of fuel level to buy
     MUL R3 R1 R2
     CMP R0 R3
-    BRN MAIN_LOOP
+    BRN DENIED
     NOP
     MOV R4 1
     ADD R1 R1 R4
     SUB R0 R0 R3
     STR R0 4
     STR R1 6
+
+    BEEP 3
 
     MOV RF 100 //Fuel per lvl
     MUL RF RF R1 //Max fuel level in RF
@@ -500,8 +518,10 @@ TRY_REFILL_FUEL
     LDA R0 4
     MOV RF 5 //Cost of refill
     SUB R0 R0 RF
-    BRN MAIN_LOOP //Not enough peng
+    BRN DENIED //Not enough peng
     NOP
+
+    BEEP 2
 
     STR R0 4 //Refill Fuel
     MOV RF 100 //Fuel per lvl
@@ -510,6 +530,11 @@ TRY_REFILL_FUEL
     STR RF 5
     JMP UPDATE_SCORE
     NOP
+
+DENIED
+   BEEP 1
+   JMP MAIN_LOOP
+   NOP
 
 MOVE //R4 should contain delta-x, R5 should contain delta-y, R0 should contain direction
     STR R0 2
@@ -664,7 +689,7 @@ CONT_GUI_UPDATE
     LDA RF 3 // LOAD DRILL LVL
     MOV RE 1
     ADD RF RF RE //RF IS NOW TILE ADDERSS
-    STRV RF xD // Put drill lvl on D tile
+    STRV RF x4 // Put drill lvl on D tile
 
     LDA RF 6 //FUEL LVL
     MOV RE 1
@@ -682,10 +707,10 @@ WRITE_SCORE
     JMP LOAD_FUEL_BCD
     NOP
 WRITE_FUEL	
-    STRV R3 X4
-    STRV R4 X5
-    STRV R5 X6
-    STRV R6 X7
+    STRV R3 XA
+    STRV R4 XB
+    STRV R5 XC
+    STRV R6 XD
     JMP CONT_GUI_UPDATE 
     NOP
 
@@ -789,7 +814,16 @@ X_WRAP_LEFT
     ADD RE RE RD         //20*Y + X
     ADD RB RA RE       	 //Room_adress + 20*Y + X = Tile_adress
 
-    LDAR RA RB		 //New tile in RF
+    LDAR RA RB		 //New tile in RA
+
+    MOV RE x3B		 //Check if cracked rock
+    CMP RA RE
+    BRN NOT_CRACKED_X_LEFT
+    NOP
+    MOV RE x2C		//If cracked, "convert" it to regular rock so it can break and score accordingly
+    SUB RA RA RE
+
+NOT_CRACKED_X_LEFT
     LDA RE 3  		 //Drill level
     MOV RD x0F		 //Start adress for breakable rocks
     ADD RE RE RD	 //Highest tile that can be broken
@@ -921,6 +955,15 @@ X_WRAP_RIGHT
     ADD RB RA RE       	 //Room_adress + 20*Y + X = Tile_adress
 
     LDAR RA RB		 //New tile in RA
+    MOV RE x3B		 //Check if cracked rock
+    CMP RA RE
+    BRN NOT_CRACKED_X_RIGHT
+    NOP
+    MOV RE x2C		//If cracked, "convert" it to regular rock so it can break and score accordingly
+    SUB RA RA RE
+
+NOT_CRACKED_X_RIGHT
+
     LDA RE 3  		 //Drill level
     MOV RD x0F		 //Start adress for breakable rocks
     ADD RE RE RD	 //Highest tile that can be broken
@@ -952,6 +995,15 @@ Y_WRAP_UP
     ADD RB RA RE       	 //Room_adress + 20*Y + X = Tile_adress
 
     LDAR RA RB		 //New tile in RA
+    MOV RE x3B		 //Check if cracked rock
+    CMP RA RE
+    BRN NOT_CRACKED_Y_UP
+    NOP
+    MOV RE x2C		//If cracked, "convert" it to regular rock so it can break and score accordingly
+    SUB RA RA RE
+
+NOT_CRACKED_Y_UP
+
     LDA RE 3  		 //Drill level
     MOV RD x0F		 //Start adress for breakable rocks
     ADD RE RE RD	 //Highest tile that can be broken
@@ -983,6 +1035,16 @@ Y_WRAP_DOWN
     ADD RB RA RE       	 //Room_adress + 20*Y + X = Tile_adress
 
     LDAR RA RB		 //New tile in RA
+
+    MOV RE x3B		 //Check if cracked rock
+    CMP RA RE
+    BRN NOT_CRACKED_Y_DOWN
+    NOP
+    MOV RE x2C		//If cracked, "convert" it to regular rock so it can break and score accordingly
+    SUB RA RA RE
+
+NOT_CRACKED_Y_DOWN
+
     LDA RE 3  		 //Drill level
     MOV RD x0F		 //Start adress for breakable rocks
     ADD RE RE RD	 //Highest tile that can be broken
