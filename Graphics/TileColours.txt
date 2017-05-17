@@ -38,6 +38,6 @@ Peng BackGround		FC
 Peng Symbol		1C
 --Shop--
 Brick Border		00			
-Bricks			
-Wall Border		
-Wall Top		
+Bricks			F0
+Wall Border		64
+Wall Top		F1
