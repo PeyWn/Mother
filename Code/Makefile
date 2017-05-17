@@ -33,7 +33,7 @@ XILINX_INIT = source /sw/xilinx/ise_12.4i/ISE_DS/settings64.sh;
 PART=xc6slx16-3-csg324
 
 
-mother.%: S=mother.vhd ALU.vhd control_Signals.vhd CPU.vhd dMem.vhd pMem.vhd read_lookup.vhd registerFile.vhd vMem.vhd VGA_MOTOR.vhd LFSR.vhd tile_mem.vhd JSTK_DEC.vhd soundModule.vhd
+mother.%: S=mother.vhd ALU.vhd control_Signals.vhd CPU.vhd dMem.vhd pMem.vhd registerFile.vhd vMem.vhd VGA_MOTOR.vhd LFSR.vhd tile_mem.vhd JSTK_DEC.vhd soundModule.vhd
 mother.%: T=mother_tb.vhd
 mother.%: U=Nexys3_Master.ucf
 

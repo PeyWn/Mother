@@ -26,28 +26,28 @@ TOP_ROW_DONE
     MOV RF 1 //Number 0 tile
     MOV R1 x0013 // left on top row
     STRVR RF R1 //Score 0
-    MOV R1 x0012 
+    MOV R1 x0012
     STRVR RF R1 //Score 0
-    MOV R1 x0011 
+    MOV R1 x0011
     STRVR RF R1 //Score 0
-    MOV R1 x0010 
+    MOV R1 x0010
     STRVR RF R1 //Score 0
-    
+
     MOV RF x15 //Peng symbol
     MOV R1 x000F //Where money symbol should be
     STRVR RF R1 //Put money symbol
-    
+
     MOV RF x14	//Drill symbol
     MOV R1 x3  	//screen addres for symbol
     STRVR RF R1	//Put drill icon
-    
+
     MOV RF x2	//1 symbol
     MOV R1 x4  	//screen addres for symbol
     STRVR RF R1	//Put 1 icon
 
     MOV RF x19 //Fuel lvl
     STRV RF x0000
-    
+
     MOV RF x2 //1 symbol
     STRV RF x0001
 
@@ -60,8 +60,8 @@ TOP_ROW_DONE
     STRV RF x000D
     MOV RF x2
     STRV RF x000B
-    
-INIT_ROOM_LOOP //R4: screen X, R5: Screen Y,R6: current room start  address 
+
+INIT_ROOM_LOOP //R4: screen X, R5: Screen Y,R6: current room start  address
     MOV	R4 0
     MOV R5 0
     JMP INNER_LOOP
@@ -69,9 +69,9 @@ INIT_ROOM_LOOP //R4: screen X, R5: Screen Y,R6: current room start  address
 
 Y_SCREEN
     MOV R4 0 //sets x to 0
-    MOV RF 1 
+    MOV RF 1
     ADD R5 R5 RF //y++
-    MOV RF 8 
+    MOV RF 8
     CMP R5 RF	//all rooms generated check
     BRZ LOAD_VM
     NOP
@@ -96,7 +96,7 @@ INNER_LOOP
     MOV RF 280
     MUL RF R4 RF
     ADD R6 R6 RF //R6 is now correct address
-    
+
     MOV R0 0 //Row
     MOV R1 0 //Col
     MOV RE x00FF //For masking
@@ -145,9 +145,9 @@ VMEM_FILL_END_LOOP
     MUL R7 RF R0  //20*y
     ADD R7 R7 R6  //START ADDRESS + 20y
     ADD R7 R1 R7  //START AFFRESS + 20y + x, R7 now contains current address for tile
-    
+
     STRR R3 R7 //WRITE TO VMEM FROM DMEM
-    
+
     MOV RD 1
     ADD R1 R1 RD
     MOV RD 20
@@ -172,12 +172,12 @@ LOAD_VM
     MOV RF 4
     STR RF 10  //ROOM X = 4
     STR RF 11  //ROOM Y = 4
-    
+
     MOV R2 11080 // START ADDRESS FOR ROOM AT 4,4
-   
+
     MOV R0 1 //y
     MOV R1 0 //x
-    
+
 VMEM_MOVE_LOOP
     LDAR R3 R2 //Load tile to R3
 
@@ -185,7 +185,7 @@ VMEM_MOVE_LOOP
     LSL R4 R0 RF
     ADD R4 R4 R1 //Index for vmem in R4
     STRVR R3 R4 //Write tile to vmem
-    
+
     MOV RF 1
     ADD R1 R1 RF //x++
     ADD R2 R2 RF //D-mem adress ++
@@ -220,7 +220,7 @@ SHOP_BUILT
     STR R0 3 //Drill level
     MOV R0 0
     STR R0 4 //Score
-    MOV R0 100 
+    MOV R0 100
     STR R0 5 //Fuel
     MOV R0 1
     STR R0 6 //Fuel lvl
@@ -257,7 +257,7 @@ BUILD_SHOP
     MOV R0 x1E //BOTTOM LEFT EDGE
     STRV R0 x0A05
     STRV R0 x0A0A
-    MOV R0 x1F //TOP WALL 
+    MOV R0 x1F //TOP WALL
     STRV R0 x0306
     STRV R0 x0307
     STRV R0 x0308
@@ -324,7 +324,7 @@ BUILD_SHOP
     STRV R0 x080C
 
     MOV R0 x16
-    STRV R0 x0607	
+    STRV R0 x0607
     MOV R0 x17
     STRV R0 x0609
     MOV R0 x18
@@ -357,7 +357,7 @@ MAIN_LOOP
     NOP
 
 JOY_UP
-    MOV RF 1 
+    MOV RF 1
     LDA R0 102
     CMP RF R0
     BRZ MAIN_LOOP
@@ -410,44 +410,44 @@ JOY_LEFT
     NOP
 
 JOY_BTN1
-    MOV RF 1 
+    MOV RF 1
     LDA R0 106
     CMP RF R0
     BRZ MAIN_LOOP
     NOP
     STR RF 106
-     
+
     LDA R0 0	//Player X
     LDA R1 1	//Player Y
-    
+
     MOV RF 1	//Check if tile above player is buyable tile
     SUB R1 R1 RF
-    
+
     MOV RF 8
     LSL R1 R1 RF
     ADD R3 R1 R0	//vMem adress for tile above player in R3
     LDAVR R5 R3
-    
+
     MOV RF x16		//Drill up icon
     CMP RF R5
     BRZ TRY_BUY_DRILL
-    NOP    
+    NOP
 
     MOV RF x17		//Refill fuel icon
     CMP RF R5
     BRZ TRY_REFILL_FUEL
-    NOP    
+    NOP
 
     MOV RF x18		//Upgrade fuel icon
     CMP RF R5
     BRZ TRY_UPGRADE_FUEL
-    NOP    
+    NOP
 
     JMP MAIN_LOOP
     NOP
 
 JOY_BTN2
-    MOV RF 1 
+    MOV RF 1
     LDA R0 107
     CMP RF R0
     BRZ MAIN_LOOP
@@ -466,13 +466,13 @@ TRY_BUY_DRILL
 
     LDA R0 4	//Player score
     LDA R1 3	//Drill level
-    
+
     MOV R2 40 //Multiple of drill level to buy
     MUL R3 R1 R2
     CMP R0 R3
     BRN DENIED
     NOP
-    
+
     BEEP 3
 
     MOV R4 1
@@ -492,7 +492,7 @@ TRY_UPGRADE_FUEL
 
     LDA R0 4	//Player score
     LDA R1 6	//Fuel level
-    
+
     MOV R2 20 //Multiple of fuel level to buy
     MUL R3 R1 R2
     CMP R0 R3
@@ -508,7 +508,7 @@ TRY_UPGRADE_FUEL
 
     MOV RF 100 //Fuel per lvl
     MUL RF RF R1 //Max fuel level in RF
-    STR RF 5    
+    STR RF 5
 
     JMP UPDATE_SCORE
     NOP
@@ -583,7 +583,7 @@ NO_BORDER_WRAP
     MOV RF x2C
     CMP RF R9
     BRN	AWARD_SCORE
-    NOP  
+    NOP
 
     LDA RA 3 //Drill level in RA
     CMP RA R9
@@ -627,7 +627,7 @@ CRACK //R9 = Drill level needed to break rock, RB = VMEM new pos
     CMP RF R9
     BRZ AWARD_SCORE //branch if ground
     NOP
-      
+
     MOV RF 1 //Sub 1 from Fuel
     LDA RA 5
     SUB RA RA RF
@@ -639,7 +639,7 @@ CRACK //R9 = Drill level needed to break rock, RB = VMEM new pos
     JMP TURN
     NOP
 
-AWARD_SCORE // R9 = (GroundTile - x0F), DONT FUCK UP REGs FROM MOVE!!!
+AWARD_SCORE // R9 = (GroundTile - x0F), DONT MESS UP REGs FROM MOVE!!!
     MOV RF 1 //Sub 1 from Fuel
     LDA RA 5
     SUB RA RA RF
@@ -648,9 +648,9 @@ AWARD_SCORE // R9 = (GroundTile - x0F), DONT FUCK UP REGs FROM MOVE!!!
     MOV RF 0
     CMP R9 RF //Check if ground
     BRZ CONT_MOVE
-    NOP 
+    NOP
     BEEP 0 //Make sound
-    
+
     MOV RF x2D
     SUB R9 R9 RF
     LDA RF 4 //Load score to RF
@@ -660,7 +660,7 @@ AWARD_SCORE // R9 = (GroundTile - x0F), DONT FUCK UP REGs FROM MOVE!!!
     STR RF 4
     JMP CONT_MOVE
     NOP
-    
+
 UPDATE_SCORE
     MOV RA 0
     LDA R0 4 //Score to R0
@@ -684,7 +684,7 @@ BCD_RETURN
     NOP
 
     JMP WRITE_FUEL
-    NOP    
+    NOP
 CONT_GUI_UPDATE
     LDA RF 3 // LOAD DRILL LVL
     MOV RE 1
@@ -706,12 +706,12 @@ WRITE_SCORE
     STRV R6 X13
     JMP LOAD_FUEL_BCD
     NOP
-WRITE_FUEL	
+WRITE_FUEL
     STRV R3 XA
     STRV R4 XB
     STRV R5 XC
     STRV R6 XD
-    JMP CONT_GUI_UPDATE 
+    JMP CONT_GUI_UPDATE
     NOP
 
 GET_BCD //Number to BCD should be in R0, returns BCD digits in R3,R4,R5,R6
@@ -759,8 +759,8 @@ ONE
     ADD R5 R5 R1
     ADD R6 R6 R0
     JMP BCD_RETURN
-    NOP 
-    
+    NOP
+
 
 NEXT_SCREEN //R4 is delta X, R5 is delta Y  (R2 = Y POS, R1 = X POS FROM EARLIER)
     LDA RE 10 //old x
@@ -798,7 +798,7 @@ X_WRAP_LEFT
     LDA RE 12  		 // X coord for room
     LDA RD 13 		 // Y coord for room
     MOV RC 8
-    MUL RD RD RC 	 // Y * 8 
+    MUL RD RD RC 	 // Y * 8
     ADD RE RE RD 	 // X + Y*8
     MOV RC 280
     MUL RE RE RC 	 // 280(X + Y*8)
@@ -833,12 +833,12 @@ NOT_CRACKED_X_LEFT
     MOV R5 19		//UPDATE PLAYER X, Y IS SAME
     MOV R6 0
     ADD R6 R6 R2
-    	
+
     JMP CHANGE_SCREEN
     NOP
 
 CHANGE_SCREEN //RA is tile that was broken, RD is start adress for breakable blocks, R1 is OLD player X, R2 is OLD player Y, R5 is new player X, R6 is new player Y, R9 is start adress for new room tiles indMem
-    MOV RE 0 //Before that calculate the new score	
+    MOV RE 0 //Before that calculate the new score
     SUB RA RA RD
     CMP RA RE //Check if ground
     BRZ CONT_CHANGE_SCREEN
@@ -849,7 +849,7 @@ CHANGE_SCREEN //RA is tile that was broken, RD is start adress for breakable blo
     LDA RD 4 //Load score to RD
     LSL RE RE RA
     ADD RD RD RE //New score in RD
-    STR RD 4  
+    STR RD 4
 
 CONT_CHANGE_SCREEN //Here we want to store the current room to data memory, and load the new room to video memory
     MOV RE 8
@@ -860,7 +860,7 @@ CONT_CHANGE_SCREEN //Here we want to store the current room to data memory, and 
 
     STR R5 0 	//Store new player X
     STR R6 1	//Store new player Y
-    
+
     LDA R4 11	//Current room Y
     LDA R3 10	//Current room X
     MUL R4 R4 RE	  //Calc start adress for current room in dMem
@@ -870,7 +870,7 @@ CONT_CHANGE_SCREEN //Here we want to store the current room to data memory, and 
     MOV R3 1000
     ADD R4 R4 R3 //It is in R4
 
-    
+
     MOV RC 8	//For shifting 8 bits
     MOV RA 0	   //Loop X
     MOV RE 0	   //Loop Y
@@ -930,15 +930,15 @@ SCREEN_PLACE_PLAYER
     STR RA 5
 
     JMP UPDATE_SCORE
-    NOP   
-	
+    NOP
+
 
 X_WRAP_RIGHT
     MOV RA 1000		// Calculate what tile is where we try to move on new screen all according to formula
     LDA RE 12  		 // X coord for room
     LDA RD 13 		 // Y coord for room
     MOV RC 8
-    MUL RD RD RC 	 // Y * 8 
+    MUL RD RD RC 	 // Y * 8
     ADD RE RE RD 	 // X + Y*8
     MOV RC 280
     MUL RE RE RC 	 // 280(X + Y*8)
@@ -981,7 +981,7 @@ Y_WRAP_UP
     LDA RE 12  		 // X coord for room
     LDA RD 13 		 // Y coord for room
     MOV RC 8
-    MUL RD RD RC 	 // Y * 8 
+    MUL RD RD RC 	 // Y * 8
     ADD RE RE RD 	 // X + Y*8
     MOV RC 280
     MUL RE RE RC 	 // 280(X + Y*8)
@@ -1021,7 +1021,7 @@ Y_WRAP_DOWN
     LDA RE 12  		 // X coord for room
     LDA RD 13 		 // Y coord for room
     MOV RC 8
-    MUL RD RD RC 	 // Y * 8 
+    MUL RD RD RC 	 // Y * 8
     ADD RE RE RD 	 // X + Y*8
     MOV RC 280
     MUL RE RE RC 	 // 280(X + Y*8)

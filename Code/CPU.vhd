@@ -30,7 +30,7 @@ entity CPU is
 end CPU;
 
 architecture Behavioral of CPU is
-    -- || Components ||
+    -- || Components || --
     -- Program memory
     component pMem port(
         pAddr : in unsigned(9 downto 0);
@@ -277,24 +277,24 @@ begin
   pre_ALU_a <= constant_mux;
   pre_ALU_b <= alu2_mux;
 
-    --Pipelining forward
-    process(clk)
-    begin
-        if(rising_edge(clk)) then
-            instr_reg0 <= reg0_mux;
-            instr_reg1 <= reg1_mux;
-            instr_reg2 <= instr_reg1;
-            instr_reg3 <= instr_reg2;
-        end if;
-    end process;
+--Pipelining forward
+process(clk)
+begin
+    if(rising_edge(clk)) then
+        instr_reg0 <= reg0_mux;
+        instr_reg1 <= reg1_mux;
+        instr_reg2 <= instr_reg1;
+        instr_reg3 <= instr_reg2;
+    end if;
+end process;
 
-    --Jmp and stall mux
-    reg0_mux <= NOP when jmp = '1' else
-                instr_reg0 when stall = '1' else
-                new_inst;
+--Jmp and stall mux
+reg0_mux <= NOP when jmp = '1' else
+            instr_reg0 when stall = '1' else
+            new_inst;
 
-    reg1_mux <= NOP when stall = '1' else
-                instr_reg0;
+reg1_mux <= NOP when stall = '1' else
+            instr_reg0;
 
   --Connect data memory
   D1 : dMem port map ( dMem_in => pre_dMem, dMem_out => post_dMem_data,

@@ -16,8 +16,9 @@ architecture Behavioral of tile_mem is
   type tMem_data is array (0 to 16383) of unsigned(7 downto 0);
 
   signal tMem : tMem_data :=
-  (	--Black Tile
-    x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",	
+  (
+  --Black Tile
+    x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
     x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
     x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
     x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
@@ -35,7 +36,7 @@ architecture Behavioral of tile_mem is
     x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
 
 	--Letter 0
-    x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",	
+    x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
     x"00",x"00",x"00",x"00",x"00",x"00",x"FF",x"FF",x"FF",x"FF",x"00",x"00",x"00",x"00",x"00",x"00",
     x"00",x"00",x"00",x"00",x"00",x"FF",x"00",x"00",x"00",x"00",x"FF",x"00",x"00",x"00",x"00",x"00",
     x"00",x"00",x"00",x"00",x"FF",x"00",x"00",x"00",x"00",x"00",x"00",x"FF",x"00",x"00",x"00",x"00",
@@ -232,23 +233,23 @@ architecture Behavioral of tile_mem is
     x"60",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"60",
     x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",
 
-        --Player Right
-        x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",
-        x"60",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"60",
-        x"60",x"88",x"60",x"60",x"02",x"02",x"02",x"88",x"88",x"88",x"60",x"60",x"60",x"88",x"88",x"60",
-        x"60",x"88",x"60",x"02",x"17",x"17",x"17",x"02",x"88",x"88",x"60",x"DF",x"60",x"60",x"88",x"60",
-        x"60",x"88",x"94",x"02",x"17",x"17",x"17",x"02",x"94",x"FF",x"FF",x"DF",x"DF",x"60",x"88",x"60",
-        x"60",x"94",x"CC",x"02",x"17",x"17",x"17",x"02",x"CC",x"FF",x"9F",x"FF",x"FF",x"60",x"88",x"60",
-        x"60",x"94",x"CC",x"02",x"17",x"17",x"17",x"02",x"CC",x"FF",x"9F",x"93",x"9F",x"FF",x"FF",x"60",
-        x"60",x"94",x"CC",x"CC",x"CC",x"CC",x"CC",x"CC",x"CC",x"FF",x"9F",x"93",x"9F",x"93",x"9F",x"FF",
-        x"60",x"88",x"94",x"94",x"94",x"94",x"94",x"94",x"94",x"94",x"9F",x"93",x"9F",x"FF",x"FF",x"60",
-        x"60",x"94",x"40",x"40",x"40",x"AC",x"AC",x"40",x"40",x"40",x"94",x"FF",x"FF",x"88",x"88",x"60",
-        x"60",x"94",x"40",x"AC",x"40",x"AC",x"AC",x"40",x"AC",x"40",x"94",x"88",x"88",x"88",x"88",x"60",
-        x"60",x"94",x"40",x"40",x"40",x"AC",x"AC",x"40",x"40",x"40",x"94",x"88",x"88",x"88",x"88",x"60",
-        x"60",x"88",x"94",x"94",x"94",x"94",x"94",x"94",x"94",x"94",x"60",x"88",x"88",x"88",x"88",x"60",
-        x"60",x"88",x"88",x"88",x"88",x"60",x"60",x"60",x"60",x"88",x"88",x"88",x"88",x"88",x"88",x"60",
-        x"60",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"60",
-        x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",
+    --Player Right
+    x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",
+    x"60",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"60",
+    x"60",x"88",x"60",x"60",x"02",x"02",x"02",x"88",x"88",x"88",x"60",x"60",x"60",x"88",x"88",x"60",
+    x"60",x"88",x"60",x"02",x"17",x"17",x"17",x"02",x"88",x"88",x"60",x"DF",x"60",x"60",x"88",x"60",
+    x"60",x"88",x"94",x"02",x"17",x"17",x"17",x"02",x"94",x"FF",x"FF",x"DF",x"DF",x"60",x"88",x"60",
+    x"60",x"94",x"CC",x"02",x"17",x"17",x"17",x"02",x"CC",x"FF",x"9F",x"FF",x"FF",x"60",x"88",x"60",
+    x"60",x"94",x"CC",x"02",x"17",x"17",x"17",x"02",x"CC",x"FF",x"9F",x"93",x"9F",x"FF",x"FF",x"60",
+    x"60",x"94",x"CC",x"CC",x"CC",x"CC",x"CC",x"CC",x"CC",x"FF",x"9F",x"93",x"9F",x"93",x"9F",x"FF",
+    x"60",x"88",x"94",x"94",x"94",x"94",x"94",x"94",x"94",x"94",x"9F",x"93",x"9F",x"FF",x"FF",x"60",
+    x"60",x"94",x"40",x"40",x"40",x"AC",x"AC",x"40",x"40",x"40",x"94",x"FF",x"FF",x"88",x"88",x"60",
+    x"60",x"94",x"40",x"AC",x"40",x"AC",x"AC",x"40",x"AC",x"40",x"94",x"88",x"88",x"88",x"88",x"60",
+    x"60",x"94",x"40",x"40",x"40",x"AC",x"AC",x"40",x"40",x"40",x"94",x"88",x"88",x"88",x"88",x"60",
+    x"60",x"88",x"94",x"94",x"94",x"94",x"94",x"94",x"94",x"94",x"60",x"88",x"88",x"88",x"88",x"60",
+    x"60",x"88",x"88",x"88",x"88",x"60",x"60",x"60",x"60",x"88",x"88",x"88",x"88",x"88",x"88",x"60",
+    x"60",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"88",x"60",
+    x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",
 
         --Player DOWN
     x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",
@@ -381,7 +382,7 @@ architecture Behavioral of tile_mem is
     x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
     x"00",x"00",x"00",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"00",x"00",x"00",
     x"00",x"00",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"00",x"00",
-    x"00",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"00",  
+    x"00",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"00",
     x"00",x"EC",x"EC",x"00",x"00",x"00",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"00",
     x"00",x"EC",x"EC",x"00",x"9F",x"9F",x"00",x"00",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"00",
     x"00",x"EC",x"EC",x"00",x"9F",x"9F",x"93",x"93",x"00",x"00",x"EC",x"EC",x"EC",x"EC",x"EC",x"00",
@@ -389,13 +390,13 @@ architecture Behavioral of tile_mem is
     x"00",x"EC",x"EC",x"00",x"9F",x"93",x"93",x"9F",x"9F",x"93",x"93",x"9F",x"00",x"00",x"EC",x"00",
     x"00",x"EC",x"EC",x"00",x"9F",x"93",x"93",x"9F",x"9F",x"93",x"00",x"00",x"EC",x"EC",x"EC",x"00",
     x"00",x"EC",x"EC",x"00",x"9F",x"93",x"93",x"9F",x"00",x"00",x"EC",x"EC",x"EC",x"EC",x"EC",x"00",
-    x"00",x"EC",x"EC",x"00",x"93",x"93",x"00",x"00",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"00",  
+    x"00",x"EC",x"EC",x"00",x"93",x"93",x"00",x"00",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"00",
     x"00",x"EC",x"EC",x"00",x"00",x"00",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"00",
     x"00",x"00",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"00",x"00",
     x"00",x"00",x"00",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"00",x"00",x"00",
     x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
 
-        --Peng Icon          
+        --Peng Icon
     x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
     x"00",x"00",x"00",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"00",x"00",x"00",
     x"00",x"00",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"00",x"00",
@@ -411,13 +412,13 @@ architecture Behavioral of tile_mem is
     x"00",x"FC",x"FC",x"FC",x"FC",x"1C",x"1C",x"1C",x"1C",x"1C",x"FC",x"FC",x"FC",x"FC",x"FC",x"00",
     x"00",x"00",x"FC",x"FC",x"FC",x"FC",x"1C",x"1C",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"00",x"00",
     x"00",x"00",x"00",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"00",x"00",x"00",
-    x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",    
+    x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
 
         --Drill Up Icon
     x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
     x"00",x"00",x"00",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"00",x"00",x"00",
     x"00",x"00",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"B0",x"B0",x"B0",x"B0",x"EC",x"EC",x"00",x"00",
-    x"00",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"B0",x"FC",x"FC",x"B0",x"EC",x"EC",x"EC",x"00",  
+    x"00",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"B0",x"FC",x"FC",x"B0",x"EC",x"EC",x"EC",x"00",
     x"00",x"EC",x"EC",x"00",x"00",x"00",x"B0",x"B0",x"B0",x"FC",x"FC",x"B0",x"B0",x"B0",x"EC",x"00",
     x"00",x"EC",x"EC",x"00",x"9F",x"9F",x"B0",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"B0",x"EC",x"00",
     x"00",x"EC",x"EC",x"00",x"9F",x"9F",x"B0",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"B0",x"EC",x"00",
@@ -425,12 +426,12 @@ architecture Behavioral of tile_mem is
     x"00",x"EC",x"EC",x"00",x"9F",x"93",x"93",x"9F",x"B0",x"FC",x"FC",x"B0",x"00",x"00",x"EC",x"00",
     x"00",x"EC",x"EC",x"00",x"9F",x"93",x"93",x"9F",x"B0",x"B0",x"B0",x"B0",x"EC",x"EC",x"EC",x"00",
     x"00",x"EC",x"EC",x"00",x"9F",x"93",x"93",x"9F",x"00",x"00",x"EC",x"EC",x"EC",x"EC",x"EC",x"00",
-    x"00",x"EC",x"EC",x"00",x"93",x"93",x"00",x"00",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"00",  
+    x"00",x"EC",x"EC",x"00",x"93",x"93",x"00",x"00",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"00",
     x"00",x"EC",x"EC",x"00",x"00",x"00",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"00",
     x"00",x"00",x"EC",x"EC",x"EC",x"EC",x"FF",x"FF",x"FF",x"FF",x"EC",x"EC",x"EC",x"EC",x"00",x"00",
     x"00",x"00",x"00",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"00",x"00",x"00",
     x"00",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"00",
-    
+
     --Fuel Refill
     x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
     x"00",x"00",x"00",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"00",x"00",x"00",
@@ -466,7 +467,7 @@ architecture Behavioral of tile_mem is
     x"00",x"00",x"EC",x"EC",x"EC",x"EC",x"FF",x"FF",x"FF",x"FF",x"EC",x"EC",x"EC",x"EC",x"00",x"00",
     x"00",x"00",x"00",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"00",x"00",x"00",
     x"00",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"00",
-    
+
     --Fuel Level
     x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
     x"00",x"00",x"00",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"00",x"00",x"00",
@@ -484,7 +485,7 @@ architecture Behavioral of tile_mem is
     x"00",x"00",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"00",x"00",
     x"00",x"00",x"00",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"EC",x"00",x"00",x"00",
     x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
-    
+
     --Fuel Amount
     x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
     x"00",x"00",x"00",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"00",x"00",x"00",
@@ -502,9 +503,6 @@ architecture Behavioral of tile_mem is
     x"00",x"00",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"00",x"00",
     x"00",x"00",x"00",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"FC",x"00",x"00",x"00",
     x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
-    
-
-
 
 -- Vertical Wall 1B
     x"64",x"64",x"F1",x"F1",x"F1",x"F1",x"F1",x"F1",x"F1",x"F1",x"F1",x"F1",x"F1",x"F1",x"64",x"64",
@@ -540,7 +538,7 @@ architecture Behavioral of tile_mem is
     x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"00",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",
     x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"00",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",
     x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",
-    x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",     
+    x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",
 
     --Horizontal wall bottom right edge 1D
     x"F0",x"F0",x"F0",x"F0",x"F0",x"00",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"64",x"64",
@@ -558,7 +556,7 @@ architecture Behavioral of tile_mem is
     x"00",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"00",x"F0",x"F0",x"F0",x"F0",x"64",x"64",
     x"00",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"00",x"F0",x"F0",x"F0",x"F0",x"64",x"64",
     x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",
-    x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",     
+    x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",
 
     --Horizontal wall bottom left edge 1E
     x"64",x"64",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"00",x"F0",x"F0",x"F0",x"F0",x"F0",
@@ -576,7 +574,7 @@ architecture Behavioral of tile_mem is
     x"64",x"64",x"F0",x"F0",x"F0",x"F0",x"00",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"00",
     x"64",x"64",x"F0",x"F0",x"F0",x"F0",x"00",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"00",
     x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",
-    x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",     
+    x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",
 
 --Horizontal wall top 1F
     x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",
@@ -594,7 +592,7 @@ architecture Behavioral of tile_mem is
     x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"00",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",
     x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"00",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",
     x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
-    x"F0",x"F0",x"F0",x"00",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"00",x"F0",x"F0",x"F0",     
+    x"F0",x"F0",x"F0",x"00",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"00",x"F0",x"F0",x"F0",
 
 --Horizontal wall top right edge 20
     x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",
@@ -612,7 +610,7 @@ architecture Behavioral of tile_mem is
     x"00",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"00",x"F0",x"F0",x"F0",x"F0",x"64",x"64",
     x"00",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"00",x"F0",x"F0",x"F0",x"F0",x"64",x"64",
     x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"64",x"64",
-    x"F0",x"F0",x"F0",x"F0",x"F0",x"00",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"64",x"64",     
+    x"F0",x"F0",x"F0",x"F0",x"F0",x"00",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"64",x"64",
 
     --Horizontal wall top left edge 21
     x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",x"64",
@@ -630,7 +628,7 @@ architecture Behavioral of tile_mem is
     x"64",x"64",x"F0",x"F0",x"F0",x"F0",x"00",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"00",
     x"64",x"64",x"F0",x"F0",x"F0",x"F0",x"00",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"00",
     x"64",x"64",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
-    x"64",x"64",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"00",x"F0",x"F0",x"F0",x"F0",x"F0",     
+    x"64",x"64",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"00",x"F0",x"F0",x"F0",x"F0",x"F0",
 
     --Horizontal wall top bottom left corner 22
     x"64",x"64",x"F1",x"F1",x"F1",x"F1",x"F1",x"F1",x"F1",x"F1",x"F1",x"F1",x"F1",x"F1",x"64",x"64",
@@ -648,7 +646,7 @@ architecture Behavioral of tile_mem is
     x"64",x"64",x"F0",x"F0",x"F0",x"F0",x"00",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"00",
     x"64",x"64",x"F0",x"F0",x"F0",x"F0",x"00",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"00",
     x"64",x"64",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",x"00",
-    x"64",x"64",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"00",x"F0",x"F0",x"F0",x"F0",x"F0",  
+    x"64",x"64",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"F0",x"00",x"F0",x"F0",x"F0",x"F0",x"F0",
 
     --Horizontal wall top bottom right corner 23
     x"64",x"64",x"F1",x"F1",x"F1",x"F1",x"F1",x"F1",x"F1",x"F1",x"F1",x"F1",x"F1",x"F1",x"64",x"64",
@@ -1062,7 +1060,7 @@ architecture Behavioral of tile_mem is
     x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",
     x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",x"FF",
 
-    x"00",x"10",x"20",x"30",x"40",x"50",x"60",x"70",x"80",x"90",x"A0",x"B0",x"C0",x"D0",x"E0",x"F0", 
+    x"00",x"10",x"20",x"30",x"40",x"50",x"60",x"70",x"80",x"90",x"A0",x"B0",x"C0",x"D0",x"E0",x"F0",
     x"00",x"11",x"21",x"31",x"41",x"51",x"61",x"71",x"81",x"91",x"A1",x"B1",x"C1",x"D1",x"E1",x"F1",
     x"00",x"12",x"22",x"32",x"42",x"52",x"62",x"72",x"82",x"92",x"A2",x"B2",x"C2",x"D2",x"E2",x"F2",
     x"00",x"13",x"23",x"33",x"77",x"53",x"63",x"DF",x"83",x"93",x"A3",x"B3",x"C3",x"D3",x"E3",x"F3",
@@ -1079,7 +1077,7 @@ architecture Behavioral of tile_mem is
     x"0E",x"1E",x"2E",x"3E",x"4E",x"5E",x"6E",x"7E",x"8E",x"9E",x"AE",x"BE",x"CE",x"DE",x"EE",x"FE",
     x"0F",x"1F",x"2F",x"3F",x"4F",x"5F",x"6F",x"7F",x"8F",x"9F",x"AF",x"BF",x"CF",x"DF",x"EF",x"FF",
 
-    
+
 --Cracked Rocks (HEX adress = CC)
     x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",x"60",
     x"60",x"60",x"60",x"60",x"77",x"77",x"00",x"77",x"77",x"77",x"77",x"77",x"60",x"60",x"60",x"60",

@@ -45,9 +45,10 @@ architecture Behavioral of soundModule is
         end if;
         send_prev <= send;
         send_ep <= send_prev and (not send);
-        
+
       end if;
     end process;
+    
     -- CLK divider process
     process(clk) begin
         if rising_edge(clk) then

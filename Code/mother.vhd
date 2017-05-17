@@ -140,7 +140,7 @@ architecture Behavioral of mother is
   signal sound_select_signal : unsigned(1 downto 0);
 begin
 
-
+  -- LED lights show joystick state
   LED(0) <= joy_btn1;
   LED(1) <= joy_btn2;
   LED(2) <= joy_left;

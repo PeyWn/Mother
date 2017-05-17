@@ -1,6 +1,5 @@
 --------------------------------------------------------------------------------
 -- Based on:
-
 -- VGA MOTOR
 -- Anders Nilsson
 -- 16-feb-2016
@@ -43,7 +42,7 @@ architecture Behavioral of VGA_MOTOR is
       pixel_out : out unsigned(7 downto 0)
       );
   end component;
- 
+
   signal	Xpixel	        : unsigned(9 downto 0) := "0000000000";         -- Horizontal pixel counter
   signal	Ypixel	        : unsigned(9 downto 0) := "0000000000";		-- Vertical pixel counter
   signal	ClkDiv	        : unsigned(1 downto 0) := "00";		-- Clock divisor, to generate 25 MHz signal
@@ -52,13 +51,13 @@ architecture Behavioral of VGA_MOTOR is
   signal 	tilePixel       : unsigned(7 downto 0);	-- Tile pixel data
 
   signal tile_mem_out : unsigned(7 downto 0);
-  
+
   signal    blank : std_logic;                    -- blanking signal
-  
+
 begin
 
   tileMem : tile_mem port map(tile_index=>tileNr, tile_pixel_X=>Xpixel(4 downto 1), tile_pixel_Y=>Ypixel(4 downto 1), pixel_out=>tile_mem_out);
-  
+
   -- Clock divisor
   -- Divide system clock (100 MHz) by 4
   process(clk)
@@ -145,12 +144,3 @@ begin
 
 
 end Behavioral;
-
--- FF VIT
--- 00 SVART
--- 02 BL�
--- D4 KATT 25
--- CD BRUN
--- FC GUL 1E
--- E3 ROSA?
--- E0 R�D
